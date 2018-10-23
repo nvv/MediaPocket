@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="genre_default">#666666</color>
+    <color name="cooper">#b87333</color>
+    <color name="orange">#ffa500</color>
+    <color name="red">#ff0000</color>
+    <color name="red_light">#ed9392</color>
+    <color name="yellow">#ffff00</color>
+    <color name="green_light">#4ed37c</color>
+    <color name="blue_light">#0C589E</color>
+    <color name="purple">#6C56D6</color>
+    <color name="silver">#c0c0c0</color>
+    <color name="beige">#f5f5dc</color>
+</resources>

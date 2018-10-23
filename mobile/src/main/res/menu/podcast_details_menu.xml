@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/subscribe"
+        android:title="@string/subscribe" />
+
+    <item
+        android:id="@+id/open_web_site"
+        android:title="@string/open_web_site" />
+
+</menu>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">core</string>
+
+    <string name="subscription">Subscriptions</string>
+    <string name="top_podcasts_in">Top podcasts in %s</string>
+    <string name="top_podcasts">Top Podcasts</string>
+    <string name="featured">Popular</string>
+    <string name="networks">Networks</string>
+</resources>

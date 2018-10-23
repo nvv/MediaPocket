@@ -1,0 +1,80 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: "kotlin-kapt"
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    kapt {
+        generateStubs = false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Dagger 2 dependencies
+    api 'com.google.dagger:dagger-android:2.14.1'
+    api 'com.google.dagger:dagger-android-support:2.14.1'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
+    kapt "com.google.dagger:dagger-compiler:2.14.1"
+    kapt "com.google.dagger:dagger-android-processor:2.14.1"
+
+    api "com.android.support:mediarouter-v7:$support_library_version"
+
+    api "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    api "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
+    api "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+
+    // retrofit
+    api 'com.squareup.retrofit2:retrofit:2.3.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    api 'com.squareup.retrofit2:converter-gson:2.3.0'
+//    api 'com.squareup.retrofit2:converter-simplexml:2.4.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    //rxjava
+    api 'io.reactivex.rxjava2:rxjava:2.1.8'
+    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    api 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+
+    // architecture components
+    api "android.arch.lifecycle:extensions:1.1.1"
+    api 'android.arch.lifecycle:reactivestreams:1.1.1'
+
+    // room
+    api "android.arch.persistence.room:runtime:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
+    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
+    // optional - RxJava support for Room
+    api "android.arch.persistence.room:rxjava2:$room_version"
+
+    // glide
+    api ('com.github.bumptech.glide:glide:4.6.1') {
+        exclude group: 'com.android.support', module: 'support-compat'
+    }
+    kapt 'com.github.bumptech.glide:compiler:4.6.1'
+
+
+    implementation "com.android.support:appcompat-v7:$support_library_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">@color/red</color>
+
+    <color name="grey">#666666</color>
+    <color name="grey_light">#cccccc</color>
+    <color name="grey_light2">#eeeeeeee</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="white_semi_transparent">#ccffffff</color>
+    <color name="transparent">#ffffffff</color>
+
+    <color name="pager_selected">@color/grey_light</color>
+    <color name="pager_other">@color/grey</color>
+
+</resources>

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">MediaPocket</string>
+    <string name="title_discover">Discover</string>
+    <string name="title_search">Search</string>
+    <string name="title_notifications">Notifications</string>
+
+
+    <string name="menu_night_mode">Night mode</string>
+    <string name="menu_night_mode_system">Follow system</string>
+    <string name="menu_night_mode_day">Day (always)</string>
+    <string name="menu_night_mode_night">Night (always)</string>
+    <string name="menu_night_mode_auto">Auto</string>
+
+    <string name="notification_channel">Now Playing</string>
+    <string name="notification_channel_description">Shows currently playing podcast in MediaPocket</string>
+
+    <string name="notification_rewind">Rewind</string>
+    <string name="notification_fastforward">Fast Forward</string>
+    <string name="notification_next">Next</string>
+    <string name="notification_prev">Previous</string>
+
+    <string name="select_playback_speed">Select Playback Speed</string>
+
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <string name="action_subscribed">Subscribed to %s</string>
+    <string name="action_unsubscribed">Unsubscribed from %s</string>
+    <string name="action_undo">Undo</string>
+
+    <string name="subscribe">Subscribe</string>
+    <string name="unsubscribe">Unsubscribe</string>
+
+    <string name="more">More</string>
+    <string name="best_in_genre">Best of genre</string>
+    <string name="all_genres">All genres</string>
+    <string name="networks">Networks</string>
+    <string name="open_web_site">Visit website</string>
+
+</resources>

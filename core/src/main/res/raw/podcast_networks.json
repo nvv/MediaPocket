@@ -1,0 +1,27 @@
+[
+  {
+    "title":"BBC",
+    "id":121676617,
+    "logo":"logo_bbc"
+  },
+  {
+    "title":"Gimlet",
+    "id":920682569,
+    "logo":"logo_gimlet"
+  },
+  {
+    "title":"British Comedy Guide",
+    "id":460334470,
+    "logo":"logo_bcg"
+  },
+  {
+    "title":"The New York Times",
+    "id":121664449,
+    "logo":"logo_new_york_times"
+  },
+  {
+    "title":"Starburns Audio",
+    "id":541109260,
+    "logo":"logo_starburns_audio"
+  }
+]
