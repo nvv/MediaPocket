@@ -21,7 +21,7 @@ class PodcastAdapterEntry() : Parcelable {
 
     private var genreIds: List<Int>? = null
 
-    var transitionName: String? = null
+    private var artistId: Int? = null
 
     constructor(podcast: TopPodcast) : this() {
         title = podcast.name
@@ -36,6 +36,7 @@ class PodcastAdapterEntry() : Parcelable {
         feedUrl = podcast.feedUrl
         genreIds = podcast.genreIds
         primaryGenreName = podcast.primaryGenreName
+        artistId = podcast.artistId
     }
 
     constructor(podcast: GenreResult.PodcastEntry) : this() {
@@ -56,7 +57,6 @@ class PodcastAdapterEntry() : Parcelable {
         logo = parcel.readString()
         id = parcel.readString()
         feedUrl = parcel.readString()
-        transitionName = parcel.readString()
     }
 
     fun title() = title
@@ -65,13 +65,13 @@ class PodcastAdapterEntry() : Parcelable {
     fun feedUrl(): String? = feedUrl
     fun primaryGenreName() = primaryGenreName
     fun genreIds() = genreIds
+    fun artistId() = artistId
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
         parcel.writeString(logo)
         parcel.writeString(id)
         parcel.writeString(feedUrl)
-        parcel.writeString(transitionName)
     }
 
     override fun describeContents(): Int {

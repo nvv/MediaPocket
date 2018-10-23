@@ -20,10 +20,11 @@ class PodcastDetailsViewModel : ViewModel() {
     fun load(podcast: PodcastAdapterEntry) : Single<PodcastDetails> {
         return if (podcast.feedUrl() == null) {
             ItunesPodcastRepository.lookupPodcast(podcast.id()).flatMap {
-                Single.just(PodcastDetails(it.feedUrl(), it.artwork(), it.primaryGenreName(), it.genreIds()))
+                Single.just(PodcastDetails(it.feedUrl(), it.artwork(), it.primaryGenreName(), it.genreIds(), it.artistId()))
             }.observeOn(AndroidSchedulers.mainThread())
         } else {
-            Single.just(PodcastDetails(podcast.feedUrl()!!, primaryGenreName = podcast.primaryGenreName(), genreIds = podcast.genreIds()))
+            Single.just(PodcastDetails(podcast.feedUrl()!!, primaryGenreName = podcast.primaryGenreName(),
+                    genreIds = podcast.genreIds(), authorId = podcast.artistId().toString()))
         }
     }
 

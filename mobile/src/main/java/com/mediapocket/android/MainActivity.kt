@@ -110,8 +110,6 @@ class MainActivity : AppCompatActivity() {
                 .commit()
 
         disposable.add(RxBus.default.observerFor(PodcastSelectedEvent::class.java).subscribe { event ->
-            val transitionName = ViewCompat.getTransitionName(event.logo)
-            event.podcast.transitionName = transitionName
             val details = PodcastDetailsFragment.newInstance(event.podcast)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
