@@ -41,7 +41,8 @@ class Rss(rss: String?, overrideLink: String? = null) : Cacheable() {
         link = overrideLink ?: channel.getChild("link").value
 
         val linkVal = channel.getChild("link").value
-        webSite = linkVal ?: channel.getChild("docs").value ?: link
+        val docs = channel.getChild("docs").value
+        webSite = if (!TextUtils.isEmpty(linkVal)) linkVal else (if (!TextUtils.isEmpty(docs)) docs else link)
         language = channel.getChild("language").value
 
         val url= channel.getChild("image").getAttribute("href")

@@ -1,22 +1,22 @@
 package com.mediapocket.android.fragments
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import com.mediapocket.android.R
 import com.mediapocket.android.model.PodcastAdapterEntry
+import com.mediapocket.android.view.PodcastDetailsView
 import com.mediapocket.android.viewmodels.PodcastDetailsViewModel
 import io.reactivex.disposables.CompositeDisposable
-import android.view.*
-import com.mediapocket.android.view.PodcastDetailsView
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat.invalidateOptionsMenu
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.SearchView
-import android.transition.TransitionInflater
-import android.widget.ActionMenuView
+
 
 /**
  * @author Vlad Namashko
@@ -47,8 +47,6 @@ class PodcastDetailsFragment : BaseFragment() {
 
         podcast = arguments?.getParcelable(ARG_PODCAST)
         model = ViewModelProviders.of(this).get(PodcastDetailsViewModel::class.java)
-
-//        ViewCompat.setTransitionName(podcastView.logo, podcast?.transitionName)
 
         subscribe = view.findViewById(R.id.subscribe)
         podcast?.let {
@@ -95,7 +93,7 @@ class PodcastDetailsFragment : BaseFragment() {
                     podcastView.feedLoaded(rss)
 
                     openWebSiteMenu?.setOnMenuItemClickListener {
-                        System.out.println(":>>>  " + rss.webSite())
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(rss.webSite())))
                         false
                     }
                 }, {err ->

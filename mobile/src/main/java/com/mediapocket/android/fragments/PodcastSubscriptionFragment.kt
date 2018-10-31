@@ -39,6 +39,8 @@ class PodcastSubscriptionFragment : SimplePodcastFragment() {
         return view
     }
 
+    override fun hasBackNavigation() = false
+
     companion object {
         fun newInstance(): PodcastSubscriptionFragment {
             return PodcastSubscriptionFragment()

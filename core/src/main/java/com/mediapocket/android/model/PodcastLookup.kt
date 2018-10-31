@@ -11,7 +11,7 @@ class PodcastLookup(response: JsonObject) : Cacheable() {
     private val feedUrl: String = response.get("feedUrl").asString
     private val primaryGenreName: String = response.get("primaryGenreName").asString
     private val genreIds = mutableListOf<Int>()
-    private val artistId: String = response.get("artistId").asString
+    private val artistId: String? = response.get("artistId")?.asString
 
     init {
         response.get("genreIds")?.asJsonArray?.forEach {

@@ -49,13 +49,13 @@ object RssRepository {
         val cache: R? = Cache.get(key)
 
         cache?.let { it ->
-            return Single.just(it) }
-                ?: return action.invoke()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMap { result: R ->
-                            Cache.put(key, result)
-                            Single.just(result)
-                        }
+            return Single.just(it)
+        } ?: return action.invoke()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { result: R ->
+                    Cache.put(key, result)
+                    Single.just(result)
+                }
     }
 }
