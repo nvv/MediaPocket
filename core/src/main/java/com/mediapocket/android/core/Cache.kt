@@ -23,9 +23,13 @@ object Cache {
                 val clazz = Class.forName(cacheMeta[1])
                 val result = gson.fromJson(file.inputStream().bufferedReader(), clazz)
                 if (result is Cacheable) {
-                    val key = CacheKey(clazz, cacheMeta.subList(2, cacheMeta.size))
-                    cache[key] = result
                     result.expires = cacheMeta[0].toLong()
+                    if (result.isValid()) {
+                        val key = CacheKey(clazz, cacheMeta.subList(2, cacheMeta.size))
+                        cache[key] = result
+                    } else {
+                        file.delete()
+                    }
                 }
             }
         } else {
