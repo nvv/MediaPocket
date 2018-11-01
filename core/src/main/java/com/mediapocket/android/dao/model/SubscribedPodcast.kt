@@ -12,4 +12,7 @@ import com.mediapocket.android.model.PodcastDiscoverResult
 data class SubscribedPodcast(@PrimaryKey var id: String,
                              @ColumnInfo(name = "title") var title: String,
                              @ColumnInfo(name = "logo") var logo: String,
-                             @ColumnInfo(name = "feed_url") var feedUrl: String)
+                             @ColumnInfo(name = "feed_url") var feedUrl: String,
+                             @ColumnInfo(name = "primary_genre") var primaryGenre: String?,
+                             @ColumnInfo(name = "feed_id") var artistId: String?,
+                             @ColumnInfo(name = "feed_name") var artistName: String?)

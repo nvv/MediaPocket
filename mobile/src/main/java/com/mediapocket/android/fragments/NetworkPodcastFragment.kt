@@ -11,6 +11,7 @@ import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.viewmodels.PodcastViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 
@@ -30,10 +31,11 @@ class NetworkPodcastFragment : SimplePodcastFragment() {
             subscription.add(model.doLoadingAction { model.getNetowrkPodcasts(it) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { res ->
+                    .subscribe({ res ->
                         adapter.setItems(PodcastAdapterEntry.convert(res))
                         adapter.notifyDataSetChanged()
-                    })
+                    }, { err ->
+                        err.printStackTrace() }))
         }
 
         setHasOptionsMenu(true)
@@ -56,7 +58,7 @@ class NetworkPodcastFragment : SimplePodcastFragment() {
         private const val ARG_NETWORK_ID = "arg_network_id"
         private const val ARG_NETWORK_TITLE = "arg_network_title"
 
-        fun newInstance(id: String, title: String): NetworkPodcastFragment {
+        fun newInstance(id: String, title: String?): NetworkPodcastFragment {
             val fragment =  NetworkPodcastFragment()
             fragment.arguments = Bundle().apply {
                 putString(ARG_NETWORK_ID, id)

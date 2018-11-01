@@ -12,6 +12,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.mediapocket.android.R
+import com.mediapocket.android.core.RxBus
+import com.mediapocket.android.events.LoadNetworkItemsEvent
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.view.PodcastDetailsView
 import com.mediapocket.android.viewmodels.PodcastDetailsViewModel
@@ -35,6 +37,7 @@ class PodcastDetailsFragment : BaseFragment() {
     private var subscribe: FloatingActionButton? = null
     private var subscribeMenu: MenuItem? = null
     private var openWebSiteMenu: MenuItem? = null
+    private var moreFromAuthor: MenuItem? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.podcast_fragmnet_view, container, false)
@@ -43,6 +46,7 @@ class PodcastDetailsFragment : BaseFragment() {
         if (podcastView.hasOptionsMenu()) {
             subscribeMenu = podcastView.getMenu()?.findItem(R.id.subscribe)
             openWebSiteMenu = podcastView.getMenu()?.findItem(R.id.open_web_site)
+            moreFromAuthor = podcastView.getMenu()?.findItem(R.id.more_from_author)
         }
 
         podcast = arguments?.getParcelable(ARG_PODCAST)
@@ -56,6 +60,7 @@ class PodcastDetailsFragment : BaseFragment() {
                     podcastView.loadLogo(it)
                 }
 
+                moreFromAuthor?.isVisible = podcastDetails?.authorId() != null
                 podcastView.fullDataFetched(podcastDetails)
 
                 subscribe?.let {
@@ -94,6 +99,13 @@ class PodcastDetailsFragment : BaseFragment() {
 
                     openWebSiteMenu?.setOnMenuItemClickListener {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(rss.webSite())))
+                        false
+                    }
+
+                    moreFromAuthor?.setOnMenuItemClickListener {
+                        podcastDetails?.authorId()?.let {
+                            RxBus.default.postEvent(LoadNetworkItemsEvent(it, podcastDetails.authorName()))
+                        }
                         false
                     }
                 }, {err ->

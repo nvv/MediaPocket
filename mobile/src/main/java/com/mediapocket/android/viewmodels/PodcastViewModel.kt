@@ -18,14 +18,6 @@ class PodcastViewModel : LoadableViewModel() {
         return ItunesPodcastRepository.loadGenres()
     }
 
-//    fun getTop(): Single<Result> {
-//        return doLoadingAction { ItunesPodcastRepository.loadTopPodcasts() }
-//    }
-//
-//    fun getTop(genre: Genre): Single<GenreResult> {
-//        return doLoadingAction { ItunesPodcastRepository.loadGenrePodcasts(genre) }
-//    }
-
     fun getSubscriptions(): Single<SubscriptionsLookupResult> {
         val dao = DependencyLocator.getInstance().database.subscribedPodcastDao()
         return Single.fromCallable {

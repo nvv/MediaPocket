@@ -20,11 +20,11 @@ class PodcastDetailsViewModel : ViewModel() {
     fun load(podcast: PodcastAdapterEntry) : Single<PodcastDetails> {
         return if (podcast.feedUrl() == null) {
             ItunesPodcastRepository.lookupPodcast(podcast.id()).flatMap {
-                Single.just(PodcastDetails(it.feedUrl(), it.artwork(), it.primaryGenreName(), it.genreIds(), it.artistId()))
+                Single.just(PodcastDetails(it.feedUrl(), it.artwork(), it.primaryGenreName(), it.genreIds(), it.artistId(), it.artistName()))
             }.observeOn(AndroidSchedulers.mainThread())
         } else {
             Single.just(PodcastDetails(podcast.feedUrl()!!, primaryGenreName = podcast.primaryGenreName(),
-                    genreIds = podcast.genreIds(), authorId = podcast.artistId().toString()))
+                    genreIds = podcast.genreIds(), authorId = podcast.artistId().toString(), authorName = podcast.artistName()))
         }
     }
 
@@ -47,7 +47,8 @@ class PodcastDetailsViewModel : ViewModel() {
             val dao = DependencyLocator.getInstance().database.subscribedPodcastDao()
 
             if (dao.get(podcast.id()) == null) {
-                dao.insertAll(SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl()))
+                dao.insertAll(SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl(),
+                        details.primaryGenreName(), details.authorId(), details.authorName()))
             } else {
                 dao.delete(podcast.id())
             }

@@ -9,4 +9,8 @@
         android:id="@+id/open_web_site"
         android:title="@string/open_web_site" />
 
+    <item
+        android:id="@+id/more_from_author"
+        android:title="@string/more_from_author" />
+
 </menu>
