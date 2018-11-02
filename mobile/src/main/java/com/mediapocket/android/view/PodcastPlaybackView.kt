@@ -10,6 +10,9 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.mediapocket.android.MediaSessionConnection
@@ -56,10 +59,8 @@ abstract class PodcastPlaybackView(context: Context?, attrs: AttributeSet?, defS
 
         fastForward = findViewById(R.id.fastforward)
 
-        val drawable = resources.getDrawable(R.drawable.ic_fastforward_30_animated, null) as AnimatedVectorDrawable
-        fastForward.setImageDrawable(drawable)
         fastForward.setOnClickListener {
-            drawable.start()
+            rotate(fastForward, 0f, 90f)
             mediaConnection?.mediaController?.transportControls?.fastForward()
         }
     }
@@ -71,6 +72,31 @@ abstract class PodcastPlaybackView(context: Context?, attrs: AttributeSet?, defS
 
     fun detachMediaConnectionCallback() {
         mediaConnection?.unregisterMediaControllerCallback(mediaControllerCallback)
+    }
+
+    protected fun rotate(view: View, from: Float, to: Float) {
+        var rotate = RotateAnimation(from, to, Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.55f)
+        rotate.duration = 250
+        rotate.interpolator = LinearInterpolator()
+
+        rotate.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                rotate = RotateAnimation(to, from, Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.55f)
+                rotate.duration = 250
+                rotate.interpolator = LinearInterpolator()
+                view.startAnimation(rotate)
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
+
+        view.startAnimation(rotate)
     }
 
     abstract fun getLayout(): Int

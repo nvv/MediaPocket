@@ -2,14 +2,13 @@ package com.mediapocket.android.view
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Rect
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -24,9 +23,6 @@ import com.mediapocket.android.playback.LocalPlayback.Companion.ARG_PLAYBACK_RAT
 import com.mediapocket.android.playback.LocalPlayback.Companion.COMMAND_SET_PLAYBACK_RATE
 import com.mediapocket.android.utils.ViewUtils
 import io.reactivex.disposables.CompositeDisposable
-import android.text.method.Touch.onTouchEvent
-import android.view.MotionEvent
-
 
 
 /**
@@ -69,11 +65,8 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             mediaConnection?.mediaController?.transportControls?.skipToPrevious()
         }
 
-        val drawable = resources.getDrawable(R.drawable.ic_rewind_10_animated, null) as AnimatedVectorDrawable
-        rewind.setImageDrawable(drawable)
         rewind.setOnClickListener{
-            drawable.start()
-
+            rotate(rewind, 0f, -90f)
             mediaConnection?.mediaController?.transportControls?.rewind()
         }
 
@@ -96,13 +89,14 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             }
 
         })
-
     }
 
     fun setDisposable(disposable: CompositeDisposable) {
         this.disposable = disposable
         disposable.add(RxBus.default.observerFor(VolumeLevelKeyEvent::class.java).subscribe {
-            volumeControl.progress = it.volume
+            if (volumeControl.progress != it.volume) {
+                volumeControl.progress = it.volume
+            }
         })
     }
 
@@ -129,7 +123,9 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    mediaConnection.mediaController.setVolumeTo(progress, 0)
+                    if (fromUser) {
+                        mediaConnection.mediaController.setVolumeTo(progress, 0)
+                    }
                 }
             })
 
@@ -144,8 +140,6 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             val playbackSpeed = findViewById<TextView>(R.id.playback_speed)
             playbackSpeed.tag = 10
             playbackSpeed.setOnClickListener {
-//                mediaConnection.mediaController.setVolumeTo(maxVolume, 0)
-
                 val popDialog = AlertDialog.Builder(context)
                 val seek = SeekBar(context)
                 seek.setPadding(seek.paddingLeft, ViewUtils.getDimensionSize(16).toInt(), seek.paddingRight, seek.paddingBottom)
@@ -190,13 +184,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                 popDialog.create()
                 popDialog.show()
             }
-
-
-//            val args = Bundle()
-//            args.putFloat(ARG_PLAYBACK_RATE, 2f)
-//            mediaConnection.mediaController.sendCommand(COMMAND_SET_PLAYBACK_RATE, args, null)
         }
-
     }
 
     private fun calculateRate(progress: Int): Float {

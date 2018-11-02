@@ -23,11 +23,11 @@ class NotificationBuilder(private val context: Context) {
     private val stopPendingIntent =
             MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP)
 
-    private val rewind = NotificationCompat.Action(R.drawable.ic_rewind_10,
+    private val rewind = NotificationCompat.Action(R.drawable.ic_rewind,
             context.getString(R.string.notification_rewind),
             MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_REWIND))
 
-    private val fastforward = NotificationCompat.Action(R.drawable.ic_fastforward_30,
+    private val fastforward = NotificationCompat.Action(R.drawable.ic_fastforward,
             context.getString(R.string.notification_fastforward),
             MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_FAST_FORWARD))
 

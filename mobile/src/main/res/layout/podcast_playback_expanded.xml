@@ -10,8 +10,8 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="16dp"
-    android:paddingLeft="48dp"
-    android:paddingRight="48dp"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
     android:paddingTop="8dp">
 
     <ImageView
@@ -85,12 +85,26 @@
             android:src="@drawable/ic_prev"
             android:tint="@color/black" />
 
-        <ImageView
-            android:id="@+id/rewind"
+        <FrameLayout
             android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_rewind_10"
-            android:tint="@color/black" />
+            android:layout_height="64dp">
+
+            <TextView
+                android:text="10"
+                android:textColor="@color/black"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/rewind"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_rewind"
+                android:tint="@color/black" />
+
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/play_pause"
@@ -99,12 +113,25 @@
             android:src="@drawable/ic_pause_animated"
             android:tint="@color/black" />
 
-        <ImageView
-            android:id="@+id/fastforward"
+        <FrameLayout
             android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_fastforward_30"
-            android:tint="@color/black" />
+            android:layout_height="64dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="25dp"
+                android:text="30"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/fastforward"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_fastforward"
+                android:tint="@color/black" />
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/next"
