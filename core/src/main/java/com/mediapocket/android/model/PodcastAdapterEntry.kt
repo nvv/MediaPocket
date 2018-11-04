@@ -56,6 +56,12 @@ class PodcastAdapterEntry() : Parcelable {
         primaryGenreName = podcast.primaryGenre
         artistId = podcast.artistId?.toInt()
         artistName = podcast.artistName
+        val genres = podcast.genres?.split(",")
+        genres?.let {
+            val ids = mutableListOf<Int>()
+            genres.forEach { it -> ids.add(it.trim().toInt()) }
+            genreIds = ids
+        }
     }
 
     constructor(parcel: Parcel) : this() {

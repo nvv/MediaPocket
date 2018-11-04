@@ -48,7 +48,7 @@ class PodcastDetailsViewModel : ViewModel() {
 
             if (dao.get(podcast.id()) == null) {
                 dao.insertAll(SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl(),
-                        details.primaryGenreName(), details.authorId(), details.authorName()))
+                        details.primaryGenreName(), details.genreIds()?.joinToString(), details.authorId(), details.authorName()))
             } else {
                 dao.delete(podcast.id())
             }

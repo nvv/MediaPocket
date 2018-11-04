@@ -14,5 +14,6 @@ data class SubscribedPodcast(@PrimaryKey var id: String,
                              @ColumnInfo(name = "logo") var logo: String,
                              @ColumnInfo(name = "feed_url") var feedUrl: String,
                              @ColumnInfo(name = "primary_genre") var primaryGenre: String?,
-                             @ColumnInfo(name = "feed_id") var artistId: String?,
-                             @ColumnInfo(name = "feed_name") var artistName: String?)
+                             @ColumnInfo(name = "genres") var genres: String?,
+                             @ColumnInfo(name = "artist_id") var artistId: String?,
+                             @ColumnInfo(name = "artist_name") var artistName: String?)
