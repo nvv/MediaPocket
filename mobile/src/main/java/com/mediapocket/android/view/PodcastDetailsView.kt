@@ -26,7 +26,12 @@ import com.mediapocket.android.core.AppDatabase
 import android.arch.persistence.room.Room
 import android.support.v4.view.ViewCompat
 import android.view.Menu
+import com.mediapocket.android.dao.model.DownloadedPodcastItem
+import com.mediapocket.android.extensions.doubleLet
 import com.mediapocket.android.model.PodcastDetails
+import com.mediapocket.android.utils.ViewUtils
+import com.mediapocket.android.view.decoration.DividerItemDecoration
+import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
 
 
 /**
@@ -38,6 +43,8 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
     protected var shimmerContainer: ShimmerFrameLayout
     protected var description: TextView
     var logo: ImageView
+
+    private var palette: Palette? = null
 
     init {
         @Suppress("LeakingThis")
@@ -55,13 +62,26 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         shimmerContainer.startShimmerAnimation()
     }
 
-    fun feedLoaded(rss: Rss) {
+    fun feedLoaded(rss: Rss, podcastId: String?) {
         shimmerContainer.stopShimmerAnimation()
         shimmerContainer.visibility = View.GONE
 
         description.text = Html.fromHtml(rss.description())
 
-        items.adapter = PodcastItemsAdapter(rss.items(), rss.link())
+        items.adapter = PodcastItemsAdapter(rss.items(), rss.link(), podcastId)
+        syncAdapterColor()
+        items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
+    }
+
+    private fun onPaletteReady(palette: Palette) {
+        this.palette = palette
+        syncAdapterColor()
+    }
+
+    private fun syncAdapterColor() {
+        doubleLet(palette, items.adapter) { p, _ ->
+            (items.adapter as PodcastItemsAdapter).setColors(p.getDarkVibrantColor(R.attr.colorPrimary) or 0xFF000000.toInt())
+        }
     }
 
     fun loadLogo(logoUrl: String) {
@@ -73,6 +93,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
                     Palette.from(bitmap).generate { palette ->
                         logoLoaded(bitmap, palette)
+                        onPaletteReady(palette)
                     }
 
                 }

@@ -55,12 +55,12 @@ class PodcastDetailsFragment : BaseFragment() {
         subscribe = view.findViewById(R.id.subscribe)
         podcast?.let {
             subscription.add(model.load(it).subscribe { podcastDetails ->
-                podcastDetails.artwork()?.let {
+                podcastDetails.artwork?.let {
                     dataLoaded = true
                     podcastView.loadLogo(it)
                 }
 
-                moreFromAuthor?.isVisible = podcastDetails?.authorId() != null
+                moreFromAuthor?.isVisible = podcastDetails?.authorId != null
                 podcastView.fullDataFetched(podcastDetails)
 
                 subscribe?.let {
@@ -95,7 +95,7 @@ class PodcastDetailsFragment : BaseFragment() {
                 }
 
                 subscription.add(model.loadFeed(podcastDetails).subscribe({rss ->
-                    podcastView.feedLoaded(rss)
+                    podcastView.feedLoaded(rss, podcast?.id())
 
                     openWebSiteMenu?.setOnMenuItemClickListener {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(rss.webSite())))
@@ -103,8 +103,8 @@ class PodcastDetailsFragment : BaseFragment() {
                     }
 
                     moreFromAuthor?.setOnMenuItemClickListener {
-                        podcastDetails?.authorId()?.let {
-                            RxBus.default.postEvent(LoadNetworkItemsEvent(it, podcastDetails.authorName()))
+                        podcastDetails?.authorId?.let {
+                            RxBus.default.postEvent(LoadNetworkItemsEvent(it, podcastDetails.authorName))
                         }
                         false
                     }

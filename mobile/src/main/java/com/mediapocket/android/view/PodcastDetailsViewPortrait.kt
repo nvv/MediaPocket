@@ -94,10 +94,10 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
     }
 
     override fun fullDataFetched(details: PodcastDetails) {
-        details.primaryGenreName()?.let {
+        details.primaryGenreName?.let {
             genre.text = "#$it"
         }
-        genre.visibility = if (details.primaryGenreName() != null) VISIBLE else GONE
+        genre.visibility = if (details.primaryGenreName != null) VISIBLE else GONE
     }
 
     override fun logoLoaded(bitmap: Bitmap, palette: Palette) {

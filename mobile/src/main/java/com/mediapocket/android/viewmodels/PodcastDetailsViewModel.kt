@@ -29,7 +29,7 @@ class PodcastDetailsViewModel : ViewModel() {
     }
 
     fun loadFeed(podcast: PodcastDetails) : Single<Rss> {
-        return RssRepository.loadRss(podcast.feedUrl())
+        return RssRepository.loadRss(podcast.feedUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
@@ -47,8 +47,8 @@ class PodcastDetailsViewModel : ViewModel() {
             val dao = DependencyLocator.getInstance().database.subscribedPodcastDao()
 
             if (dao.get(podcast.id()) == null) {
-                dao.insertAll(SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl(),
-                        details.primaryGenreName(), details.genreIds()?.joinToString(), details.authorId(), details.authorName()))
+                dao.insertAll(SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl,
+                        details.primaryGenreName, details.genreIds?.joinToString(), details.authorId, details.authorName))
             } else {
                 dao.delete(podcast.id())
             }

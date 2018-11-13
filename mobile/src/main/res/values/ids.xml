@@ -13,4 +13,9 @@
     <item name="list_10" type="id" />
     <item name="list_11" type="id" />
     <item name="list_12" type="id" />
+
+    <item name="pub_date" type="id" />
+    <item name="download_status" type="id" />
+    <item name="download_progress" type="id" />
+
 </resources>

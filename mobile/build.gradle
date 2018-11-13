@@ -25,6 +25,12 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    allprojects {
+        repositories {
+            maven { url "https://jitpack.io" }
+        }
+    }
 }
 
 dependencies {
@@ -42,10 +48,14 @@ dependencies {
     implementation "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
     implementation "org.jetbrains.anko:anko-cardview-v7:$anko_version"
 
+
     implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
 
+//    implementation 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
+    implementation 'com.budiyev.android:circular-progress-bar:1.2.1'
+
     // animation
-    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
 
     compile project(":core")
     testImplementation 'junit:junit:4.12'

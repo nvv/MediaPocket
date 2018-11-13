@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 onFragmentChanged(fragment)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_subscription -> {
+            R.id.navigation_subscriptions -> {
                 val fragment = PodcastSubscriptionFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, fragment)
@@ -71,9 +71,10 @@ class MainActivity : AppCompatActivity() {
                 onFragmentChanged(fragment)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
+            R.id.navigation_downloaded -> {
+                val fragment = DownloadedPodcastsFragment.newInstance()
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame, Panel.newInstance("" + Random().nextInt(10)))
+                        .replace(R.id.frame, fragment)
                         .commit()
 //                message.setText(R.string.title_notifications)
                 return@OnNavigationItemSelectedListener true
