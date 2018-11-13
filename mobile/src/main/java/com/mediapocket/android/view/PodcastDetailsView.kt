@@ -19,14 +19,10 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.mediapocket.android.R
-import com.mediapocket.android.adapters.PodcastItemsAdapter
+import com.mediapocket.android.adapters.PodcastEpisodeAdapter
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.Rss
-import com.mediapocket.android.core.AppDatabase
-import android.arch.persistence.room.Room
-import android.support.v4.view.ViewCompat
 import android.view.Menu
-import com.mediapocket.android.dao.model.DownloadedPodcastItem
 import com.mediapocket.android.extensions.doubleLet
 import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.utils.ViewUtils
@@ -68,7 +64,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
         description.text = Html.fromHtml(rss.description())
 
-        items.adapter = PodcastItemsAdapter(rss.items(), rss.link(), podcastId)
+        items.adapter = PodcastEpisodeAdapter(rss.items(), rss.link(), podcastId)
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
     }
@@ -80,7 +76,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
     private fun syncAdapterColor() {
         doubleLet(palette, items.adapter) { p, _ ->
-            (items.adapter as PodcastItemsAdapter).setColors(p.getDarkVibrantColor(R.attr.colorPrimary) or 0xFF000000.toInt())
+            (items.adapter as PodcastEpisodeAdapter).setColors(p.getDarkVibrantColor(R.attr.colorPrimary) or 0xFF000000.toInt())
         }
     }
 

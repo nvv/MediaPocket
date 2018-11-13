@@ -1,9 +1,6 @@
 package com.mediapocket.android.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
-import android.arch.persistence.room.Update
+import android.arch.persistence.room.*
 import com.mediapocket.android.dao.model.DownloadedPodcastItem
 
 /**
@@ -30,4 +27,6 @@ interface DownloadedPodcastItemDao {
     @Update
     fun update(podcasts: DownloadedPodcastItem)
 
+    @Query("DELETE FROM downloaded_podcast_item WHERE id=:id")
+    fun delete(id: String)
 }

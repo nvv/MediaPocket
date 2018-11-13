@@ -10,11 +10,13 @@ import com.tonyodev.fetch2.*
 import com.tonyodev.fetch2core.DownloadBlock
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.io.File
 
 /**
  * @author Vlad Namashko
@@ -178,6 +180,19 @@ class PodcastDownloadManager(private val context: Context, private val database:
         }
 
         return observable.subscribeOn(Schedulers.io())
+    }
+
+    fun delete(item: PodcastDownloadItem): Completable {
+        return Completable.fromAction {
+            val episode = File(item.localPath)
+            if (episode.exists()) {
+                episode.delete()
+            }
+            database.downloadedPodcastItemDao().delete(item.id)
+
+            databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun allDownloads() = DependencyLocator.getInstance().database.downloadedPodcastItemDao().getAll()

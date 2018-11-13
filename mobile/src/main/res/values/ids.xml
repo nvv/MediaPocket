@@ -17,5 +17,6 @@
     <item name="pub_date" type="id" />
     <item name="download_status" type="id" />
     <item name="download_progress" type="id" />
+    <item name="delete_episode" type="id" />
 
 </resources>
