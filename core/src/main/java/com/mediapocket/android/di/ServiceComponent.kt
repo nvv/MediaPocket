@@ -9,7 +9,7 @@ import javax.inject.Singleton
  * @author Vlad Namashko
  */
 @Singleton
-@Component(modules = arrayOf(ServiceModule::class))
+@Component(modules = [(ServiceModule::class)])
 interface ServiceComponent {
 
     fun inject(repo: ItunesPodcastRepository)

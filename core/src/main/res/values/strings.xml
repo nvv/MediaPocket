@@ -6,4 +6,5 @@
     <string name="top_podcasts">Top Podcasts</string>
     <string name="featured">Popular</string>
     <string name="networks">Networks</string>
+    <string name="downloaded">Downloaded</string>
 </resources>
