@@ -102,7 +102,7 @@ class MediaSeekBarView : FrameLayout {
                 val timeToEnd = ((seekBar.max - progress) / state.playbackSpeed).toInt()
 
                 mProgressAnimator = ValueAnimator.ofInt(progress, seekBar.max)
-                        .setDuration(timeToEnd.toLong())
+                        .setDuration(if (timeToEnd > 0) timeToEnd.toLong() else 1)
                 mProgressAnimator?.interpolator = LinearInterpolator()
                 mProgressAnimator?.addUpdateListener(this)
                 mProgressAnimator?.start()

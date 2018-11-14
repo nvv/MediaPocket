@@ -45,7 +45,7 @@ class PodcastPlaybackCompatView(context: Context?, attrs: AttributeSet?, defStyl
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
             visibility = View.VISIBLE
 
-            if (isPlaying != state.isPlaying) {
+            if (isPlaying != state.isPlaying && state.state != PlaybackStateCompat.STATE_BUFFERING) {
                 isPlaying = state.isPlaying
                 playPause.setImageResource(if (state.isPlaying) R.drawable.ic_pause else R.drawable.ic_play)
             }
