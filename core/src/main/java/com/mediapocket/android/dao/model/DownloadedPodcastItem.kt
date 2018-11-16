@@ -20,6 +20,7 @@ data class DownloadedPodcastItem(@ColumnInfo(name = "state") var state: Int,
                                  @ColumnInfo(name = "pub_date") var pubDate: String?,
                                  @ColumnInfo(name = "length") var length: Long?,
                                  @ColumnInfo(name = "image_url") var imageUrl: String?,
+                                 @ColumnInfo(name = "download_id") var downloadId: Int,
                                  @ColumnInfo(name = "local_path") var localPath: String?) {
 
     @ColumnInfo(name = "id")
@@ -32,6 +33,8 @@ data class DownloadedPodcastItem(@ColumnInfo(name = "state") var state: Int,
         const val STATE_DOWNLOADING = 1
         const val STATE_DOWNLOADED = 2
         const val STATE_PAUSED = 3
+        const val STATE_ERROR = 4
+        const val STATE_WAITING_FOR_NETWORK = 5
 
         fun convertLinkToId(link: String?) = Base64.encodeToString(link?.toByteArray(Charset.forName("UTF-8")), Base64.DEFAULT)
     }

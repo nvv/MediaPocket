@@ -28,6 +28,8 @@ import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
+import android.support.v7.widget.SimpleItemAnimator
+import io.reactivex.disposables.CompositeDisposable
 
 
 /**
@@ -41,6 +43,8 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
     var logo: ImageView
 
     private var palette: Palette? = null
+
+    private val subscription = CompositeDisposable()
 
     init {
         @Suppress("LeakingThis")
@@ -64,7 +68,8 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
         description.text = Html.fromHtml(rss.description())
 
-        items.adapter = PodcastEpisodeAdapter(rss.items(), rss.link(), podcastId)
+        items.adapter = PodcastEpisodeAdapter(rss.items(), rss.link(), podcastId, subscription)
+        (items.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
     }
@@ -95,6 +100,11 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
                 }
             })
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        subscription.clear()
     }
 
     open fun fullDataFetched(details: PodcastDetails) {

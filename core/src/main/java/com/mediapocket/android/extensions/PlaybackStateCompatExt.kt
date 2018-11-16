@@ -28,8 +28,6 @@ inline val PlaybackStateCompat.isPrepared
 
 inline val PlaybackStateCompat.isPlaying
     get() = (state == PlaybackStateCompat.STATE_BUFFERING) ||
-            (state == PlaybackStateCompat.STATE_REWINDING) ||
-            (state == PlaybackStateCompat.STATE_FAST_FORWARDING) ||
             (state == PlaybackStateCompat.STATE_PLAYING)
 
 inline val PlaybackStateCompat.isPlayEnabled

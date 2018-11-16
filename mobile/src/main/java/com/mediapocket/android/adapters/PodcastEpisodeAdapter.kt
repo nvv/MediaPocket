@@ -1,5 +1,6 @@
 package com.mediapocket.android.adapters
 
+import android.animation.LayoutTransition
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
@@ -8,15 +9,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.RxBus
+import com.mediapocket.android.core.download.extensions.isDownloaded
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.DownloadedPodcastItem
+import com.mediapocket.android.dao.model.DownloadedPodcastItem.Companion.STATE_WAITING_FOR_NETWORK
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.model.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.customView
@@ -24,9 +29,10 @@ import org.jetbrains.anko.custom.customView
 /**
  * @author Vlad Namashko
  */
-class PodcastEpisodeAdapter(val items: List<Item>?,
-                            val parentLink: String,
-                            private val podcastId: String?) : RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
+class PodcastEpisodeAdapter(private val items: List<Item>?,
+                            private val parentLink: String,
+                            private val podcastId: String?,
+                            private val subscription: CompositeDisposable) : RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
 
     private val data = mutableListOf<PodcastEpisode>()
     private val dataMap = LinkedHashMap<String, PodcastEpisode>()
@@ -42,15 +48,20 @@ class PodcastEpisodeAdapter(val items: List<Item>?,
         }
 
         val manager = DependencyLocator.getInstance().podcastDownloadManager
-        manager.subscribeForDownloads(Consumer { download ->
+        subscription.add(manager.subscribeForDownloads(Consumer { download ->
+            if (download.state == STATE_WAITING_FOR_NETWORK) {
+                Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
+                return@Consumer
+            }
+
             val updateItem = dataMap[download.id]
             updateItem?.let {
                 updateItem.download = download
-                notifyItemChanged(updateItem.position)
+                notifyItemChanged(updateItem.position, download)
             }
-        })
+        }))
 
-        manager.subscribeForDatabase(Consumer { records ->
+        subscription.add(manager.subscribeForDatabase(Consumer { records ->
             data.forEach {
                 it.download = null
             }
@@ -63,8 +74,7 @@ class PodcastEpisodeAdapter(val items: List<Item>?,
             }
 
             notifyDataSetChanged()
-        })
-
+        }))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PodcastItemViewHolder {
@@ -79,16 +89,13 @@ class PodcastEpisodeAdapter(val items: List<Item>?,
         holder.bind(data[position])
     }
 
-    override fun onBindViewHolder(holder: PodcastItemViewHolder, position: Int, payloads: List<Any>) {
-        holder.bind(data[position], payloads)
-    }
-
     class ItemView : AnkoComponent<ViewGroup> {
         override fun createView(ui: AnkoContext<ViewGroup>): View {
             return with(ui) {
                 linearLayout {
                     setPadding(dip(16), dip(16), dip(16), dip(16))
                     backgroundResource = R.color.white_semi_transparent
+                    layoutTransition = LayoutTransition()
                     lparams(width = matchParent, height = wrapContent)
                     orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.LEFT
@@ -163,7 +170,7 @@ class PodcastEpisodeAdapter(val items: List<Item>?,
         private val progress = itemView.findViewById<CircularProgressBar>(R.id.download_progress)
         private val delete = itemView.findViewById<ImageView>(R.id.delete_episode)
 
-        fun bind(item: PodcastEpisode, payloads: List<Any>? = null) {
+        fun bind(item: PodcastEpisode) {
             title.text = item.title
             pubDate.text = item.pubDate
 
@@ -179,19 +186,28 @@ class PodcastEpisodeAdapter(val items: List<Item>?,
 
             item.download?.let { download ->
                 delete.setOnClickListener {
-                    manager.delete(download).subscribe()
+                    subscription.add(manager.delete(download).subscribe())
                 }
             }
 
             status.setOnClickListener {
-                manager.download(podcastId, item.item)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
+                item.download?.let {
+                    if (it.isDownloaded) {
+
+                    } else {
+                        manager.pause(it.downloadId)
+                    }
+                } ?:
+                    subscription.add(manager.download(podcastId, item.item)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe())
+
             }
 
             status.setImageResource(when (item.download?.state) {
                 DownloadedPodcastItem.STATE_DOWNLOADED -> R.drawable.ic_downloaded
-                DownloadedPodcastItem.STATE_DOWNLOADING, DownloadedPodcastItem.STATE_ADDED -> R.drawable.ic_pause
+                DownloadedPodcastItem.STATE_PAUSED -> R.drawable.ic_play
+                DownloadedPodcastItem.STATE_DOWNLOADING, DownloadedPodcastItem.STATE_ADDED, DownloadedPodcastItem.STATE_WAITING_FOR_NETWORK -> R.drawable.ic_pause
                 else -> R.drawable.ic_download
             })
 

@@ -38,4 +38,6 @@
     <string name="open_web_site">Visit website</string>
     <string name="more_from_author">More From Author</string>
 
+    <string name="waiting_for_network">Waiting for network</string>
+
 </resources>

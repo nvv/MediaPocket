@@ -114,43 +114,43 @@ class LocalPlayback(val context: Context, val mediaSession: MediaSessionCompat) 
 
     private class EventListener : Player.EventListener {
         override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
-            println("onPlaybackParametersChanged")
+
         }
 
         override fun onSeekProcessed() {
-            println("onSeekProcessed")
+
         }
 
         override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
-            println("onTracksChanged")
+
         }
 
         override fun onPlayerError(error: ExoPlaybackException?) {
-            println("onPlayerError")
+
         }
 
         override fun onLoadingChanged(isLoading: Boolean) {
-            println("onLoadingChanged")
+
         }
 
         override fun onPositionDiscontinuity(reason: Int) {
-            println("onPositionDiscontinuity")
+
         }
 
         override fun onRepeatModeChanged(repeatMode: Int) {
-            println("onRepeatModeChanged")
+
         }
 
         override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-            println("onShuffleModeEnabledChanged")
+
         }
 
         override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
-            println("onTimelineChanged")
+
         }
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            println("onPlayerStateChanged")
+
         }
 
     }
