@@ -4,15 +4,13 @@ import android.content.Context
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
-import com.mediapocket.android.dao.model.DownloadedPodcastItem
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
 import com.tonyodev.fetch2.*
 import com.tonyodev.fetch2core.DownloadBlock
-import com.tonyodev.fetch2core.Func
 import com.tonyodev.fetch2core.Func2
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
@@ -41,9 +39,9 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
         fetch.addListener(object : FetchListener {
             override fun onAdded(download: Download) {
-                val item = downloadingItems[DownloadedPodcastItem.convertLinkToId(download.url)]
+                val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                 item?.let {
-                    it.state = DownloadedPodcastItem.STATE_ADDED
+                    it.state = PodcastEpisodeItem.STATE_ADDED
                     downloadsSubject.onNext(it)
                 }
             }
@@ -56,15 +54,15 @@ class PodcastDownloadManager(private val context: Context, private val database:
                 onItemChanged(download)
                 Completable.fromAction {
                     val dao = database.downloadedPodcastItemDao()
-                    val item = dao.get(DownloadedPodcastItem.convertLinkToId(download.url))
+                    val item = dao.get(PodcastEpisodeItem.convertLinkToId(download.url))
                     item?.let {
-                        item.state = DownloadedPodcastItem.STATE_DOWNLOADED
+                        item.state = PodcastEpisodeItem.STATE_DOWNLOADED
                         dao.update(item)
 
                         val downloadingItem = downloadingItems[item.id]
                         downloadingItem?.let {
                             downloadingItems.remove(it.id)
-//                            it.state = DownloadedPodcastItem.STATE_DOWNLOADED
+//                            it.state = PodcastEpisodeItem.STATE_DOWNLOADED
 //                            it.progress = 100
 
                             //downloadsSubject.onNext(it)
@@ -86,19 +84,31 @@ class PodcastDownloadManager(private val context: Context, private val database:
             }
 
             override fun onError(download: Download, error: Error, throwable: Throwable?) {
-                throwable?.let {
-                    downloadsSubject.onError(it)
-                }
+                Completable.fromAction {
+                    val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
+                    item?.let {
+                        it.state = PodcastEpisodeItem.STATE_ERROR
+                        downloadsSubject.onNext(it)
+
+                        fetch.remove(download.id)
+                    }
+
+                    val dao = database.downloadedPodcastItemDao()
+                    val dbItem = dao.get(PodcastEpisodeItem.convertLinkToId(download.url))
+                    dbItem?.let {
+                        dao.delete(dbItem.id)
+                    }
+                }.subscribeOn(Schedulers.io()).subscribe()
             }
 
             override fun onPaused(download: Download) {
-                internalPause(download, DownloadedPodcastItem.STATE_PAUSED)
+                internalPause(download, PodcastEpisodeItem.STATE_PAUSED)
             }
 
             override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
-                val item = downloadingItems[DownloadedPodcastItem.convertLinkToId(download.url)]
+                val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                 item?.let {
-                    it.state = DownloadedPodcastItem.STATE_DOWNLOADING
+                    it.state = PodcastEpisodeItem.STATE_DOWNLOADING
                     it.progress = download.progress
                     downloadsSubject.onNext(it)
                 }
@@ -113,7 +123,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
             }
 
             override fun onResumed(download: Download) {
-                internalPause(download, DownloadedPodcastItem.STATE_DOWNLOADING)
+                internalPause(download, PodcastEpisodeItem.STATE_DOWNLOADING)
             }
 
             override fun onStarted(download: Download, downloadBlocks: List<DownloadBlock>, totalBlocks: Int) {
@@ -121,18 +131,19 @@ class PodcastDownloadManager(private val context: Context, private val database:
             }
 
             override fun onWaitingNetwork(download: Download) {
-                val item = downloadingItems[DownloadedPodcastItem.convertLinkToId(download.url)]
+                val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                 item?.let {
-                    it.state = DownloadedPodcastItem.STATE_WAITING_FOR_NETWORK
+                    it.state = PodcastEpisodeItem.STATE_WAITING_FOR_NETWORK
                     downloadsSubject.onNext(it)
                 }
             }
         })
 
+        /*
         Completable.fromAction {
 
             val items = getStoredItems()
-            items?.filter { it -> it.state != DownloadedPodcastItem.STATE_DOWNLOADED }?.let {
+            items?.filter { it -> it.state != PodcastEpisodeItem.STATE_DOWNLOADED }?.let {
                 it.forEach { i ->
                     downloadingItems[i.id] = i
 
@@ -146,13 +157,13 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
             databaseSubject.onNext(items ?: emptyList())
         }.subscribeOn(Schedulers.io()).subscribe()
-
+        */
     }
 
     private fun internalPause(download: Download, state: Int) {
         Completable.fromAction {
             val dao = database.downloadedPodcastItemDao()
-            val id = DownloadedPodcastItem.convertLinkToId(download.url)
+            val id = PodcastEpisodeItem.convertLinkToId(download.url)
             val item = downloadingItems[id]
             item?.let {
                 it.state = state
@@ -170,7 +181,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
             .getAll()
             ?.map { it ->
                 PodcastDownloadItem(it.id, it.state, 0, it.podcastId, it.podcastTitle,
-                        it.title, it.description, it.link, it.pubDate, it.length, it.imageUrl, it.downloadId, it.localPath)
+                        it.title, it.description, it.link, it.pubDate, it.length, it.favourite, it.imageUrl, it.downloadId, it.localPath)
             }
 
     private fun getStoredItemsWithProgress() = getStoredItems()
@@ -220,14 +231,23 @@ class PodcastDownloadManager(private val context: Context, private val database:
                 request.priority = Priority.HIGH
                 request.networkType = NetworkType.ALL
 
-                val inserted = DownloadedPodcastItem(DownloadedPodcastItem.STATE_ADDED, podcastId,
-                        item.podcastTitle, item.title, item.description, item.link, item.pubDate,
-                        item.length, item.imageUrl, request.id, file)
-                dao.insert(inserted)
+                var storedItem = dao.get(PodcastEpisodeItem.convertLinkToId(item.link))
 
-                val downloading = PodcastDownloadItem(inserted.id, inserted.state, 0, inserted.podcastId,
-                        inserted.podcastTitle, inserted.title, inserted.description, inserted.link,
-                        inserted.pubDate, inserted.length, inserted.imageUrl, inserted.downloadId, inserted.localPath)
+                if (storedItem == null) {
+                    storedItem = buildDatabaseItem(podcastId, item)
+                    storedItem.state = PodcastEpisodeItem.STATE_ADDED
+                    storedItem.localPath = file
+
+                    dao.insert(storedItem)
+                } else {
+                    storedItem.state = PodcastEpisodeItem.STATE_ADDED
+                    dao.update(storedItem)
+                }
+
+
+                val downloading = PodcastDownloadItem(storedItem.id, storedItem.state, 0, storedItem.podcastId,
+                        storedItem.podcastTitle, storedItem.title, storedItem.description, storedItem.link,
+                        storedItem.pubDate, storedItem.length, storedItem.favourite, storedItem.imageUrl, storedItem.downloadId, storedItem.localPath)
                 downloadingItems[downloading.id] = downloading
 
                 fetch.enqueue(request)
@@ -237,6 +257,35 @@ class PodcastDownloadManager(private val context: Context, private val database:
         }
 
         return observable.subscribeOn(Schedulers.io())
+    }
+
+    private fun buildDatabaseItem(podcastId: String?, item: Item) =
+        PodcastEpisodeItem(PodcastEpisodeItem.STATE_NONE, podcastId,
+                item.podcastTitle, item.title, item.description, item.link, item.pubDate,
+                item.length, false, item.imageUrl, 0, null)
+
+    fun favourite(podcastId: String?, item: Item) : Completable {
+        return Completable.fromAction {
+            val dao = DependencyLocator.getInstance().database.downloadedPodcastItemDao()
+
+            val id = PodcastEpisodeItem.convertLinkToId(item.link)
+            val downloadingItem = downloadingItems[id]
+            var storedItem = dao.get(id)
+            if (storedItem == null) {
+                storedItem = buildDatabaseItem(podcastId, item)
+                storedItem.favourite = true
+                dao.insert(storedItem)
+
+            } else {
+                storedItem.favourite = !storedItem.favourite
+                downloadingItem?.favourite = storedItem.favourite
+                dao.update(storedItem)
+            }
+
+            downloadingItem?.favourite = storedItem.favourite
+
+            databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
+        }.subscribeOn(Schedulers.io())
     }
 
     fun delete(item: PodcastDownloadItem): Completable {

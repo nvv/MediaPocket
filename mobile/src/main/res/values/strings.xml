@@ -39,5 +39,7 @@
     <string name="more_from_author">More From Author</string>
 
     <string name="waiting_for_network">Waiting for network</string>
+    <string name="error_download">Error while episode download. Retry?</string>
+    <string name="sharing">Sharing</string>
 
 </resources>

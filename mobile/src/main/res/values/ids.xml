@@ -18,5 +18,10 @@
     <item name="download_status" type="id" />
     <item name="download_progress" type="id" />
     <item name="delete_episode" type="id" />
+    <item name="error_download" type="id" />
+    <item name="episode_playback_status" type="id" />
+    <item name="episode_context_menu" type="id" />
+    <item name="episode_favorite" type="id" />
+    <item name="episode_share" type="id" />
 
 </resources>

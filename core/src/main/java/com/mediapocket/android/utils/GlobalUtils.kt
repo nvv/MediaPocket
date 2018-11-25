@@ -1,6 +1,8 @@
 package com.mediapocket.android.utils
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.telephony.TelephonyManager
 import java.util.*
 
@@ -24,6 +26,16 @@ object GlobalUtils {
         } catch (e: Exception) { }
 
         return context.resources.configuration.locale.country
+    }
+
+    fun <T : Activity> getActivity(context: Context): T? {
+        if (context is Activity) {
+            return context as T
+        }
+
+        return if (context is ContextWrapper) {
+            getActivity(context.baseContext)
+        } else null
     }
 
 }

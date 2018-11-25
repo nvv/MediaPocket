@@ -1,7 +1,7 @@
 package com.mediapocket.android.dao
 
 import android.arch.persistence.room.*
-import com.mediapocket.android.dao.model.DownloadedPodcastItem
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 
 /**
  * @author Vlad Namashko
@@ -9,24 +9,24 @@ import com.mediapocket.android.dao.model.DownloadedPodcastItem
 @Dao
 interface DownloadedPodcastItemDao {
 
-    @Query("SELECT * FROM downloaded_podcast_item")
-    fun getAll(): List<DownloadedPodcastItem>?
+    @Query("SELECT * FROM podcast_episode_item")
+    fun getAll(): List<PodcastEpisodeItem>?
 
-    @Query("SELECT * FROM downloaded_podcast_item WHERE podcast_id=:podcastId")
-    fun getFromPodcast(podcastId: String): List<DownloadedPodcastItem>?
+    @Query("SELECT * FROM podcast_episode_item WHERE podcast_id=:podcastId")
+    fun getFromPodcast(podcastId: String): List<PodcastEpisodeItem>?
 
-    @Query("SELECT * FROM downloaded_podcast_item WHERE id=:id")
-    fun get(id: String): DownloadedPodcastItem?
-
-    @Insert
-    fun insertAll(vararg podcasts: DownloadedPodcastItem)
+    @Query("SELECT * FROM podcast_episode_item WHERE id=:id")
+    fun get(id: String): PodcastEpisodeItem?
 
     @Insert
-    fun insert(podcasts: DownloadedPodcastItem)
+    fun insertAll(vararg podcasts: PodcastEpisodeItem)
+
+    @Insert
+    fun insert(podcasts: PodcastEpisodeItem)
 
     @Update
-    fun update(podcasts: DownloadedPodcastItem)
+    fun update(podcasts: PodcastEpisodeItem)
 
-    @Query("DELETE FROM downloaded_podcast_item WHERE id=:id")
+    @Query("DELETE FROM podcast_episode_item WHERE id=:id")
     fun delete(id: String)
 }

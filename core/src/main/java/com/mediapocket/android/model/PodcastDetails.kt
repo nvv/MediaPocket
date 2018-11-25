@@ -1,6 +1,6 @@
 package com.mediapocket.android.model
 
-import com.mediapocket.android.dao.model.DownloadedPodcastItem
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 
 /**
  * @author Vlad Namashko
@@ -13,7 +13,7 @@ class PodcastDetails {
     var genreIds: List<Int>? = null
     var authorId: String? = null
     var authorName: String? = null
-    var downloaded : List<DownloadedPodcastItem>? = null
+    var downloaded : List<PodcastEpisodeItem>? = null
 
     constructor(feedUrl: String, artwork: String? = null, primaryGenreName: String? = null,
                 genreIds: List<Int>? = null, authorId: String? = null, authorName: String? = null) {

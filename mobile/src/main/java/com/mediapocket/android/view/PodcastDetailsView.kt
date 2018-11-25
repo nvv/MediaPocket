@@ -68,7 +68,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
         description.text = Html.fromHtml(rss.description())
 
-        items.adapter = PodcastEpisodeAdapter(rss.items(), rss.link(), podcastId, subscription)
+        items.adapter = PodcastEpisodeAdapter(context, rss.items(), rss.link(), podcastId, subscription)
         (items.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
