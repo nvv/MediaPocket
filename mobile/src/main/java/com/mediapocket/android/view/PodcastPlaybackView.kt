@@ -40,14 +40,15 @@ abstract class PodcastPlaybackView(context: Context?, attrs: AttributeSet?, defS
         episodeLogo = findViewById(R.id.episode_logo)
         playPause = findViewById(R.id.play_pause)
 
+        playPause.setImageState(intArrayOf(-R.attr.state_play, R.attr.state_pause), true)
         playPause.setOnClickListener {
 
             val controls = mediaConnection?.mediaController?.transportControls
             mediaConnection?.mediaController?.playbackState?.let {
                 isPlaying = !isPlaying
-                val icon = resources.getDrawable(if (it.isPlaying) R.drawable.ic_pause_animated else R.drawable.ic_play_animated, null) as AnimatedVectorDrawable
-                playPause.setImageDrawable(icon)
-                icon.start()
+
+                val stateSet = if (isPlaying) intArrayOf(-R.attr.state_play, R.attr.state_pause) else intArrayOf(R.attr.state_play, -R.attr.state_pause)
+                playPause?.setImageState(stateSet, true)
 
                 if (it.isPlaying) {
                     controls?.pause()

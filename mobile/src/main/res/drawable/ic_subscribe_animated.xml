@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animated-vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_add">
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <target
-        android:name="shape"
-        android:animation="@animator/add_checked_transformation"/>
+    <item
+        android:id="@+id/tick"
+        android:drawable="@drawable/ic_checked"
+        android:state_checked="true"/>
 
-</animated-vector>
+    <item
+        android:id="@+id/cross"
+        android:drawable="@drawable/ic_add"/>
+
+    <transition
+        android:drawable="@drawable/pathmorph_addstick_add_to_tick"
+        android:fromId="@id/cross"
+        android:toId="@id/tick"/>
+
+    <transition
+        android:drawable="@drawable/pathmorph_addstick_tick_to_add"
+        android:fromId="@id/tick"
+        android:toId="@id/cross"/>
+
+</animated-selector>

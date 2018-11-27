@@ -1,0 +1,19 @@
+<resources>
+
+    <string name="path_tick">M2.8,11.4 L9,18.6 M9,18.6 L21.6,5</string>
+    <string name="path_add">M12,2 L12,22 M2,12 L22,12</string>
+
+
+    <integer name="stroke_width">2</integer>
+    <integer name="crosstick_duration">300</integer>
+
+
+    <declare-styleable name="PlayPauseStopState">
+        <attr name="state_play" format="boolean"/>
+        <attr name="state_pause" format="boolean"/>
+    </declare-styleable>
+
+    <string name="path_play">M9,5 L9,5 L9,13 L4,13 L9,5 M9,5 L9,5 L14,13 L9,13 L9,5</string>
+    <string name="path_pause">M6,5 L8,5 L8,13 L6,13 L6,5 M10,5 L12,5 L12,13 L10,13 L10,5</string>
+
+</resources>

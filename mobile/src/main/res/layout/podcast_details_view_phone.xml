@@ -153,6 +153,7 @@
         android:layout_height="wrap_content"
         android:tint="@color/white"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/ic_subscribe_animated"
         app:backgroundTint="@color/colorPrimaryDark"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|right|end" />

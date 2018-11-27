@@ -47,7 +47,9 @@ class PodcastPlaybackCompatView(context: Context?, attrs: AttributeSet?, defStyl
 
             if (isPlaying != state.isPlaying && state.state != PlaybackStateCompat.STATE_BUFFERING) {
                 isPlaying = state.isPlaying
-                playPause.setImageResource(if (state.isPlaying) R.drawable.ic_pause else R.drawable.ic_play)
+
+                val stateSet = if (isPlaying) intArrayOf(-R.attr.state_play, R.attr.state_pause) else intArrayOf(R.attr.state_play, -R.attr.state_pause)
+                playPause.setImageState(stateSet, true)
             }
         }
 

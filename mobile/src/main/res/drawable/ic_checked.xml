@@ -1,12 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="52dp"
-    android:height="52dp"
-    android:viewportWidth="406.834"
-    android:viewportHeight="406.834">
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportHeight="24"
+    android:viewportWidth="24">
 
-    <path
-        android:name="shape"
-        android:fillColor="#000000"
-        android:pathData="M 385.621,62.507 L 385.621,62.507 L 385.621,62.507 L 385.621,62.507 L 385.621,62.507 L 385.621,62.507 L 385.621,62.507 L 146.225,301.901 L 21.213,176.891 L 0.0,198.104 L 146.225,344.327 L 406.834,83.72 L 385.621,62.507" />
+    <group
+        android:name="crossTickGroup"
+        android:pivotX="12"
+        android:pivotY="12">
+
+        <path
+            android:name="tickPath"
+            android:pathData="@string/path_tick"
+            android:strokeColor="@android:color/white"
+            android:strokeLineCap="square"
+            android:strokeWidth="@integer/stroke_width"/>
+
+    </group>
+
 </vector>

@@ -2,12 +2,20 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="32dp"
     android:height="32dp"
-    android:viewportHeight="48.0"
-    android:viewportWidth="48.0">
+    android:tint="@color/black"
+    android:viewportHeight="18"
+    android:viewportWidth="18">
 
-    <path
-        android:name="play"
-        android:fillColor="#000000"
-        android:pathData="M16,24L38,24L27.3,30.8L16,38ZM16,10L27.3,17.2L38,24L16,24Z" />
+    <group
+        android:name="iconGroup"
+        android:pivotX="9"
+        android:pivotY="9"
+        android:rotation="90"
+        android:translateX="0.75">
 
+        <path
+            android:name="iconPath"
+            android:fillColor="@android:color/white"
+            android:pathData="@string/path_play" />
+    </group>
 </vector>

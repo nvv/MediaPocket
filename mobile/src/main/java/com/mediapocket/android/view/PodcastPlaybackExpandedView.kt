@@ -2,6 +2,7 @@ package com.mediapocket.android.view
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -37,8 +38,8 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
     private val title: TextView
     private val subTitle: TextView
     private val seekBarView: MediaSeekBarView
-    private val next: View
-    private val prev: View
+    private val next: ImageView
+    private val prev: ImageView
     private val rewind: ImageView
 
     private val volumeControl: SeekBar
@@ -58,10 +59,12 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
         rewind = findViewById(R.id.rewind)
 
         next.setOnClickListener {
+            (next.drawable as Animatable).start()
             mediaConnection?.mediaController?.transportControls?.skipToNext()
         }
 
         prev.setOnClickListener {
+            (prev.drawable as Animatable).start()
             mediaConnection?.mediaController?.transportControls?.skipToPrevious()
         }
 
@@ -202,7 +205,9 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
             if (isPlaying != state.isPlaying && state.state != PlaybackStateCompat.STATE_BUFFERING) {
                 isPlaying = state.isPlaying
-                playPause.setImageResource(if (state.isPlaying) R.drawable.ic_pause else R.drawable.ic_play)
+
+                val stateSet = if (isPlaying) intArrayOf(-R.attr.state_play, R.attr.state_pause) else intArrayOf(R.attr.state_play, -R.attr.state_pause)
+                playPause.setImageState(stateSet, true)
             }
         }
 

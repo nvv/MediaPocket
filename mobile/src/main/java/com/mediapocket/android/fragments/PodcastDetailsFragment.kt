@@ -2,6 +2,7 @@ package com.mediapocket.android.fragments
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -73,9 +74,8 @@ class PodcastDetailsFragment : BaseFragment() {
 
                     it.setOnClickListener {
 
-                        val icon = resources.getDrawable(if (subscribed) R.drawable.ic_unsubscribe_animated else R.drawable.ic_subscribe_animated, null) as AnimatedVectorDrawable
-                        subscribe?.setImageDrawable(icon)
-                        icon.start()
+                        val stateSet = intArrayOf(android.R.attr.state_checked * if (!subscribed) 1 else -1)
+                        subscribe?.setImageState(stateSet, true)
 
                         subscription.add(model.subscribe(podcast!!, podcastDetails).subscribe { _ ->
                             subscribed = !subscribed
@@ -119,7 +119,8 @@ class PodcastDetailsFragment : BaseFragment() {
 
     private fun syncSubscribeButton(subscribed: Boolean, manualyInvoked : Boolean = false) {
         if (!manualyInvoked) {
-            subscribe?.setImageResource(if (subscribed) R.drawable.ic_checked else R.drawable.ic_add)
+            val stateSet = intArrayOf(android.R.attr.state_checked * if (subscribed) 1 else -1)
+            subscribe?.setImageState(stateSet, true)
         }
         subscribeMenu?.setTitle(if (subscribed) R.string.unsubscribe else R.string.subscribe)
     }

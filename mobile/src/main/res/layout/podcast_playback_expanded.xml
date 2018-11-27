@@ -82,7 +82,7 @@
             android:id="@+id/prev"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_prev"
+            android:src="@drawable/ic_prev_animated"
             android:tint="@color/black" />
 
         <FrameLayout
@@ -110,7 +110,7 @@
             android:id="@+id/play_pause"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_pause_animated"
+            app:srcCompat="@drawable/ic_play_pause_animated"
             android:tint="@color/black" />
 
         <FrameLayout
@@ -137,7 +137,7 @@
             android:id="@+id/next"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_next"
+            app:srcCompat="@drawable/ic_next_animated"
             android:tint="@color/black" />
 
     </LinearLayout>
