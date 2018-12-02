@@ -1,0 +1,222 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/logo">
+
+    <target android:name="path_m">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="400"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_e">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="850"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_e">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="1300"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_d">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="1300"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_d">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="1750"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_i">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="1750"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_i">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="2200"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_a">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="2200"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_a">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="2650"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_p">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="2650"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_p">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="3100"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_o">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="3100"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_o">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="3550"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_c">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="3550"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_k">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="4000"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_ee">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="4450"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_dot_ee">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="4900"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+    <target android:name="path_t">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="400"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:startOffset="4900"
+                android:valueTo="1"/>
+        </aapt:attr>
+    </target>
+
+</animated-vector>
