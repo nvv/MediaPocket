@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:state_checked="false"
+        android:id="@+id/not_liked"
+        android:drawable="@drawable/ic_star_frame"/>
+
+    <item
+        android:id="@+id/liked"
+        android:drawable="@drawable/ic_star_filled"
+        />
+
+    <transition
+        android:drawable="@drawable/avd_trimclip_heart_fill"
+        android:fromId="@id/not_liked"
+        android:toId="@id/liked"/>
+
+    <transition
+        android:drawable="@drawable/avd_trimclip_heart_break"
+        android:fromId="@id/liked"
+        android:toId="@id/not_liked"/>
+
+</animated-selector>

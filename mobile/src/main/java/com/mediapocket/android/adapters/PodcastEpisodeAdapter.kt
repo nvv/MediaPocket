@@ -2,6 +2,7 @@ package com.mediapocket.android.adapters
 
 import android.animation.LayoutTransition
 import android.content.Context
+import android.graphics.drawable.Animatable
 import android.support.v4.app.ShareCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -78,17 +79,7 @@ class PodcastEpisodeAdapter(private val context: Context,
         }))
 
         subscription.add(manager.subscribeForDatabase(Consumer { records ->
-            data.forEach {
-                it.download = null
-            }
-
-            records.forEach { download ->
-                val item = dataMap[download.id]
-                item?.let {
-                    item.download = download
-                }
-            }
-
+            processItems(records)
             notifyDataSetChanged()
         }))
 
@@ -138,6 +129,19 @@ class PodcastEpisodeAdapter(private val context: Context,
         }
 
         mediaConnection.registerMediaControllerCallback(callback)
+    }
+
+    private fun processItems(records: List<PodcastDownloadItem>) {
+        data.forEach {
+            it.download = null
+        }
+
+        records.forEach { download ->
+            val item = dataMap[download.id]
+            item?.let {
+                item.download = download
+            }
+        }
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -215,7 +219,8 @@ class PodcastEpisodeAdapter(private val context: Context,
 
                         imageView {
                             id = R.id.episode_playback_status
-                        }.lparams(width = dip(28), height = dip(28)) {
+                            setImageResource(R.drawable.ic_play_state)
+                        }.lparams(width = dip(20), height = dip(20)) {
                             gravity = Gravity.CENTER
                         }
                     }
@@ -251,7 +256,7 @@ class PodcastEpisodeAdapter(private val context: Context,
 
                         imageView {
                             id = R.id.episode_favorite
-                            imageResource = R.drawable.ic_star_frame
+                            setImageResource(R.drawable.ic_star_animated)
                         }.lparams(width = dip(20), height = dip(20)) {
                             gravity = Gravity.LEFT
                             weight = 1f
@@ -326,6 +331,7 @@ class PodcastEpisodeAdapter(private val context: Context,
                 favourite.setColorFilter(accentColor)
                 share.setColorFilter(accentColor)
                 more.setColorFilter(accentColor)
+                playback.setColorFilter(accentColor)
             }
 
             itemView.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(item.item, parentLink)) }
@@ -356,21 +362,30 @@ class PodcastEpisodeAdapter(private val context: Context,
             }
 
             favourite.setOnClickListener {
-                manager.favourite(podcastId, item.item).subscribe()
+                subscription.add(manager.favourite(podcastId, item.item).subscribe { items ->
+                    processItems(items)
+                    val updated = items.find {
+                        it.id == PodcastEpisodeItem.convertLinkToId(item.link)
+                    }
+                    updated?.let {
+                        val stateSet = intArrayOf(android.R.attr.state_checked * if (updated.favourite) 1 else -1)
+                        favourite.post {
+                            favourite.setImageState(stateSet, true)
+                        }
+                    }
+                })
             }
 
-            favourite.imageResource = if (item.download != null && item.download!!.favourite) R.drawable.ic_star_filled else R.drawable.ic_star_frame
+            val download = item.download != null && item.download?.favourite!!
+            val stateSet = intArrayOf(android.R.attr.state_checked * if (download) 1 else -1)
+            favourite.setImageState(stateSet, true)
 
-            playback.visibility = if (item.isPlaying != null) View.VISIBLE else View.GONE
+
+            playback.visibility = if (item.isPlaying != null && item.isPlaying!!) View.VISIBLE else View.GONE
             item.isPlaying?.let { isPlaying ->
-                playback.imageResource = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
 
-                playback.setOnClickListener {
-                    if (isPlaying) {
-                        mediaConnection.mediaController.transportControls.pause()
-                    } else {
-                        mediaConnection.mediaController.transportControls.play()
-                    }
+                if (!(playback.drawable as Animatable).isRunning) {
+                    (playback.drawable as Animatable).start()
                 }
             }
 

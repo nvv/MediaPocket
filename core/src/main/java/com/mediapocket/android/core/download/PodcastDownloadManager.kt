@@ -11,6 +11,7 @@ import com.tonyodev.fetch2core.DownloadBlock
 import com.tonyodev.fetch2core.Func2
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
@@ -264,8 +265,8 @@ class PodcastDownloadManager(private val context: Context, private val database:
                 item.podcastTitle, item.title, item.description, item.link, item.pubDate,
                 item.length, false, item.imageUrl, 0, null)
 
-    fun favourite(podcastId: String?, item: Item) : Completable {
-        return Completable.fromAction {
+    fun favourite(podcastId: String?, item: Item) : Single<List<PodcastDownloadItem>> {
+        return Single.fromCallable {
             val dao = DependencyLocator.getInstance().database.downloadedPodcastItemDao()
 
             val id = PodcastEpisodeItem.convertLinkToId(item.link)
@@ -284,7 +285,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
             downloadingItem?.favourite = storedItem.favourite
 
-            databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
+            getStoredItemsWithProgress() ?: emptyList()
         }.subscribeOn(Schedulers.io())
     }
 

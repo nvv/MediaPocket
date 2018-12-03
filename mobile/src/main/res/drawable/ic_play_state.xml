@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportHeight="24"
+            android:viewportWidth="24">
+
+            <path
+                android:name="play_path"
+                android:pathData="@string/play_state_1"
+                android:strokeColor="@android:color/black"
+                android:strokeLineCap="square"
+                android:strokeWidth="6" />
+
+        </vector>
+    </aapt:attr>
+
+    <target android:name="play_path">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <objectAnimator
+                    android:duration="250"
+                    android:interpolator="@android:anim/linear_interpolator"
+                    android:propertyName="pathData"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:valueFrom="@string/play_state_1"
+                    android:valueTo="@string/play_state_2"
+                    android:valueType="pathType"/>
+
+            </set>
+        </aapt:attr>
+    </target>
+
+</animated-vector>
