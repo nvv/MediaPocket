@@ -23,6 +23,7 @@ class SplashScreenActivity : AppCompatActivity() {
                     animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
                         override fun onAnimationEnd(drawable: Drawable?) {
                             startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
+                            finish()
                         }
                     })
 

@@ -36,6 +36,7 @@ import io.reactivex.functions.Consumer
 import android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import android.view.KeyEvent.KEYCODE_VOLUME_UP
 import com.mediapocket.android.utils.GlobalUtils.getUserCountry
+import com.mediapocket.android.utils.ViewUtils
 
 
 class MainActivity : AppCompatActivity() {
@@ -222,7 +223,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun switchPodcastViewVisibility(show: Boolean) {
         val property = "translationY"
-        val height = playbackExpandedControl.layoutParams.height.toFloat()
+        val height = if (playbackExpandedControl.height == 0) ViewUtils.getRealScreenSize(baseContext).y.toFloat() else playbackExpandedControl.height.toFloat()
+
         if (show) {
             playbackExpandedControl.visibility = View.VISIBLE
             ObjectAnimator.ofFloat(playbackExpandedControl, property, height, 0f).apply {

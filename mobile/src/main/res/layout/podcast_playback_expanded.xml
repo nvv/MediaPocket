@@ -18,15 +18,22 @@
         android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:src="@drawable/ic_arrow_down" />
 
     <ImageView
         android:id="@+id/episode_logo"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <com.mediapocket.android.view.MediaSeekBarView
         android:id="@+id/media_seek_bar_view"
@@ -37,6 +44,7 @@
     <TextView
         android:id="@+id/title"
         style="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
@@ -55,6 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:textColor="@color/grey_light2"
             android:layout_weight="1"
             android:maxLines="1" />
 
@@ -64,7 +73,7 @@
             android:text="1.0x"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:ellipsize="end"
             android:padding="4dp"
             android:maxLines="1" />
@@ -83,7 +92,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:src="@drawable/ic_prev_animated"
-            android:tint="@color/black" />
+            android:tint="@color/white" />
 
         <FrameLayout
             android:layout_width="64dp"
@@ -91,7 +100,7 @@
 
             <TextView
                 android:text="10"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="25dp"
                 android:layout_width="wrap_content"
@@ -102,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_rewind"
-                android:tint="@color/black" />
+                android:tint="@color/white" />
 
         </FrameLayout>
 
@@ -111,7 +120,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             app:srcCompat="@drawable/ic_play_pause_animated"
-            android:tint="@color/black" />
+            android:tint="@color/white" />
 
         <FrameLayout
             android:layout_width="64dp"
@@ -123,14 +132,14 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="25dp"
                 android:text="30"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/fastforward"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:src="@drawable/ic_fastforward"
-                android:tint="@color/black" />
+                android:tint="@color/white" />
         </FrameLayout>
 
         <ImageView
@@ -138,7 +147,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             app:srcCompat="@drawable/ic_next_animated"
-            android:tint="@color/black" />
+            android:tint="@color/white" />
 
     </LinearLayout>
 
@@ -155,13 +164,14 @@
             android:layout_height="16dp"
             android:layout_marginRight="8dp"
             android:src="@drawable/ic_volume_min"
-            android:tint="@color/grey" />
+            android:tint="@color/white" />
 
         <SeekBar
             android:id="@+id/volume_level"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:progressTint="@color/grey"
             android:paddingBottom="16dp"
             android:paddingTop="16dp" />
 
@@ -171,8 +181,8 @@
             android:layout_height="16dp"
             android:layout_marginLeft="8dp"
             android:src="@drawable/ic_volume_max"
-            android:tint="@color/grey" />
+            android:tint="@color/white" />
 
     </LinearLayout>
-
+    </LinearLayout>
 </LinearLayout>

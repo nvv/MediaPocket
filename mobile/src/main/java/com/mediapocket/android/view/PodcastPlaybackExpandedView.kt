@@ -2,12 +2,15 @@ package com.mediapocket.android.view
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.view.GestureDetectorCompat
+import android.support.v7.graphics.Palette
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -24,6 +27,7 @@ import com.mediapocket.android.playback.LocalPlayback.Companion.ARG_PLAYBACK_RAT
 import com.mediapocket.android.playback.LocalPlayback.Companion.COMMAND_SET_PLAYBACK_RATE
 import com.mediapocket.android.utils.ViewUtils
 import io.reactivex.disposables.CompositeDisposable
+import org.jetbrains.anko.backgroundDrawable
 
 
 /**
@@ -35,6 +39,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
     constructor(context: Context?) : this(context, null, -1)
 
+    private val mainView: View
     private val title: TextView
     private val subTitle: TextView
     private val seekBarView: MediaSeekBarView
@@ -51,6 +56,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
     init {
         findViewById<View>(R.id.close).setOnClickListener { RxBus.default.postEvent(SwitchPodcastPlayerModeEvent.close()) }
 
+        mainView = findViewById(R.id.root_view)
         title = findViewById(R.id.title)
         subTitle = findViewById(R.id.subtitle)
         seekBarView = findViewById(R.id.media_seek_bar_view)
@@ -215,6 +221,20 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             metadata?.description?.let {
                 it.iconBitmap?.let {
                     episodeLogo.setImageBitmap(it)
+
+                    Palette.from(it).generate { palette ->
+                        val color = palette.getDarkVibrantColor(R.attr.colorPrimary)
+                        val color2 = color or 0xFF000000.toInt()
+                        val color1 = manipulateColor(color2, 0.6f)
+//                        mainView.backgroundColor = color
+
+                        val gradient = GradientDrawable(
+                                GradientDrawable.Orientation.TOP_BOTTOM,
+                                intArrayOf(color2, color1))
+                        gradient.cornerRadius = 0f
+
+                        mainView.backgroundDrawable = gradient
+                    }
                 }
 
                 title.text = it.title
@@ -226,4 +246,14 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
     }
 
+    fun manipulateColor(color: Int, factor: Float): Int {
+        val a = Color.alpha(color)
+        val r = Math.round(Color.red(color) * factor)
+        val g = Math.round(Color.green(color) * factor)
+        val b = Math.round(Color.blue(color) * factor)
+        return Color.argb(a,
+                Math.min(r, 255),
+                Math.min(g, 255),
+                Math.min(b, 255))
+    }
 }
