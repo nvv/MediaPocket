@@ -3,6 +3,7 @@ package com.mediapocket.android.adapters
 import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.drawable.Animatable
+import android.support.design.widget.Snackbar
 import android.support.v4.app.ShareCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -27,6 +28,7 @@ import com.mediapocket.android.core.download.extensions.isDownloaded
 import com.mediapocket.android.core.download.extensions.isError
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
+import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_ADDED
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_WAITING_FOR_NETWORK
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.extensions.isPlaying
@@ -69,6 +71,9 @@ class PodcastEpisodeAdapter(private val context: Context,
             if (download.state == STATE_WAITING_FOR_NETWORK) {
                 Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
                 return@Consumer
+            } else if (download.state == STATE_ADDED) {
+                Toast.makeText(DependencyLocator.getInstance().context,
+                        context.resources.getString(R.string.downloading_episode, download.title), Toast.LENGTH_LONG).show()
             }
 
             val updateItem = dataMap[download.id]

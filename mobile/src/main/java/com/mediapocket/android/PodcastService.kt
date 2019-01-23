@@ -8,12 +8,10 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.media.AudioManager
 import android.os.Bundle
-import android.os.ResultReceiver
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.VolumeProviderCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.MediaSessionCompat.*
@@ -22,7 +20,6 @@ import android.text.TextUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.exoplayer2.PlaybackParameters
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
 import com.mediapocket.android.extensions.from
@@ -33,7 +30,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.function.Consumer
 
 
 /**
@@ -167,7 +163,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
             // Skip building a notification when state is "none".
             val notification = if (updatedState != PlaybackStateCompat.STATE_NONE) {
-                notificationBuilder.buildNotification(mSession, checkLoadedArt())
+                notificationBuilder.buildPlayerNotification(mSession, checkLoadedArt())
             } else {
                 null
             }
@@ -207,7 +203,7 @@ class PodcastService : MediaBrowserServiceCompat() {
         }
 
         fun buildNotification() {
-            startForeground(NotificationBuilder.NOW_PLAYING_NOTIFICATION, notificationBuilder.buildNotification(mSession, checkLoadedArt()))
+            startForeground(NotificationBuilder.NOW_PLAYING_NOTIFICATION, notificationBuilder.buildPlayerNotification(mSession, checkLoadedArt()))
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {

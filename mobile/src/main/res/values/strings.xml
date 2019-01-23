@@ -32,6 +32,7 @@
     <string name="unsubscribe">Unsubscribe</string>
 
     <string name="more">More</string>
+    <string name="n_more">%d more</string>
     <string name="best_in_genre">Best of genre</string>
     <string name="all_genres">All genres</string>
     <string name="networks">Networks</string>
@@ -41,5 +42,7 @@
     <string name="waiting_for_network">Waiting for network</string>
     <string name="error_download">Error while episode download. Retry?</string>
     <string name="sharing">Sharing</string>
+    <string name="downloading_episode">Downloading episode: \"%s\"</string>
+    <string name="downloading_episodes">Downloading episode(s)</string>
 
 </resources>

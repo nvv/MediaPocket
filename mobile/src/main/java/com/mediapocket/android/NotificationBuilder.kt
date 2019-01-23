@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.graphics.Bitmap
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -11,6 +12,8 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.text.Html
+import com.mediapocket.android.core.download.model.PodcastDownloadItem
 
 /**
  * @author Vlad Namashko
@@ -40,7 +43,7 @@ class NotificationBuilder(private val context: Context) {
             MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS))
 
 
-    fun buildNotification(session: MediaSessionCompat, art : Bitmap? = null): Notification {
+    fun buildPlayerNotification(session: MediaSessionCompat, art : Bitmap? = null): Notification {
         if (shouldCreateNowPlayingChannel()) {
             createNowPlayingChannel()
         }
@@ -106,6 +109,29 @@ class NotificationBuilder(private val context: Context) {
                 .build()
     }
 
+    fun buildDownloadNotification(items: List<PodcastDownloadItem>) : Notification {
+        if (shouldCreateDownloadingChannel()) {
+            createDownloadingChannel()
+        }
+
+        val max = 3
+        var title = ""
+        items.take(max).forEach { title += it.title + " <b>" + it.progress + "</b>% <br>" }
+        if (items.size > max) {
+            title += context.getString(R.string.n_more, items.size - max)
+        }
+
+        val builder = NotificationCompat.Builder(context, DOWNLOADING_CHANNEL)
+        return builder
+                .setContentTitle(context.getString(R.string.downloading_episodes))
+                .setContentText(Html.fromHtml(title))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(Html.fromHtml(title)))
+                .setOnlyAlertOnce(true)
+                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .build()
+    }
+
     private fun shouldCreateNowPlayingChannel() =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !nowPlayingChannelExists()
 
@@ -125,8 +151,31 @@ class NotificationBuilder(private val context: Context) {
         platformNotificationManager.createNotificationChannel(notificationChannel)
     }
 
+    private fun shouldCreateDownloadingChannel() =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !downloadingChannelExists()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun downloadingChannelExists() =
+            platformNotificationManager.getNotificationChannel(DOWNLOADING_CHANNEL) != null
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createDownloadingChannel() {
+        val notificationChannel = NotificationChannel(DOWNLOADING_CHANNEL,
+                context.getString(R.string.notification_channel),
+                NotificationManager.IMPORTANCE_LOW)
+                .apply {
+                    description = context.getString(R.string.notification_channel_description)
+                }
+
+        platformNotificationManager.createNotificationChannel(notificationChannel)
+    }
+
     companion object {
         const val NOW_PLAYING_CHANNEL: String = "com.mediapocket.android.NOW_PLAYING"
         const val NOW_PLAYING_NOTIFICATION: Int = 0xb400
+
+        const val DOWNLOADING_CHANNEL: String = "com.mediapocket.android.DOWNLOADING"
+        const val DOWNLOADING_NOTIFICATION: Int = 0xb401
+
     }
 }

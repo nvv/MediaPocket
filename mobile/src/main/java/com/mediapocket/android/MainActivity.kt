@@ -3,6 +3,8 @@ package com.mediapocket.android
 //import com.mediapocket.android.service.ItunesPodcastSearchService
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.app.NotificationManager
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.media.AudioManager
@@ -178,6 +180,17 @@ class MainActivity : AppCompatActivity() {
 
         disposable.add(RxBus.default.observerFor(ChangeStatusBarColorEvent::class.java).subscribe {
             window.statusBarColor = it.color
+        })
+
+        val notificationBuilder = NotificationBuilder(this)
+        DependencyLocator.getInstance().podcastDownloadManager.subscribeForAllActiveDownloads(Consumer {
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (it.isEmpty()) {
+                manager.cancel(NotificationBuilder.DOWNLOADING_NOTIFICATION)
+            } else {
+                manager.notify(NotificationBuilder.DOWNLOADING_NOTIFICATION, notificationBuilder.buildDownloadNotification(it))
+            }
         })
 
         var currentMediaId: String? = null

@@ -8,6 +8,7 @@ import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
 import com.tonyodev.fetch2.*
 import com.tonyodev.fetch2core.DownloadBlock
+import com.tonyodev.fetch2core.Func
 import com.tonyodev.fetch2core.Func2
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -28,6 +29,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
     private val databaseSubject = BehaviorSubject.create<List<PodcastDownloadItem>>()
     private val downloadsSubject = PublishSubject.create<PodcastDownloadItem>()
+    private val allActiveDownloadsSubject = PublishSubject.create<List<PodcastDownloadItem>>()
 
     private val downloadingItems = mutableMapOf<String, PodcastDownloadItem>()
 
@@ -40,6 +42,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
         fetch.addListener(object : FetchListener {
             override fun onAdded(download: Download) {
+                onItemChanged(download)
                 val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                 item?.let {
                     it.state = PodcastEpisodeItem.STATE_ADDED
@@ -85,6 +88,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
             }
 
             override fun onError(download: Download, error: Error, throwable: Throwable?) {
+                onItemChanged(download)
                 Completable.fromAction {
                     val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                     item?.let {
@@ -107,6 +111,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
             }
 
             override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
+                onItemChanged(download)
                 val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                 item?.let {
                     it.state = PodcastEpisodeItem.STATE_DOWNLOADING
@@ -195,7 +200,17 @@ class PodcastDownloadManager(private val context: Context, private val database:
     }
 
     private fun onItemChanged(download: Download) {
+        fetch.getDownloads(Func { result ->
+            val list = mutableListOf<PodcastDownloadItem>()
+            result.forEach {
+                val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(it.url)]
+                item?.let {
+                    list.add(item)
+                }
+            }
 
+            allActiveDownloadsSubject.onNext(list)
+        })
     }
 
     private fun getItemLocalPath(podcastId: String, link: String) = DependencyLocator.getInstance().context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + link.replace("/", "$")
@@ -207,6 +222,8 @@ class PodcastDownloadManager(private val context: Context, private val database:
                 databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
             }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(consumer)
+
+    fun subscribeForAllActiveDownloads(consumer: Consumer<List<PodcastDownloadItem>>) = allActiveDownloadsSubject.observeOn(AndroidSchedulers.mainThread()).subscribe(consumer)
 
     fun pause(id: Int) {
         fetch.getDownload(id, Func2 {
