@@ -1,25 +1,35 @@
 package com.mediapocket.android.viewmodels
 
 import com.mediapocket.android.R
+import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.model.*
 import com.mediapocket.android.service.ItunesPodcastRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.function.BiFunction
+import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
  */
 class PodcastViewModel : LoadableViewModel() {
 
+    @set:Inject
+    lateinit var database: AppDatabase
+
+    init {
+        MainComponentLocator.mainComponent.inject(this)
+    }
+
     fun loadGenres(): Single<Genres> {
         return ItunesPodcastRepository.loadGenres()
     }
 
     fun getSubscriptions(): Single<SubscriptionsLookupResult> {
-        val dao = DependencyLocator.getInstance().database.subscribedPodcastDao()
+        val dao = database.subscribedPodcastDao()
         return Single.fromCallable {
             SubscriptionsLookupResult(dao.getAll())
         }.subscribeOn(Schedulers.io())

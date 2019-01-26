@@ -37,8 +37,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import android.view.KeyEvent.KEYCODE_VOLUME_UP
+import com.mediapocket.android.core.AppDatabase
+import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.di.MainComponent
+import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.utils.GlobalUtils.getUserCountry
 import com.mediapocket.android.utils.ViewUtils
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
@@ -55,6 +61,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var playbackControl: PodcastPlaybackCompatView
     lateinit var playbackExpandedControl: PodcastPlaybackExpandedView
+
+    @set:Inject
+    lateinit var downloadManager: PodcastDownloadManager
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -89,6 +98,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DependencyLocator.initInstance(this)
+
+        MainComponentLocator.mainComponent.inject(this)
+
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -183,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         val notificationBuilder = NotificationBuilder(this)
-        DependencyLocator.getInstance().podcastDownloadManager.subscribeForAllActiveDownloads(Consumer {
+        downloadManager.subscribeForAllActiveDownloads(Consumer {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             if (it.isEmpty()) {

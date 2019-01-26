@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:dragEdge="right"
+    app:mode="same_level">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/red"
+        android:paddingLeft="24dp"
+        android:paddingTop="12dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/delete_episode"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_delete"
+            android:tint="@color/white" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/image"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/podcast_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:layout_toRightOf="@+id/image"
+                android:maxLines="1"
+                android:textColor="@color/grey"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/calendar"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_below="@+id/podcast_details"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="8dp"
+                android:layout_toRightOf="@+id/image"
+                android:src="@drawable/ic_calendar" />
+
+            <TextView
+                android:id="@+id/pub_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/podcast_details"
+                android:layout_toRightOf="@+id/calendar"
+                android:maxLines="1"
+                android:textColor="@color/grey"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+    </FrameLayout>
+
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

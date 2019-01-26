@@ -19,11 +19,12 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.io.File
+import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
  */
-class PodcastDownloadManager(private val context: Context, private val database: AppDatabase) {
+class PodcastDownloadManager(private val context: Context) {
 
     private var fetch: Fetch
 
@@ -33,7 +34,12 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
     private val downloadingItems = mutableMapOf<String, PodcastDownloadItem>()
 
+    @set:Inject
+    lateinit var database: AppDatabase
+
     init {
+        DependencyLocator.getInstance().coreComponent.inject(this)
+
         val fetchConfiguration = FetchConfiguration.Builder(context)
                 .setDownloadConcurrentLimit(4)
                 .build()
@@ -243,7 +249,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
             item.link?.let {
                 val file = getItemLocalPath(podcastId ?: "_", item.link)
-                val dao = DependencyLocator.getInstance().database.downloadedPodcastItemDao()
+                val dao = database.downloadedPodcastItemDao()
 
                 val request = Request(item.link, file)
                 request.priority = Priority.HIGH
@@ -284,7 +290,7 @@ class PodcastDownloadManager(private val context: Context, private val database:
 
     fun favourite(podcastId: String?, item: Item) : Single<List<PodcastDownloadItem>> {
         return Single.fromCallable {
-            val dao = DependencyLocator.getInstance().database.downloadedPodcastItemDao()
+            val dao = database.downloadedPodcastItemDao()
 
             val id = PodcastEpisodeItem.convertLinkToId(item.link)
             val downloadingItem = downloadingItems[id]
@@ -319,5 +325,5 @@ class PodcastDownloadManager(private val context: Context, private val database:
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun allDownloads() = DependencyLocator.getInstance().database.downloadedPodcastItemDao().getAll()
+    fun allDownloads() = database.downloadedPodcastItemDao().getAll()
 }

@@ -21,6 +21,7 @@ import android.widget.Toast
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
+import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.PodcastDownloadManager
@@ -30,15 +31,18 @@ import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_ADDED
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_WAITING_FOR_NETWORK
+import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.model.Item
 import com.mediapocket.android.utils.GlobalUtils
+import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.customView
+import javax.inject.Inject
 
 
 /**
@@ -58,7 +62,12 @@ class PodcastEpisodeAdapter(private val context: Context,
     private val callback: MediaControllerCompat.Callback
     private var lastActiveEpisode: PodcastEpisode? = null
 
+    @set:Inject
+    lateinit var manager: PodcastDownloadManager
+
     init {
+
+        MainComponentLocator.mainComponent.inject(this)
 
         items?.forEachIndexed { index, it ->
             val newItem = PodcastEpisode(index, it)
@@ -66,7 +75,6 @@ class PodcastEpisodeAdapter(private val context: Context,
             dataMap[PodcastEpisodeItem.convertLinkToId(it.link)] = newItem
         }
 
-        val manager = DependencyLocator.getInstance().podcastDownloadManager
         subscription.add(manager.subscribeForDownloads(Consumer { download ->
             if (download.state == STATE_WAITING_FOR_NETWORK) {
                 Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
@@ -341,7 +349,6 @@ class PodcastEpisodeAdapter(private val context: Context,
 
             itemView.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(item.item, parentLink)) }
 
-            val manager =  DependencyLocator.getInstance().podcastDownloadManager
 
 //            item.download?.let { download ->
 //                delete.setOnClickListener {

@@ -1,8 +1,10 @@
 package com.mediapocket.android.viewmodels
 
 import android.arch.lifecycle.ViewModel
+import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.dao.model.SubscribedPodcast
+import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.model.Rss
@@ -11,11 +13,19 @@ import com.mediapocket.android.service.RssRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
  */
 class PodcastDetailsViewModel : ViewModel() {
+
+    @set:Inject
+    lateinit var database: AppDatabase
+
+    init {
+        MainComponentLocator.mainComponent.inject(this)
+    }
 
     fun load(podcast: PodcastAdapterEntry) : Single<PodcastDetails> {
         return if (podcast.feedUrl() == null) {
@@ -36,7 +46,7 @@ class PodcastDetailsViewModel : ViewModel() {
 
     fun isSubscribed(id: String): Single<Boolean> {
         return Single.fromCallable {
-            DependencyLocator.getInstance().database.subscribedPodcastDao().get(id) != null
+            database.subscribedPodcastDao().get(id) != null
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -44,7 +54,7 @@ class PodcastDetailsViewModel : ViewModel() {
 
     fun subscribe(podcast: PodcastAdapterEntry, details: PodcastDetails): Single<Boolean> {
         return Single.fromCallable {
-            val dao = DependencyLocator.getInstance().database.subscribedPodcastDao()
+            val dao = database.subscribedPodcastDao()
 
             if (dao.get(podcast.id()) == null) {
                 dao.insertAll(SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl,
