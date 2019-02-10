@@ -37,8 +37,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import android.view.KeyEvent.KEYCODE_VOLUME_UP
+import android.widget.Toast
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.di.MainComponent
 import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.utils.GlobalUtils.getUserCountry
@@ -195,7 +197,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         val notificationBuilder = NotificationBuilder(this)
-        downloadManager.subscribeForAllActiveDownloads(Consumer {
+        disposable.add(downloadManager.subscribeForAllActiveDownloads(Consumer {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             if (it.isEmpty()) {
@@ -203,7 +205,16 @@ class MainActivity : AppCompatActivity() {
             } else {
                 manager.notify(NotificationBuilder.DOWNLOADING_NOTIFICATION, notificationBuilder.buildDownloadNotification(it))
             }
-        })
+        }))
+
+        disposable.add(downloadManager.subscribeForDownloads(Consumer { download ->
+            if (download.state == PodcastEpisodeItem.STATE_WAITING_FOR_NETWORK) {
+                Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
+            } else if (download.state == PodcastEpisodeItem.STATE_ADDED) {
+                Toast.makeText(DependencyLocator.getInstance().context,
+                        resources.getString(R.string.downloading_episode, download.title), Toast.LENGTH_LONG).show()
+            }
+        }))
 
         var currentMediaId: String? = null
         disposable.add(RxBus.default.observerFor(PlayPodcastEvent::class.java).subscribe { event ->

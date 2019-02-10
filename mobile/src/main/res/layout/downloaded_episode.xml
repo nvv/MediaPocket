@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:dragEdge="right"
@@ -46,6 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/image"
+                android:layout_toLeftOf="@+id/download_progress"
                 android:maxLines="1"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -56,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
                 android:layout_toRightOf="@+id/image"
+                android:layout_toLeftOf="@+id/download_progress"
                 android:maxLines="1"
                 android:textColor="@color/grey"
                 android:textSize="14sp" />
@@ -65,7 +68,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_below="@+id/podcast_details"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginRight="8dp"
                 android:layout_toRightOf="@+id/image"
                 android:src="@drawable/ic_calendar" />
@@ -79,6 +82,68 @@
                 android:maxLines="1"
                 android:textColor="@color/grey"
                 android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/earphones"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_below="@+id/calendar"
+                android:layout_toRightOf="@+id/image"
+                android:src="@drawable/ic_earphones" />
+
+            <TextView
+                android:id="@+id/duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pub_date"
+                android:layout_toRightOf="@+id/earphones"
+                android:maxLines="1"
+                android:textColor="@color/grey"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/folder"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="6dp"
+                android:layout_below="@+id/pub_date"
+                android:layout_toRightOf="@+id/duration"
+                android:src="@drawable/ic_storage" />
+
+            <TextView
+                android:id="@+id/size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pub_date"
+                android:layout_toRightOf="@+id/folder"
+                android:maxLines="1"
+                android:textColor="@color/grey"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:id="@+id/download_progress"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_width="32dp"
+                android:layout_height="32dp">
+
+                <com.budiyev.android.circularprogressbar.CircularProgressBar
+                    android:id="@+id/download_progress_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/download_progress_percents"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
 
         </RelativeLayout>
     </FrameLayout>

@@ -52,7 +52,7 @@ class Rss(rss: String?, overrideLink: String? = null) : Cacheable() {
             item -> items.add(Item(title, item.getChild("title").value,
                 item.getChild("description").value, item.getChild("pubDate").value,
                 item.getChild("enclosure").getAttribute("url"),
-                if (item.hasChild("enclosure") && item.getChild("enclosure").getAttribute("length") != null) item.getChild("enclosure").getAttribute("length").toLong() else -1,
+                if (item.hasChild("enclosure") && item.getChild("enclosure").getAttribute("length") != null && item.getChild("enclosure").getAttribute("length") != "None") item.getChild("enclosure").getAttribute("length").toLong() else -1,
                 if (item.hasChild("image")) item.getChild("image").getAttribute("href") else image)) }
     }
 

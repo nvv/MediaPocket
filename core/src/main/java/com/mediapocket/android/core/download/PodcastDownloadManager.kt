@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * @author Vlad Namashko
  */
-class PodcastDownloadManager(private val context: Context) {
+class PodcastDownloadManager(context: Context) {
 
     private var fetch: Fetch
 
@@ -52,6 +52,7 @@ class PodcastDownloadManager(private val context: Context) {
                 val item = downloadingItems[PodcastEpisodeItem.convertLinkToId(download.url)]
                 item?.let {
                     it.state = PodcastEpisodeItem.STATE_ADDED
+
                     downloadsSubject.onNext(it)
                 }
             }
@@ -72,10 +73,10 @@ class PodcastDownloadManager(private val context: Context) {
                         val downloadingItem = downloadingItems[item.id]
                         downloadingItem?.let {
                             downloadingItems.remove(it.id)
-//                            it.state = PodcastEpisodeItem.STATE_DOWNLOADED
-//                            it.progress = 100
+                            it.state = PodcastEpisodeItem.STATE_DOWNLOADED
+                            it.progress = 100
 
-                            //downloadsSubject.onNext(it)
+                            downloadsSubject.onNext(it)
                             databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
                         }
                     }
@@ -233,8 +234,8 @@ class PodcastDownloadManager(private val context: Context) {
 
     fun pause(id: Int) {
         fetch.getDownload(id, Func2 {
-            it?.let {
-                if (it.status != Status.PAUSED) {
+            it?.let { download ->
+                if (download.status != Status.PAUSED) {
                     fetch.pause(id)
                 } else {
                     fetch.resume(id)
@@ -261,6 +262,7 @@ class PodcastDownloadManager(private val context: Context) {
                     storedItem = buildDatabaseItem(podcastId, item)
                     storedItem.state = PodcastEpisodeItem.STATE_ADDED
                     storedItem.localPath = file
+                    storedItem.downloadId = request.id
 
                     dao.insert(storedItem)
                 } else {
@@ -269,9 +271,7 @@ class PodcastDownloadManager(private val context: Context) {
                 }
 
 
-                val downloading = PodcastDownloadItem(storedItem.id, storedItem.state, 0, storedItem.podcastId,
-                        storedItem.podcastTitle, storedItem.title, storedItem.description, storedItem.link,
-                        storedItem.pubDate, storedItem.length, storedItem.favourite, storedItem.imageUrl, storedItem.downloadId, storedItem.localPath)
+                val downloading = PodcastDownloadItem(storedItem)
                 downloadingItems[downloading.id] = downloading
 
                 fetch.enqueue(request)
@@ -314,6 +314,7 @@ class PodcastDownloadManager(private val context: Context) {
 
     fun delete(item: PodcastDownloadItem): Completable {
         return Completable.fromAction {
+            fetch.delete(item.downloadId)
             val episode = File(item.localPath)
             if (episode.exists()) {
                 episode.delete()

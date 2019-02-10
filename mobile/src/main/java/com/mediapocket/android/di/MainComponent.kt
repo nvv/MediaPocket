@@ -1,6 +1,7 @@
 package com.mediapocket.android.di
 
 import com.mediapocket.android.MainActivity
+import com.mediapocket.android.adapters.DownloadedEpisodesAdapter
 import com.mediapocket.android.adapters.PodcastEpisodeAdapter
 import com.mediapocket.android.viewmodels.DownloadedEpisodesViewModel
 import com.mediapocket.android.viewmodels.PodcastDetailsViewModel
@@ -24,5 +25,7 @@ interface MainComponent {
     fun inject(downloadedEpisodesViewModel: DownloadedEpisodesViewModel)
 
     fun inject(podcastViewModel: PodcastViewModel)
+
+    fun inject(adapter: DownloadedEpisodesAdapter)
 
 }

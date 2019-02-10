@@ -76,14 +76,6 @@ class PodcastEpisodeAdapter(private val context: Context,
         }
 
         subscription.add(manager.subscribeForDownloads(Consumer { download ->
-            if (download.state == STATE_WAITING_FOR_NETWORK) {
-                Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
-                return@Consumer
-            } else if (download.state == STATE_ADDED) {
-                Toast.makeText(DependencyLocator.getInstance().context,
-                        context.resources.getString(R.string.downloading_episode, download.title), Toast.LENGTH_LONG).show()
-            }
-
             val updateItem = dataMap[download.id]
             updateItem?.let {
                 updateItem.download = download
@@ -188,6 +180,7 @@ class PodcastEpisodeAdapter(private val context: Context,
                     linearLayout {
                         lparams(width = matchParent, height = wrapContent)
                         orientation = LinearLayout.HORIZONTAL
+                        layoutTransition = LayoutTransition()
                         gravity = Gravity.LEFT
 
                         textView {
