@@ -35,6 +35,7 @@ import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.model.Item
+import com.mediapocket.android.playback.model.RssEpisodeItem
 import com.mediapocket.android.utils.GlobalUtils
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -340,7 +341,7 @@ class PodcastEpisodeAdapter(private val context: Context,
                 playback.setColorFilter(accentColor)
             }
 
-            itemView.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(item.item, parentLink)) }
+            itemView.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(RssEpisodeItem(item.item.link, parentLink))) }
 
 
 //            item.download?.let { download ->

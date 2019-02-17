@@ -3,6 +3,10 @@ package com.mediapocket.android.dao.model
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import android.net.Uri
+import android.os.Bundle
+import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.util.Base64
 import org.jetbrains.annotations.NotNull
 import java.nio.charset.Charset
@@ -28,6 +32,40 @@ data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
     @PrimaryKey
     @NotNull
     var id: String = convertLinkToId(link)
+
+    fun getMediaMetadataCompat() : MediaMetadataCompat {
+        return MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, link)
+                .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, podcastTitle)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, link)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, if (length == null) 0 else length!!)
+                .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, imageUrl)
+                .build()
+    }
+
+    fun getMediaDescription(): MediaDescriptionCompat {
+        return MediaDescriptionCompat.Builder()
+                .setTitle(title)
+                .setIconUri(Uri.parse(imageUrl))
+                .setMediaId(link)
+                .setExtras(getMediaExtras())
+                .build()
+    }
+
+    private fun getMediaExtras(): Bundle {
+        val bundle = Bundle()
+
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, podcastTitle)
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate)
+        bundle.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, if (length == null) 0 else length!!)
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, link)
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_ART, imageUrl)
+
+        return bundle
+    }
 
     companion object {
         const val STATE_NONE = 0

@@ -37,7 +37,7 @@ class MediaSeekBarView : FrameLayout {
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar) {
-            mediaController!!.transportControls.seekTo(seekBar.progress.toLong())
+            mediaController?.transportControls?.seekTo(seekBar.progress.toLong())
             isTracking = false
         }
     }

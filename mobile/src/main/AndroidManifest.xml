@@ -47,12 +47,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".VolumeChangedReceiver" >
-            <intent-filter>
-                <action android:name="android.media.VOLUME_CHANGED_ACTION" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".PodcastService"
             android:exported="true"

@@ -20,16 +20,20 @@ import android.text.TextUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.mediapocket.android.core.AppDatabase
+import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
 import com.mediapocket.android.extensions.from
 import com.mediapocket.android.extensions.id
 import com.mediapocket.android.playback.LocalPlayback
+import com.mediapocket.android.playback.model.PlayableItem
 import com.mediapocket.android.service.RssRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 
 /**
@@ -64,12 +68,15 @@ class PodcastService : MediaBrowserServiceCompat() {
 
     private var isForegroundService = false
 
-    //private val loadedPodcasts = mutableMapOf<String, MutableList<MediaBrowserCompat.MediaItem>>()
+    @set:Inject
+    lateinit var database: AppDatabase
 
     private val subscription = CompositeDisposable()
 
     override fun onCreate() {
         super.onCreate()
+
+        MainComponentLocator.mainComponent.inject(this)
 
         val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
         val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
@@ -131,11 +138,20 @@ class PodcastService : MediaBrowserServiceCompat() {
             // and put them in the mediaItems list...
         } else {
             result.detach()
-            subscription.add(RssRepository.loadRss(parentMediaId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe { rss ->
-                        result.sendResult(playback.initWithFeedItems(parentMediaId, rss.items()))
-                    })
+            if (parentMediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
+                subscription.add(Single.fromCallable {
+                    database.downloadedPodcastItemDao().getAll()
+                }.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe { items ->
+                            result.sendResult(playback.initWithLocalEpisodes(parentMediaId, items))
+                        })
+            } else {
+                subscription.add(RssRepository.loadRss(parentMediaId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe { rss ->
+                            result.sendResult(playback.initWithFeedItems(parentMediaId, rss.items()))
+                        })
+            }
         }
 
 //        result.sendResult(mediaItems)

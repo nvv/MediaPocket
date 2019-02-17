@@ -8,44 +8,36 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.v7.app.AppCompatActivity
-import com.mediapocket.android.core.DependencyLocator
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
-import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.fragments.transition.DetailsTransition
-import android.os.Build
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.view.ViewCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import com.mediapocket.android.audio.AudioVolumeObserver
+import com.mediapocket.android.audio.OnAudioVolumeChangedListener
+import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.core.RxBus
+import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
+import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.*
 import com.mediapocket.android.fragments.*
+import com.mediapocket.android.fragments.transition.DetailsTransition
+import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.PodcastPlaybackCompatView
 import com.mediapocket.android.view.PodcastPlaybackExpandedView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import android.view.KeyEvent.KEYCODE_VOLUME_DOWN
-import android.view.KeyEvent.KEYCODE_VOLUME_UP
-import android.widget.Toast
-import com.mediapocket.android.core.AppDatabase
-import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.di.MainComponent
-import com.mediapocket.android.di.MainComponentLocator
-import com.mediapocket.android.utils.GlobalUtils.getUserCountry
-import com.mediapocket.android.utils.ViewUtils
-import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 
@@ -66,6 +58,14 @@ class MainActivity : AppCompatActivity() {
 
     @set:Inject
     lateinit var downloadManager: PodcastDownloadManager
+
+    private lateinit var audioVolumeObserver : AudioVolumeObserver
+
+    private val volumeChangeListener = object: OnAudioVolumeChangedListener {
+        override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
+            RxBus.default.postEvent(VolumeLevelKeyEvent(currentVolume))
+        }
+    }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, fragment)
                         .commit()
-//                message.setText(R.string.title_notifications)
+                onFragmentChanged(fragment)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -121,6 +121,9 @@ class MainActivity : AppCompatActivity() {
         }, Consumer {
             it.printStackTrace()
         }))
+
+        audioVolumeObserver = AudioVolumeObserver(this)
+        audioVolumeObserver.register(AudioManager.STREAM_MUSIC, volumeChangeListener)
 
         supportFragmentManager.beginTransaction()
                 .add(R.id.frame, DiscoverFragment.newInstance(), DiscoverFragment.TAG)
@@ -218,8 +221,8 @@ class MainActivity : AppCompatActivity() {
 
         var currentMediaId: String? = null
         disposable.add(RxBus.default.observerFor(PlayPodcastEvent::class.java).subscribe { event ->
-            if (currentMediaId != event.parentLink) {
-                mediaConnection.mediaBrowser.subscribe(event.parentLink, object : MediaBrowserCompat.SubscriptionCallback() {
+            if (currentMediaId != event.item.mediaId) {
+                mediaConnection.mediaBrowser.subscribe(event.item.mediaId, object : MediaBrowserCompat.SubscriptionCallback() {
 
                     override fun onChildrenLoaded(parentId: String, children: List<MediaBrowserCompat.MediaItem>) {
                         currentMediaId = parentId

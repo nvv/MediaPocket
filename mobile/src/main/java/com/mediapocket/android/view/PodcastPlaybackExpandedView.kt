@@ -197,13 +197,11 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
     }
 
     private fun calculateRate(progress: Int): Float {
-        var rate = 1.0f
-        if (progress < 10) {
-            rate = 1 - (10 - progress) / 20f
-        } else if (progress > 10) {
-            rate = 1 + (progress - 10) / 20f
+        return when {
+            progress < 10 -> 1 - (10 - progress) / 20f
+            progress > 10 -> 1 + (progress - 10) / 20f
+            else -> 1.0f
         }
-        return rate
     }
 
     override fun getMediaControllerCallback() = object : MediaControllerCompat.Callback() {

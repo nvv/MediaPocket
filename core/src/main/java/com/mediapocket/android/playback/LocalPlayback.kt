@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
 
 /**
@@ -93,12 +94,26 @@ class LocalPlayback(val context: Context, val mediaSession: MediaSessionCompat) 
             metadataList.add(it.getMediaMetadataCompat())
         }
 
-//        val mediaSource = metadataList.toMediaSource(dataSourceFactory)
-//        exoPlayer.prepare(mediaSource)
         playbackPreparer.playlist = metadataList
 
         return mediaItems
     }
+
+    fun initWithLocalEpisodes(mediaId: String, items: List<PodcastEpisodeItem>?): List<MediaBrowserCompat.MediaItem> {
+        val metadataList = mutableListOf<MediaMetadataCompat>()
+        val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
+
+        items?.forEach {
+            val mediaItem = MediaBrowserCompat.MediaItem(it.getMediaDescription(), 0)
+            mediaItems.add(mediaItem)
+            metadataList.add(it.getMediaMetadataCompat())
+        }
+
+        playbackPreparer.playlist = metadataList
+
+        return mediaItems
+    }
+
 
     private inner class QueueNavigator(mediaSession: MediaSessionCompat) : TimelineQueueNavigator(mediaSession) {
 
