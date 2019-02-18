@@ -106,7 +106,7 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
 //        val color = palette.getDarkVibrantColor(R.attr.colorPrimary)
         description.setBackgroundColor(color)
 
-        collapsingToolbar?.setContentScrimColor(palette.getDarkVibrantColor(R.attr.colorPrimary))
+        collapsingToolbar?.setContentScrimColor(color)
         subscribe?.backgroundTintList = ColorStateList.valueOf(color)
 
         genre.backgroundColor = color
