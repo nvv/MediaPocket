@@ -70,13 +70,21 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
         rewind = findViewById(R.id.rewind)
 
         next.setOnClickListener {
-            (next.drawable as Animatable).start()
-            mediaConnection?.mediaController?.transportControls?.skipToNext()
+            mediaConnection?.mediaController?.playbackState?.let { state ->
+                if ((state.actions and PlaybackStateCompat.ACTION_SKIP_TO_NEXT) != 0L) {
+                    (next.drawable as Animatable).start()
+                    mediaConnection?.mediaController?.transportControls?.skipToNext()
+                }
+            }
         }
 
         prev.setOnClickListener {
-            (prev.drawable as Animatable).start()
-            mediaConnection?.mediaController?.transportControls?.skipToPrevious()
+            mediaConnection?.mediaController?.playbackState?.let { state ->
+                if ((state.actions and PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS) != 0L) {
+                    (prev.drawable as Animatable).start()
+                    mediaConnection?.mediaController?.transportControls?.skipToPrevious()
+                }
+            }
         }
 
         rewind.setOnClickListener{
