@@ -1,7 +1,9 @@
 package com.mediapocket.android.view
 
+import android.animation.*
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.GradientDrawable
@@ -20,6 +22,7 @@ import android.widget.TextView
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
+import com.mediapocket.android.events.ChangeStatusBarColorEvent
 import com.mediapocket.android.events.SwitchPodcastPlayerModeEvent
 import com.mediapocket.android.events.VolumeLevelKeyEvent
 import com.mediapocket.android.extensions.isPlaying
@@ -52,6 +55,8 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
     private var disposable: CompositeDisposable? = null
 
     private val gestureDetector: GestureDetectorCompat
+
+    private var currentBgPrimaryColor: Int = -1
 
     init {
         findViewById<View>(R.id.close).setOnClickListener { RxBus.default.postEvent(SwitchPodcastPlayerModeEvent.close()) }
@@ -217,21 +222,55 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             metadata?.description?.let {
+                // change episode logo and background
                 it.iconBitmap?.let {
-                    episodeLogo.setImageBitmap(it)
+
+                    if (episodeLogo.tag == null || !it.sameAs(episodeLogo.tag as Bitmap)) {
+                        val alpha = ObjectAnimator.ofFloat(episodeLogo, "alpha", 1f, 0f).setDuration(IMAGE_FADE_IN_OUT_DURATION)
+                        alpha.addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                super.onAnimationEnd(animation)
+                                episodeLogo.setImageBitmap(it)
+                                episodeLogo.tag = it
+                                ObjectAnimator.ofFloat(episodeLogo, "alpha", 0f, 1f).setDuration(IMAGE_FADE_IN_OUT_DURATION).start()
+                            }
+                        })
+                        alpha.start()
+                    }
 
                     Palette.from(it).generate { palette ->
                         val color = palette.getDarkVibrantColor(R.attr.colorPrimary)
                         val color2 = color or 0xFF000000.toInt()
                         val color1 = manipulateColor(color2, 0.6f)
-//                        mainView.backgroundColor = color
 
-                        val gradient = GradientDrawable(
-                                GradientDrawable.Orientation.TOP_BOTTOM,
-                                intArrayOf(color2, color1))
-                        gradient.cornerRadius = 0f
+                        if (color2 != currentBgPrimaryColor) {
+                            if (currentBgPrimaryColor == -1) {
+                                setGradientBackground(color2, color1)
+                            } else {
+                                val animation = ValueAnimator.ofObject(ArgbEvaluator(), currentBgPrimaryColor, color2)
+                                animation.duration = COLOR_TRANSITION_DURATION
+                                animation.addUpdateListener { animator ->
+                                    val curColor = animator.animatedValue as Int
+                                    setGradientBackground(curColor, manipulateColor(curColor, 0.6f))
+                                }
+                                animation.addListener(object : Animator.AnimatorListener {
+                                    override fun onAnimationRepeat(p0: Animator?) {
+                                    }
 
-                        mainView.backgroundDrawable = gradient
+                                    override fun onAnimationEnd(p0: Animator?) {
+                                        setGradientBackground(color2, color1)
+                                    }
+
+                                    override fun onAnimationCancel(p0: Animator?) {
+                                    }
+
+                                    override fun onAnimationStart(p0: Animator?) {
+                                    }
+
+                                })
+                                animation.start()
+                            }
+                        }
                     }
                 }
 
@@ -240,6 +279,14 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
                 it.extras?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
             }
+        }
+
+        private fun setGradientBackground(color2: Int, color1: Int) {
+            currentBgPrimaryColor = color2
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(color2, color1))
+            gradient.cornerRadius = 0f
+            RxBus.default.postEvent(ChangeStatusBarColorEvent(color2))
+            mainView.backgroundDrawable = gradient
         }
 
     }
@@ -253,5 +300,10 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                 Math.min(r, 255),
                 Math.min(g, 255),
                 Math.min(b, 255))
+    }
+
+    companion object {
+        private const val COLOR_TRANSITION_DURATION = 250L
+        private const val IMAGE_FADE_IN_OUT_DURATION = 125L
     }
 }

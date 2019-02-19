@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -220,7 +221,7 @@ class PodcastDownloadManager(context: Context) {
         })
     }
 
-    private fun getItemLocalPath(podcastId: String, link: String) = DependencyLocator.getInstance().context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + link.replace("/", "$")
+    private fun getItemLocalPath(podcastId: String, link: String) = DependencyLocator.getInstance().context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + UUID.randomUUID().toString()
 
     fun subscribeForDownloads(consumer : Consumer<PodcastDownloadItem>) = downloadsSubject.observeOn(AndroidSchedulers.mainThread()).subscribe(consumer)
 
