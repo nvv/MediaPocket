@@ -30,6 +30,7 @@ import com.mediapocket.android.playback.LocalPlayback.Companion.ARG_PLAYBACK_RAT
 import com.mediapocket.android.playback.LocalPlayback.Companion.COMMAND_SET_PLAYBACK_RATE
 import com.mediapocket.android.utils.ViewUtils
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.podcast_playback_expanded.view.*
 import org.jetbrains.anko.backgroundDrawable
 
 
@@ -42,16 +43,6 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
     constructor(context: Context?) : this(context, null, -1)
 
-    private val mainView: View
-    private val title: TextView
-    private val subTitle: TextView
-    private val seekBarView: MediaSeekBarView
-    private val next: ImageView
-    private val prev: ImageView
-    private val rewind: ImageView
-
-    private val volumeControl: SeekBar
-
     private var disposable: CompositeDisposable? = null
 
     private val gestureDetector: GestureDetectorCompat
@@ -59,15 +50,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
     private var currentBgPrimaryColor: Int = -1
 
     init {
-        findViewById<View>(R.id.close).setOnClickListener { RxBus.default.postEvent(SwitchPodcastPlayerModeEvent.close()) }
-
-        mainView = findViewById(R.id.root_view)
-        title = findViewById(R.id.title)
-        subTitle = findViewById(R.id.subtitle)
-        seekBarView = findViewById(R.id.media_seek_bar_view)
-        next = findViewById(R.id.next)
-        prev = findViewById(R.id.prev)
-        rewind = findViewById(R.id.rewind)
+        close.setOnClickListener { RxBus.default.postEvent(SwitchPodcastPlayerModeEvent.close()) }
 
         next.setOnClickListener {
             mediaConnection?.mediaController?.playbackState?.let { state ->
@@ -92,8 +75,6 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             mediaConnection?.mediaController?.transportControls?.rewind()
         }
 
-        volumeControl = findViewById(R.id.volume_level)
-
         gestureDetector = GestureDetectorCompat(context, object : GestureListener(this@PodcastPlaybackExpandedView) {
             override fun onSwipeBottom(): Boolean {
                 RxBus.default.postEvent(SwitchPodcastPlayerModeEvent.close())
@@ -116,8 +97,8 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
     fun setDisposable(disposable: CompositeDisposable) {
         this.disposable = disposable
         disposable.add(RxBus.default.observerFor(VolumeLevelKeyEvent::class.java).subscribe {
-            if (volumeControl.progress != it.volume) {
-                volumeControl.progress = it.volume
+            if (volume_level.progress != it.volume) {
+                volume_level.progress = it.volume
             }
         })
     }
@@ -133,13 +114,13 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
 
     override fun initWithMediaConnection(mediaConnection: MediaSessionConnection) {
         super.initWithMediaConnection(mediaConnection)
-        seekBarView.setMediaController(mediaConnection.mediaController)
+        media_seek_bar_view.setMediaController(mediaConnection.mediaController)
 
         mediaConnection.mediaController.playbackInfo?.let {
             val maxVolume = it.maxVolume
-            volumeControl.max = maxVolume
-            volumeControl.progress = it.currentVolume
-            volumeControl.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            volume_level.max = maxVolume
+            volume_level.progress = it.currentVolume
+            volume_level.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -151,22 +132,21 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                 }
             })
 
-            findViewById<View>(R.id.volume_min).setOnClickListener {
+            volume_min.setOnClickListener {
                 mediaConnection.mediaController.setVolumeTo(0, 0)
             }
 
-            findViewById<View>(R.id.volume_max).setOnClickListener {
+            volume_max.setOnClickListener {
                 mediaConnection.mediaController.setVolumeTo(maxVolume, 0)
             }
 
-            val playbackSpeed = findViewById<TextView>(R.id.playback_speed)
-            playbackSpeed.tag = 10
-            playbackSpeed.setOnClickListener {
+            playback_speed.tag = 10
+            playback_speed.setOnClickListener {
                 val popDialog = AlertDialog.Builder(context)
                 val seek = SeekBar(context)
                 seek.setPadding(seek.paddingLeft, ViewUtils.getDimensionSize(16).toInt(), seek.paddingRight, seek.paddingBottom)
                 seek.max = 40
-                seek.progress = playbackSpeed.tag as Int
+                seek.progress = playback_speed.tag as Int
 
                 popDialog.setTitle(R.string.select_playback_speed)
                 popDialog.setView(seek)
@@ -188,13 +168,13 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                 })
 
                 popDialog.setPositiveButton(R.string.btn_ok) { dialog, which ->
-                    playbackSpeed.text = "%sx".format(calculateRate(seek.progress))
-                    playbackSpeed.tag = seek.progress
+                    playback_speed.text = "%sx".format(calculateRate(seek.progress))
+                    playback_speed.tag = seek.progress
                     dialog.dismiss()
                 }
                 popDialog.setNegativeButton(R.string.btn_cancel) { dialog, which ->
-                    val speed = calculateRate(playbackSpeed.tag as Int)
-                    playbackSpeed.text = "%sx".format(speed)
+                    val speed = calculateRate(playback_speed.tag as Int)
+                    playback_speed.text = "%sx".format(speed)
 
                     val args = Bundle()
                     args.putFloat(ARG_PLAYBACK_RATE, speed)
@@ -283,7 +263,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                 }
 
                 title.text = it.title
-                subTitle.text = it.subtitle
+                subtitle.text = it.subtitle
 
                 it.extras?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
             }
@@ -294,7 +274,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(color2, color1))
             gradient.cornerRadius = 0f
             RxBus.default.postEvent(ChangeStatusBarColorEvent(color2))
-            mainView.backgroundDrawable = gradient
+            root_view.backgroundDrawable = gradient
         }
 
     }
