@@ -12,6 +12,9 @@ import android.widget.ProgressBar
 import com.mediapocket.android.R
 import com.mediapocket.android.adapters.DownloadedEpisodesAdapter
 import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.utils.ViewUtils
+import com.mediapocket.android.view.decoration.DividerItemDecoration
+import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
 import com.mediapocket.android.viewmodels.DownloadedEpisodesViewModel
 import io.reactivex.disposables.CompositeDisposable
 import org.jetbrains.anko.*
@@ -55,6 +58,7 @@ class DownloadedPodcastsFragment : BaseFragment() {
         }.view
 
         items.layoutManager = LinearLayoutManager(context)
+        items.addItemDecoration(DividerItemDecoration(requireActivity(), VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
 
         subscription.add(model.getDownloadedEpisodes().subscribe {
             episodes ->

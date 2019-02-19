@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -31,6 +33,7 @@ import com.mediapocket.android.playback.LocalPlayback.Companion.COMMAND_SET_PLAY
 import com.mediapocket.android.utils.ViewUtils
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.podcast_playback_expanded.view.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.backgroundDrawable
 
 
@@ -241,23 +244,12 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                                     val curColor = animator.animatedValue as Int
                                     setGradientBackground(curColor, manipulateColor(curColor, 0.6f))
                                 }
-                                animation.addListener(object : Animator.AnimatorListener {
-                                    override fun onAnimationRepeat(p0: Animator?) {
-                                    }
-
-                                    override fun onAnimationEnd(p0: Animator?) {
-                                        setGradientBackground(color2, color1)
-                                    }
-
-                                    override fun onAnimationCancel(p0: Animator?) {
-                                    }
-
-                                    override fun onAnimationStart(p0: Animator?) {
-                                    }
-
-                                })
                                 animation.start()
                             }
+
+                            close.colorFilter = PorterDuffColorFilter(palette.getLightVibrantColor(
+                                    resources.getColor(R.color.white)), PorterDuff.Mode.SRC_ATOP)
+
                         }
                     }
                 }

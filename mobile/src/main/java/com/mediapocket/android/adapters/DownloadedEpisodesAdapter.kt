@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
@@ -20,6 +21,7 @@ import com.mediapocket.android.utils.TimeUtils
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.downloaded_episode.view.*
 import java.io.File
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -72,12 +74,14 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
             itemView.pub_date.text = dateFormatter.format(Date(item.pubDate))
 
             var durationTime: Long = 0
-//            item.length?.let {
-//                durationTime = it
-//            } ?: run {
+            try {
                 metaRetriever.setDataSource(item.localPath)
                 durationTime = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong()
-//            }
+            } catch (e: Exception) {
+                item.length?.let {
+                    durationTime = it
+                }
+            }
 
             itemView.duration.text = TimeUtils.millisToShortDHMS(durationTime)
 
@@ -94,7 +98,10 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
 
             itemView.download_progress.visibility = if (item.state == PodcastEpisodeItem.STATE_DOWNLOADED) View.GONE else View.VISIBLE
 
-            Glide.with(itemView.context).load(item.imageUrl).into(itemView.image)
+            Glide.with(itemView.context)
+                    .load(item.imageUrl)
+                    .apply(RequestOptions().placeholder(R.drawable.ic_musical_note).fitCenter())
+                    .into(itemView.image)
 
             download?.let {
                 itemView.download_progress_bar.progress = download.progress.toFloat()

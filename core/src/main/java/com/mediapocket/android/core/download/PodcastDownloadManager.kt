@@ -286,8 +286,8 @@ class PodcastDownloadManager(context: Context) {
 
     private fun buildDatabaseItem(podcastId: String?, item: Item) =
         PodcastEpisodeItem(PodcastEpisodeItem.STATE_NONE, podcastId,
-                item.podcastTitle, item.title, item.description, item.link, item.pubDate,
-                item.length, false, item.imageUrl, 0, null)
+                item.podcastTitle, item.title, item.description, item.link, System.currentTimeMillis(),
+                item.pubDate, item.length, false, item.imageUrl, 0, null)
 
     fun favourite(podcastId: String?, item: Item) : Single<List<PodcastDownloadItem>> {
         return Single.fromCallable {
