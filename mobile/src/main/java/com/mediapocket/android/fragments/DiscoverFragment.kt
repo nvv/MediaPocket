@@ -101,13 +101,13 @@ class DiscoverFragment : BaseFragment() {
         initPodcasts()
 
 
-        podcastRecyclers.forEachIndexed { index, podcastListView ->
-            arguments?.getParcelable<Parcelable>("POS$index")?.let {
+//        podcastRecyclers.forEachIndexed { index, podcastListView ->
+//            arguments?.getParcelable<Parcelable>("POS$index")?.let {
 //                podcastListView.post {
 //                    podcastListView.restoreScrollPosition(it)
 //                }
-            }
-        }
+//            }
+//        }
 
 
         setHasOptionsMenu(true)
@@ -123,9 +123,9 @@ class DiscoverFragment : BaseFragment() {
                     arguments = Bundle()
                 }
 
-                podcastRecyclers.forEachIndexed { index, podcastListView ->
-                    arguments?.putParcelable("POS$index", podcastListView.getScrollPosition())
-                }
+//                podcastRecyclers.forEachIndexed { index, podcastListView ->
+//                    arguments?.putParcelable("POS$index", podcastListView.getScrollPosition())
+//                }
 
             }
         }
