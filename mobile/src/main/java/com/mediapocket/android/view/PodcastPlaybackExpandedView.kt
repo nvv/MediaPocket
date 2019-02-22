@@ -247,6 +247,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                                 animation.start()
                             }
 
+                            // TODO
                             close.colorFilter = PorterDuffColorFilter(palette.getLightVibrantColor(
                                     resources.getColor(R.color.white)), PorterDuff.Mode.SRC_ATOP)
 

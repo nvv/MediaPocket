@@ -45,4 +45,8 @@
     <string name="downloading_episode">Downloading episode: \"%s\"</string>
     <string name="downloading_episodes">Downloading episode(s)</string>
 
+
+    <string name="confirm">Confirm</string>
+    <string name="confirm_message">Are you sure you want to delete this episode?</string>
+
 </resources>

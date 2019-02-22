@@ -1,5 +1,6 @@
 package com.mediapocket.android.adapters
 
+import android.app.AlertDialog
 import android.media.MediaMetadataRetriever
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.di.MainComponentLocator
+import com.mediapocket.android.events.DeletePodcastEpisodeEvent
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.playback.model.DownloadedEpisodeItem
 import com.mediapocket.android.utils.FileUtils
@@ -66,6 +68,11 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int, payloads: List<Any>) =
             holder.bind(position, swipeLayoutHelper,localEpisodes[position], if (payloads.isEmpty()) null else payloads[0] as PodcastDownloadItem)
 
+    fun onItemRemoved(item: PodcastEpisodeItem, position: Int) {
+        localEpisodes.remove(item)
+        notifyItemRemoved(position)
+    }
+
     inner class EpisodeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(position: Int, swipeLayoutHelper: ViewBinderHelper, item: PodcastEpisodeItem, download: PodcastDownloadItem?) {
@@ -87,11 +94,8 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
 
             itemView.size.text = FileUtils.formatBytes(File(item.localPath).length())
 
-            itemView.delete_episode.setOnClickListener{
-                manager.delete(PodcastDownloadItem(item)).subscribe{
-                    localEpisodes.remove(item)
-                    notifyItemRemoved(position)
-                }
+            itemView.delete_episode_frame.setOnClickListener{
+                RxBus.default.postEvent(DeletePodcastEpisodeEvent(item, position))
             }
 
             swipeLayoutHelper.bind(itemView.swipe_view, item.id)

@@ -1,5 +1,6 @@
 package com.mediapocket.android.fragments
 
+import android.app.AlertDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -11,7 +12,12 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import com.mediapocket.android.R
 import com.mediapocket.android.adapters.DownloadedEpisodesAdapter
+import com.mediapocket.android.adapters.PodcastEpisodeAdapter
 import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.core.RxBus
+import com.mediapocket.android.core.download.model.PodcastDownloadItem
+import com.mediapocket.android.events.DeletePodcastEpisodeEvent
+import com.mediapocket.android.events.PopBackStackEvent
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
@@ -72,6 +78,24 @@ class DownloadedPodcastsFragment : BaseFragment() {
                 items.visibility = if (isLoading) View.GONE else View.VISIBLE
                 loading.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
+        })
+
+        subscription.add(RxBus.default.observerFor(DeletePodcastEpisodeEvent::class.java).subscribe { event ->
+                val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
+                builder.setTitle(R.string.confirm)
+                        .setMessage(R.string.confirm_message)
+                        .setPositiveButton(R.string.btn_ok) { dialog, which ->
+                            run {
+                                dialog.dismiss()
+                                subscription.add(model.deleteEpisode(PodcastDownloadItem(event.item)).subscribe {
+                                    (items.adapter as DownloadedEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
+                                })
+                            }
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { dialog, which -> dialog.dismiss() }
+
+                builder.create().show()
+
         })
 
         return view
