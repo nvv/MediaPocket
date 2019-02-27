@@ -19,8 +19,9 @@ import org.jetbrains.anko.recyclerview.v7.recyclerView
 /**
  * @author Vlad Namashko
  */
-abstract class ItemListView (context: Context?, index: Int) : FrameLayout(context) {
+abstract class ItemListView (context: Context?) : FrameLayout(context) {
 
+    protected var positionOnPage = 0
     protected val recyclerView: RecyclerView
     protected val title: TextView
 
@@ -53,22 +54,22 @@ abstract class ItemListView (context: Context?, index: Int) : FrameLayout(contex
         }
         recyclerView = findViewById(R.id.items)
 
-        when (index) {
-            0 -> recyclerView.id = R.id.list_0
-            1 -> recyclerView.id = R.id.list_1
-            2 -> recyclerView.id = R.id.list_2
-            3 -> recyclerView.id = R.id.list_3
-            4 -> recyclerView.id = R.id.list_4
-            5 -> recyclerView.id = R.id.list_5
-            6 -> recyclerView.id = R.id.list_6
-        }
-
+        recyclerView.id = R.id.items
         title = findViewById(R.id.title)
     }
 
-    fun getScrollPosition() = recyclerView.layoutManager.onSaveInstanceState()
+    fun positionOnPage() : Int {
+        return positionOnPage
+    }
 
-    fun restoreScrollPosition(state: Parcelable) {
+    fun getInstanceState() = recyclerView.layoutManager.onSaveInstanceState()
+
+    fun restoreInstanceState(state: Parcelable) {
         recyclerView.layoutManager.onRestoreInstanceState(state)
     }
+
+    fun scrollToBeginning() {
+        recyclerView.scrollToPosition(0)
+    }
+
 }

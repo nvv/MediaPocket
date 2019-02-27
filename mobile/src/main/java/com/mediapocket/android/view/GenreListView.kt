@@ -14,7 +14,7 @@ import org.jetbrains.anko.textResource
 /**
  * @author Vlad Namashko
  */
-class GenreListView(context: Context?, index: Int) : ItemListView(context, index) {
+class GenreListView(context: Context?) : ItemListView(context) {
 
     private val listAdapter = GenreListAdapter()
 
@@ -23,7 +23,8 @@ class GenreListView(context: Context?, index: Int) : ItemListView(context, index
         title.textResource = R.string.all_genres
     }
 
-    fun load(genres: List<Genre>) {
+    fun load(genres: List<Genre>, positionOnPage: Int) {
+        this.positionOnPage = positionOnPage
         listAdapter.load(genres)
     }
 

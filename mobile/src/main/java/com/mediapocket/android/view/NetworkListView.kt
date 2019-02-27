@@ -15,7 +15,7 @@ import org.jetbrains.anko.textResource
 /**
  * @author Vlad Namashko
  */
-class NetworkListView(context: Context?, index: Int) : ItemListView(context, index) {
+class NetworkListView(context: Context?) : ItemListView(context) {
 
     private val listAdapter = NetworkListAdapter()
 
@@ -23,7 +23,8 @@ class NetworkListView(context: Context?, index: Int) : ItemListView(context, ind
         recyclerView.adapter = listAdapter
     }
 
-    fun load(networks: List<Network>) {
+    fun load(networks: List<Network>, positionOnPage: Int) {
+        this.positionOnPage = positionOnPage
         title.textResource = R.string.networks
         listAdapter.load(networks)
     }

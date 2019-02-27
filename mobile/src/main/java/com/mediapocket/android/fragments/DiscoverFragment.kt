@@ -1,11 +1,11 @@
 package com.mediapocket.android.fragments
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.widget.*
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.mediapocket.android.ItemListView
 import com.mediapocket.android.R
@@ -29,20 +29,11 @@ class DiscoverFragment : BaseFragment() {
 
     private lateinit var model: PodcastViewModel
 
-    //    protected val adapter: PodcastListAdapter = PodcastListAdapter()
     protected val subscription: CompositeDisposable = CompositeDisposable()
 
     protected var loading: ProgressBar? = null
-    protected var podcastList: LinearLayout? = null
-    protected var podcastFrame: View? = null
-//    protected var podcasts: RecyclerView? = null
-
-    //    private var items: List<PodcastDiscoverResult>? = null
-//    private var items: Map<String, PodcastDiscoverResult>? = null
+    protected var podcastList: RecyclerView? = null
     private var discoverData: DiscoverData? = null
-    private var podcastListInitialized = false
-
-    private val podcastRecyclers = mutableListOf<ItemListView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,56 +50,33 @@ class DiscoverFragment : BaseFragment() {
     }
 
     private fun initPodcasts() {
-        podcastRecyclers.clear()
-
+        podcastList?.layoutManager?.onRestoreInstanceState(arguments?.getParcelable<Parcelable>("MAIN_POS"))
         discoverData?.let {
 
-            var i = 0
-            it.podcastData.forEach { res ->
-
-                val list = PodcastListView(podcastList?.context, i)
-                res.key.toIntOrNull()?.let {
-                    list.addMoreAction { RxBus.default.postEvent(LoadGenreItemsEvent(res.key.toInt())) }
+            val states = mutableMapOf<Int, Parcelable>()
+            for (index in 0 .. (it.podcastData.values.size + 2)) {
+                arguments?.getParcelable<Parcelable>("POS$index")?.let {
+                    states[index] = it
                 }
-
-                podcastList?.addView(list)
-                list.load(res.value.title(), PodcastAdapterEntry.convertToAdapterEntries(res.value), i++)
-
-                podcastRecyclers.add(list)
             }
 
-            val genres = GenreListView(podcastList?.context, i++)
-            genres.load(it.genres.genres.values.toList())
-            podcastList?.addView(genres)
-            podcastRecyclers.add(genres)
 
-            val networks = NetworkListView(podcastList?.context, i++)
-            networks.load(it.networks.networks)
-            podcastList?.addView(networks)
-            podcastRecyclers.add(networks)
+            podcastList?.layoutManager = LinearLayoutManager(podcastList?.context)
+            podcastList?.adapter = Adapter(requireActivity(), it, states)
+
         }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.discover_podcast, container, false)
 
         podcastList = view?.findViewById(R.id.podcasts)
-        podcastFrame = view?.findViewById(R.id.discover_list)
         loading = view?.findViewById(R.id.loading)
 
         subscription.add(model.loading().subscribe { isLoading -> syncVisivility(isLoading) })
 
         initPodcasts()
-
-
-//        podcastRecyclers.forEachIndexed { index, podcastListView ->
-//            arguments?.getParcelable<Parcelable>("POS$index")?.let {
-//                podcastListView.post {
-//                    podcastListView.restoreScrollPosition(it)
-//                }
-//            }
-//        }
-
 
         setHasOptionsMenu(true)
 
@@ -123,9 +91,13 @@ class DiscoverFragment : BaseFragment() {
                     arguments = Bundle()
                 }
 
-//                podcastRecyclers.forEachIndexed { index, podcastListView ->
-//                    arguments?.putParcelable("POS$index", podcastListView.getScrollPosition())
-//                }
+                arguments?.putParcelable("MAIN_POS", podcastList?.layoutManager?.onSaveInstanceState())
+
+                val adapter = podcastList?.adapter as Adapter
+                adapter.onDestroyed()
+                adapter.states.entries.forEach { item ->
+                    arguments?.putParcelable("POS${item.key}", item.value)
+                }
 
             }
         }
@@ -141,13 +113,6 @@ class DiscoverFragment : BaseFragment() {
             if (hasFocus) {
                 RxBus.default.postEvent(OpenSearchEvent())
 
-//                podcasts?.let {
-//                    if (arguments == null) {
-//                        arguments = Bundle()
-//                    }
-//
-//                    arguments?.putInt("POS", it.computeVerticalScrollOffset())
-//                }
             }
         }
 
@@ -156,7 +121,7 @@ class DiscoverFragment : BaseFragment() {
     }
 
     private fun syncVisivility(isLoading: Boolean) {
-        podcastFrame?.visibility = if (isLoading) View.GONE else View.VISIBLE
+        podcastList?.visibility = if (isLoading) View.GONE else View.VISIBLE
         loading?.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
@@ -178,5 +143,83 @@ class DiscoverFragment : BaseFragment() {
 
         val TAG = "DiscoverFragment"
     }
+
+    class Adapter(val context: Context, private val data: DiscoverData, val states: MutableMap<Int, Parcelable>) :
+            RecyclerView.Adapter<Adapter.DiscoverItemHolder>() {
+
+        val keys = data.podcastData.keys.toList()
+        val items = data.podcastData.values.toList()
+
+        private val boundViewHolders = mutableSetOf<DiscoverItemHolder>()
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverItemHolder {
+            return when (viewType) {
+                TYPE_GENRE -> GenreViewHolder(GenreListView(context))
+                TYPE_NETWORK -> NetworkViewHolder(NetworkListView(context))
+                else -> ListViewHolder(PodcastListView(context))
+            }
+        }
+
+        override fun getItemCount() = items.size + 2
+
+        override fun getItemViewType(position: Int): Int {
+            return when (position) {
+                items.size -> TYPE_GENRE
+                items.size + 1 -> TYPE_NETWORK
+                else -> TYPE_PODCAST_LIST
+            }
+        }
+
+        override fun onBindViewHolder(holder: DiscoverItemHolder, position: Int) {
+            val state = states[position]
+
+            boundViewHolders.add(holder)
+            state?.let {
+                holder.view.restoreInstanceState(it)
+            } ?: run {
+                holder.view.scrollToBeginning()
+            }
+
+            when (holder) {
+                is GenreViewHolder -> holder.list.load(data.genres.genres.values.toList(), position)
+                is NetworkViewHolder -> holder.list.load(data.networks.networks, position)
+                is ListViewHolder -> {
+                    val item = items[position]
+                    holder.list.load(item.title(), PodcastAdapterEntry.convertToAdapterEntries(item), position)
+
+                    keys[position].toIntOrNull()?.let {
+                        holder.list.addMoreAction { RxBus.default.postEvent(LoadGenreItemsEvent(it)) }
+                    }
+                }
+            }
+        }
+
+        fun onDestroyed() {
+            boundViewHolders.forEach { holder ->
+                states[holder.view.positionOnPage()] = holder.view.getInstanceState()
+            }
+        }
+
+        override fun onViewRecycled(holder: DiscoverItemHolder) {
+            boundViewHolders.remove(holder)
+            states[holder.view.positionOnPage()] = holder.view.getInstanceState()
+            super.onViewRecycled(holder)
+        }
+
+        abstract inner class DiscoverItemHolder(val view: ItemListView) : RecyclerView.ViewHolder(view)
+
+        inner class ListViewHolder(val list: PodcastListView) : DiscoverItemHolder(list)
+
+        inner class GenreViewHolder(val list: GenreListView) : DiscoverItemHolder(list)
+
+        inner class NetworkViewHolder(val list: NetworkListView) : DiscoverItemHolder(list)
+
+        companion object {
+            const val TYPE_PODCAST_LIST = 0
+            const val TYPE_GENRE = 1
+            const val TYPE_NETWORK = 2
+        }
+    }
+
 
 }

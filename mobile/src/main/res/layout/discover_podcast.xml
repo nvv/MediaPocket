@@ -3,23 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<android.support.v7.widget.RecyclerView-->
-    <!--android:id="@+id/podcasts"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:scrollbars="vertical" />-->
-
-    <ScrollView
-        android:id="@+id/discover_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/podcasts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/podcasts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="16dp" />
 
     <ProgressBar
         android:id="@+id/loading"
