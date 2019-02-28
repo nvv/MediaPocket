@@ -93,8 +93,10 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
                     setImageTint(TINT_HARD)
 
                     Palette.from(bitmap).generate { palette ->
-                        logoLoaded(bitmap, palette)
-                        onPaletteReady(palette)
+                        palette?.let {
+                            logoLoaded(bitmap, palette)
+                            onPaletteReady(palette)
+                        }
                     }
 
                 }

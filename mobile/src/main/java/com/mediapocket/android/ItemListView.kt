@@ -62,10 +62,10 @@ abstract class ItemListView (context: Context?) : FrameLayout(context) {
         return positionOnPage
     }
 
-    fun getInstanceState() = recyclerView.layoutManager.onSaveInstanceState()
+    fun getInstanceState() = recyclerView.layoutManager?.onSaveInstanceState()
 
     fun restoreInstanceState(state: Parcelable) {
-        recyclerView.layoutManager.onRestoreInstanceState(state)
+        recyclerView.layoutManager?.onRestoreInstanceState(state)
     }
 
     fun scrollToBeginning() {

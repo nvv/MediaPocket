@@ -230,27 +230,30 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                     }
 
                     Palette.from(it).generate { palette ->
-                        val color = palette.getDarkVibrantColor(R.attr.colorPrimary)
-                        val color2 = color or 0xFF000000.toInt()
-                        val color1 = manipulateColor(color2, 0.6f)
 
-                        if (color2 != currentBgPrimaryColor) {
-                            if (currentBgPrimaryColor == -1) {
-                                setGradientBackground(color2, color1)
-                            } else {
-                                val animation = ValueAnimator.ofObject(ArgbEvaluator(), currentBgPrimaryColor, color2)
-                                animation.duration = COLOR_TRANSITION_DURATION
-                                animation.addUpdateListener { animator ->
-                                    val curColor = animator.animatedValue as Int
-                                    setGradientBackground(curColor, manipulateColor(curColor, 0.6f))
+                        if (palette != null) {
+                            val color = palette.getDarkVibrantColor(R.attr.colorPrimary)
+                            val color2 = color or 0xFF000000.toInt()
+                            val color1 = manipulateColor(color2, 0.6f)
+
+                            if (color2 != currentBgPrimaryColor) {
+                                if (currentBgPrimaryColor == -1) {
+                                    setGradientBackground(color2, color1)
+                                } else {
+                                    val animation = ValueAnimator.ofObject(ArgbEvaluator(), currentBgPrimaryColor, color2)
+                                    animation.duration = COLOR_TRANSITION_DURATION
+                                    animation.addUpdateListener { animator ->
+                                        val curColor = animator.animatedValue as Int
+                                        setGradientBackground(curColor, manipulateColor(curColor, 0.6f))
+                                    }
+                                    animation.start()
                                 }
-                                animation.start()
+
+                                // TODO
+                                close.colorFilter = PorterDuffColorFilter(palette.getLightVibrantColor(
+                                        resources.getColor(R.color.white)), PorterDuff.Mode.SRC_ATOP)
+
                             }
-
-                            // TODO
-                            close.colorFilter = PorterDuffColorFilter(palette.getLightVibrantColor(
-                                    resources.getColor(R.color.white)), PorterDuff.Mode.SRC_ATOP)
-
                         }
                     }
                 }

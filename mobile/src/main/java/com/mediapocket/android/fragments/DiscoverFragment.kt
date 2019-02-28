@@ -53,7 +53,7 @@ class DiscoverFragment : BaseFragment() {
         podcastList?.layoutManager?.onRestoreInstanceState(arguments?.getParcelable<Parcelable>("MAIN_POS"))
         discoverData?.let {
 
-            val states = mutableMapOf<Int, Parcelable>()
+            val states = mutableMapOf<Int, Parcelable?>()
             for (index in 0 .. (it.podcastData.values.size + 2)) {
                 arguments?.getParcelable<Parcelable>("POS$index")?.let {
                     states[index] = it
@@ -144,7 +144,7 @@ class DiscoverFragment : BaseFragment() {
         val TAG = "DiscoverFragment"
     }
 
-    class Adapter(val context: Context, private val data: DiscoverData, val states: MutableMap<Int, Parcelable>) :
+    class Adapter(val context: Context, private val data: DiscoverData, val states: MutableMap<Int, Parcelable?>) :
             RecyclerView.Adapter<Adapter.DiscoverItemHolder>() {
 
         val keys = data.podcastData.keys.toList()
