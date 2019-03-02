@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.mediapocket.android.core.AppDatabase
+import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
@@ -75,6 +76,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
     override fun onCreate() {
         super.onCreate()
+        DependencyLocator.initInstance(this)
 
         MainComponentLocator.mainComponent.inject(this)
 
