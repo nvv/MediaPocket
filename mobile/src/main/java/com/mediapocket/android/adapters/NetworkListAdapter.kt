@@ -1,6 +1,6 @@
 package com.mediapocket.android.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -19,7 +19,7 @@ import org.jetbrains.anko.cardview.v7.cardView
 /**
  * @author Vlad Namashko
  */
-class NetworkListAdapter : RecyclerView.Adapter<NetworkListAdapter.Holder>() {
+class NetworkListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<NetworkListAdapter.Holder>() {
 
     private var networks: List<Network>? = null
 
@@ -71,7 +71,7 @@ class NetworkListAdapter : RecyclerView.Adapter<NetworkListAdapter.Holder>() {
 
     }
 
-    class Holder(itemView: View) :  RecyclerView.ViewHolder(itemView) {
+    class Holder(itemView: View) :  androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         val logo : ImageView = itemView.find(R.id.icon)
 
         fun bind(network: Network) {

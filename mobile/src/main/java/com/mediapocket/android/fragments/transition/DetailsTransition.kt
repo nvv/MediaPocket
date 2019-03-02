@@ -1,7 +1,7 @@
 package com.mediapocket.android.fragments.transition
 
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.transition.*
 
 /**

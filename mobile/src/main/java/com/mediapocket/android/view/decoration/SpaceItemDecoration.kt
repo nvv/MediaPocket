@@ -1,19 +1,19 @@
 package com.mediapocket.android.view.decoration
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 
 /**
  * @author Vlad Namashko
  */
-class SpaceItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
+class SpaceItemDecoration(private val space: Int) : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
 
         val itemPosition = parent.getChildAdapterPosition(view);
-        if (itemPosition == RecyclerView.NO_POSITION) {
+        if (itemPosition == androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
             return
         }
 

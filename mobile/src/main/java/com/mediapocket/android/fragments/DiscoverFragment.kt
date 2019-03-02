@@ -1,10 +1,10 @@
 package com.mediapocket.android.fragments
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v7.widget.*
+import androidx.appcompat.widget.*
 import android.view.*
 import android.widget.ProgressBar
 import com.mediapocket.android.ItemListView
@@ -32,7 +32,7 @@ class DiscoverFragment : BaseFragment() {
     protected val subscription: CompositeDisposable = CompositeDisposable()
 
     protected var loading: ProgressBar? = null
-    protected var podcastList: RecyclerView? = null
+    protected var podcastList: androidx.recyclerview.widget.RecyclerView? = null
     private var discoverData: DiscoverData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,7 @@ class DiscoverFragment : BaseFragment() {
             }
 
 
-            podcastList?.layoutManager = LinearLayoutManager(podcastList?.context)
+            podcastList?.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(podcastList?.context)
             podcastList?.adapter = Adapter(requireActivity(), it, states)
 
         }
@@ -145,7 +145,7 @@ class DiscoverFragment : BaseFragment() {
     }
 
     class Adapter(val context: Context, private val data: DiscoverData, val states: MutableMap<Int, Parcelable?>) :
-            RecyclerView.Adapter<Adapter.DiscoverItemHolder>() {
+            androidx.recyclerview.widget.RecyclerView.Adapter<Adapter.DiscoverItemHolder>() {
 
         val keys = data.podcastData.keys.toList()
         val items = data.podcastData.values.toList()
@@ -206,7 +206,7 @@ class DiscoverFragment : BaseFragment() {
             super.onViewRecycled(holder)
         }
 
-        abstract inner class DiscoverItemHolder(val view: ItemListView) : RecyclerView.ViewHolder(view)
+        abstract inner class DiscoverItemHolder(val view: ItemListView) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view)
 
         inner class ListViewHolder(val list: PodcastListView) : DiscoverItemHolder(list)
 

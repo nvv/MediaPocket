@@ -7,9 +7,9 @@ import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.graphics.Bitmap
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
-import android.support.v4.media.session.MediaButtonReceiver
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.Html
@@ -24,23 +24,23 @@ class NotificationBuilder(private val context: Context) {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     private val stopPendingIntent =
-            MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP)
+            androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP)
 
     private val rewind = NotificationCompat.Action(R.drawable.ic_rewind,
             context.getString(R.string.notification_rewind),
-            MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_REWIND))
+            androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_REWIND))
 
     private val fastforward = NotificationCompat.Action(R.drawable.ic_fastforward,
             context.getString(R.string.notification_fastforward),
-            MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_FAST_FORWARD))
+            androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_FAST_FORWARD))
 
     private val next = NotificationCompat.Action(R.drawable.ic_next,
             context.getString(R.string.notification_next),
-            MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_SKIP_TO_NEXT))
+            androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_SKIP_TO_NEXT))
 
     private val prev = NotificationCompat.Action(R.drawable.ic_prev,
             context.getString(R.string.notification_prev),
-            MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS))
+            androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS))
 
 
     fun buildPlayerNotification(session: MediaSessionCompat, art : Bitmap? = null): Notification {
@@ -59,7 +59,7 @@ class NotificationBuilder(private val context: Context) {
         val isPlaying = state.state == PlaybackStateCompat.STATE_PLAYING ||
                 state.state == PlaybackStateCompat.STATE_BUFFERING
 
-        val mediaStyle = android.support.v4.media.app.NotificationCompat.MediaStyle()
+        val mediaStyle = androidx.media.app.NotificationCompat.MediaStyle()
                 .setCancelButtonIntent(stopPendingIntent)
                 .setMediaSession(session.sessionToken)
                 .setShowActionsInCompactView(2)
@@ -91,7 +91,7 @@ class NotificationBuilder(private val context: Context) {
                 .addAction(NotificationCompat.Action(
                         if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play,
                         context.getString(if (isPlaying) R.string.mr_controller_pause else R.string.mr_controller_play),
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(context,
+                        androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent(context,
                                 PlaybackStateCompat.ACTION_PLAY_PAUSE)))
 
                 // Add fastforward button

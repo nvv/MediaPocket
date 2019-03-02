@@ -4,15 +4,15 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 
 
 
 /**
  * @author Vlad Namashko
  */
-class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.ItemDecoration() {
+class DividerItemDecoration(context: Context, orientation: Int) : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
     private val mDivider: Drawable
 
@@ -38,7 +38,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         mOrientation = orientation
     }
 
-    override fun onDraw(c: Canvas, parent: RecyclerView) {
+    override fun onDraw(c: Canvas, parent: androidx.recyclerview.widget.RecyclerView) {
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent)
         } else {
@@ -46,7 +46,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         }
     }
 
-    fun drawVertical(c: Canvas, parent: RecyclerView) {
+    fun drawVertical(c: Canvas, parent: androidx.recyclerview.widget.RecyclerView) {
         val left = (parent.paddingLeft + padding).toInt()
         val right = (parent.width - parent.paddingRight - padding).toInt()
 
@@ -54,7 +54,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             val params = child
-                    .layoutParams as RecyclerView.LayoutParams
+                    .layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin
             val bottom = top + mDivider.getIntrinsicHeight()
             mDivider.setBounds(left, top, right, bottom)
@@ -62,7 +62,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         }
     }
 
-    fun drawHorizontal(c: Canvas, parent: RecyclerView) {
+    fun drawHorizontal(c: Canvas, parent: androidx.recyclerview.widget.RecyclerView) {
         val top = parent.paddingTop
         val bottom = parent.height - parent.paddingBottom
 
@@ -70,7 +70,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             val params = child
-                    .layoutParams as RecyclerView.LayoutParams
+                    .layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
             val left = (child.right + params.rightMargin + padding).toInt()
             val right = (left + mDivider.getIntrinsicHeight() - padding).toInt()
             mDivider.setBounds(left, top, right, bottom)
@@ -78,7 +78,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         }
     }
 
-    override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
+    override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: androidx.recyclerview.widget.RecyclerView) {
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight())
         } else {
@@ -90,8 +90,8 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
 
         private val ATTRS = intArrayOf(android.R.attr.listDivider)
 
-        const val HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL
+        const val HORIZONTAL_LIST = androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 
-        const val VERTICAL_LIST = LinearLayoutManager.VERTICAL
+        const val VERTICAL_LIST = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
     }
 }

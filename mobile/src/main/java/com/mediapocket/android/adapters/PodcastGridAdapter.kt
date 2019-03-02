@@ -1,7 +1,7 @@
 package com.mediapocket.android.adapters
 
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ import com.mediapocket.android.utils.ViewUtils
 /**
  * @author Vlad Namashko
  */
-class PodcastGridAdapter : RecyclerView.Adapter<PodcastGridAdapter.PodcastViewHolder>() {
+class PodcastGridAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<PodcastGridAdapter.PodcastViewHolder>() {
 
     private var items: List<PodcastAdapterEntry>? = null
     private var itemsInRow: Int = 2
@@ -44,7 +44,7 @@ class PodcastGridAdapter : RecyclerView.Adapter<PodcastGridAdapter.PodcastViewHo
     }
 
 
-    class PodcastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class PodcastViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         val title = itemView.findViewById<TextView>(R.id.title)
         val image = itemView.findViewById<ImageView>(R.id.image)
 

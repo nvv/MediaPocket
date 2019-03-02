@@ -1,7 +1,7 @@
 package com.mediapocket.android.view
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import com.mediapocket.android.ItemListView
 import com.mediapocket.android.R

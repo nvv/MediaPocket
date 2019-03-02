@@ -1,6 +1,6 @@
 package com.mediapocket.android.core
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.di.*

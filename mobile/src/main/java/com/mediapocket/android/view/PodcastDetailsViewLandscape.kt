@@ -6,7 +6,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.support.v7.graphics.Palette
+import androidx.palette.graphics.Palette
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.ViewGroup
@@ -39,7 +39,7 @@ class PodcastDetailsViewLandscape(context: Context?, attrs: AttributeSet?, defSt
         return R.layout.podcast_details_view_landscape
     }
 
-    override fun logoLoaded(bitmap: Bitmap, palette: Palette) {
+    override fun logoLoaded(bitmap: Bitmap, palette: androidx.palette.graphics.Palette) {
         animatedPanel.setBackgroundColor(palette.getDarkVibrantColor(R.attr.colorPrimary))
 //            if (dataLoaded) {
                 animatedBackground.postDelayed({

@@ -1,7 +1,7 @@
 package com.mediapocket.android.adapters
 
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import com.mediapocket.android.view.PodcastListView
 /**
  * @author Vlad Namashko
  */
-class PodcastListAdapter : RecyclerView.Adapter<PodcastListAdapter.ViewHolder>() {
+class PodcastListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<PodcastListAdapter.ViewHolder>() {
 
     private var items: List<PodcastAdapterEntry>? = null
     private var positionOnPage: Int = 0
@@ -57,7 +57,7 @@ class PodcastListAdapter : RecyclerView.Adapter<PodcastListAdapter.ViewHolder>()
         }
     }
 
-    abstract class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         abstract fun bind(data: Any, position: Int, positionOnPage: Int)
 
         protected fun getSize() = (ViewUtils.getRealScreenSize(itemView.context).x / 2.6 - 2 * ITEM_GAP).toInt()

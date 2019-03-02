@@ -1,6 +1,6 @@
 package com.mediapocket.android.dao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 
 /**

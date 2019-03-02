@@ -1,6 +1,6 @@
 package com.mediapocket.android.viewmodels
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 

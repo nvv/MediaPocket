@@ -4,9 +4,9 @@ import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.graphics.drawable.Animatable2Compat
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.splash_screen.*
 

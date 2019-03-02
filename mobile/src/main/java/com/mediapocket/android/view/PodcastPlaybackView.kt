@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.VolumeProviderCompat
+import androidx.media.VolumeProviderCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.AttributeSet

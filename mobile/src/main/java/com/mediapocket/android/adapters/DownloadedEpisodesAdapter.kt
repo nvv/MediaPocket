@@ -2,7 +2,7 @@ package com.mediapocket.android.adapters
 
 import android.app.AlertDialog
 import android.media.MediaMetadataRetriever
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +31,7 @@ import javax.inject.Inject
 /**
  * @author Vlad Namashko
  */
-class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf()) : RecyclerView.Adapter<DownloadedEpisodesAdapter.EpisodeViewHolder>() {
+class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf()) : androidx.recyclerview.widget.RecyclerView.Adapter<DownloadedEpisodesAdapter.EpisodeViewHolder>() {
 
     private val localEpisodes = ArrayList<PodcastEpisodeItem>(episodes)
 
@@ -73,7 +73,7 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
         notifyItemRemoved(position)
     }
 
-    inner class EpisodeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class EpisodeViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bind(position: Int, swipeLayoutHelper: ViewBinderHelper, item: PodcastEpisodeItem, download: PodcastDownloadItem?) {
             itemView.title.text = item.title

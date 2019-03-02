@@ -13,8 +13,8 @@ import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.graphics.Palette
+import androidx.core.view.GestureDetectorCompat
+import androidx.palette.graphics.Palette
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -229,7 +229,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
                         alpha.start()
                     }
 
-                    Palette.from(it).generate { palette ->
+                    androidx.palette.graphics.Palette.from(it).generate { palette ->
 
                         if (palette != null) {
                             val color = palette.getDarkVibrantColor(R.attr.colorPrimary)

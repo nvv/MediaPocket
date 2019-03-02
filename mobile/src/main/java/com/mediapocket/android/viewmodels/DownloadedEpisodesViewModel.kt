@@ -1,6 +1,6 @@
 package com.mediapocket.android.viewmodels
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.download.PodcastDownloadManager

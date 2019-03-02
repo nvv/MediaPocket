@@ -1,8 +1,8 @@
 package com.mediapocket.android.adapters
 
 import android.graphics.PorterDuff
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -17,7 +17,7 @@ import org.jetbrains.anko.*
 /**
  * @author Vlad Namashko
  */
-class GenreListAdapter : RecyclerView.Adapter<GenreListAdapter.Holder>() {
+class GenreListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<GenreListAdapter.Holder>() {
 
     private var genres: List<Genre>? = null
 
@@ -55,5 +55,5 @@ class GenreListAdapter : RecyclerView.Adapter<GenreListAdapter.Holder>() {
         }
     }
 
-    class Holder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+    class Holder(val textView: TextView) : androidx.recyclerview.widget.RecyclerView.ViewHolder(textView)
 }

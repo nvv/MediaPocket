@@ -10,12 +10,12 @@ import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
-    private fun slideFragment(fragment: Fragment, tag: String) {
+    private fun slideFragment(fragment: androidx.fragment.app.Fragment, tag: String) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fragment.enterTransition = Slide(Gravity.RIGHT)

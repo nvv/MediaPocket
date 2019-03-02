@@ -1,10 +1,10 @@
 package com.mediapocket.android.fragments
 
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +36,7 @@ class DownloadedPodcastsFragment : BaseFragment() {
     private lateinit var model: DownloadedEpisodesViewModel
     private val subscription: CompositeDisposable = CompositeDisposable()
 
-    lateinit var items: RecyclerView
+    lateinit var items: androidx.recyclerview.widget.RecyclerView
     lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class DownloadedPodcastsFragment : BaseFragment() {
             }
         }.view
 
-        items.layoutManager = LinearLayoutManager(context)
+        items.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         items.addItemDecoration(DividerItemDecoration(requireActivity(), VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
 
         subscription.add(model.getDownloadedEpisodes().subscribe {

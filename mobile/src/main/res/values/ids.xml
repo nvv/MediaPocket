@@ -13,6 +13,10 @@
     <item name="list_10" type="id" />
     <item name="list_11" type="id" />
     <item name="list_12" type="id" />
+    <item name="list_13" type="id" />
+    <item name="list_14" type="id" />
+    <item name="list_15" type="id" />
+    <item name="list_16" type="id" />
 
     <item name="pub_date" type="id" />
     <item name="download_status" type="id" />

@@ -1,3 +1,4 @@
 <resources>
-    <string name="default_podcasts">top,featured,1311,1303,1301</string>
+    <!--<string name="default_podcasts">top,featured,1311,1303,1301</string>-->
+    <string name="default_podcasts">top,featured,1311,1303,1301,1305,1314,1311,1323,1325,1324,1309,1318,1304,1321,1315</string>
 </resources>

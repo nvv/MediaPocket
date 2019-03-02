@@ -1,9 +1,9 @@
 package com.mediapocket.android.fragments
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout

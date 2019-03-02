@@ -2,8 +2,8 @@ package com.mediapocket.android
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Adapter
@@ -22,7 +22,7 @@ import org.jetbrains.anko.recyclerview.v7.recyclerView
 abstract class ItemListView (context: Context?) : FrameLayout(context) {
 
     protected var positionOnPage = 0
-    protected val recyclerView: RecyclerView
+    protected val recyclerView: androidx.recyclerview.widget.RecyclerView
     protected val title: TextView
 
     init {
@@ -45,7 +45,7 @@ abstract class ItemListView (context: Context?) : FrameLayout(context) {
 
             recyclerView {
                 id = R.id.items
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
                 setPadding(padding, 0, padding, 0)
                 clipToPadding = false
                 setHasFixedSize(true)

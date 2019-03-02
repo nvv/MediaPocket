@@ -1,6 +1,6 @@
 package com.mediapocket.android.fragments
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import com.mediapocket.android.viewmodels.PodcastViewModel
 

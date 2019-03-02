@@ -3,11 +3,11 @@ package com.mediapocket.android.view
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.support.design.widget.CollapsingToolbarLayout
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.graphics.Palette
-import android.support.v7.widget.Toolbar
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.palette.graphics.Palette
+import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.View
@@ -46,12 +46,12 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
         }
         toolbar.inflateMenu(R.menu.podcast_details_menu)
 
-        val pager: ViewPager? = findViewById(R.id.pager)
+        val pager: androidx.viewpager.widget.ViewPager? = findViewById(R.id.pager)
         pager?.let {
             dotPager = findViewById(R.id.dot_pager)
             dotPager.initView(2, 0)
 
-            it.adapter = object : PagerAdapter() {
+            it.adapter = object : androidx.viewpager.widget.PagerAdapter() {
                 override fun isViewFromObject(arg0: View, arg1: Any): Boolean {
                     return arg0 == arg1
                 }
@@ -66,7 +66,7 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
                 }
             }
 
-            it.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            it.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
                 }
 
@@ -100,7 +100,7 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
         genre.visibility = if (details.primaryGenreName != null) VISIBLE else GONE
     }
 
-    override fun logoLoaded(bitmap: Bitmap, palette: Palette) {
+    override fun logoLoaded(bitmap: Bitmap, palette: androidx.palette.graphics.Palette) {
         collapsingToolbar?.setExpandedTitleColor(resources.getColor(R.color.white))
         val color = palette.getDarkVibrantColor(R.attr.colorPrimary) or 0xFF000000.toInt()
 //        val color = palette.getDarkVibrantColor(R.attr.colorPrimary)

@@ -4,9 +4,9 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.support.v7.graphics.Palette
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -28,7 +28,7 @@ import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.SimpleItemAnimator
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -37,12 +37,12 @@ import io.reactivex.disposables.CompositeDisposable
  */
 abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
 
-    protected var items: RecyclerView
+    protected var items: androidx.recyclerview.widget.RecyclerView
     protected var shimmerContainer: ShimmerFrameLayout
     protected var description: TextView
     var logo: ImageView
 
-    private var palette: Palette? = null
+    private var palette: androidx.palette.graphics.Palette? = null
 
     private val subscription = CompositeDisposable()
 
@@ -51,7 +51,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         LayoutInflater.from(context).inflate(getLayout(), this)
 
         items = findViewById(R.id.items)
-        val layoutManager = LinearLayoutManager(context)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         items.layoutManager = layoutManager
 
         logo = findViewById(R.id.background)
@@ -69,12 +69,12 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         description.text = Html.fromHtml(rss.description())
 
         items.adapter = PodcastEpisodeAdapter(context, rss.items(), rss.link(), podcastId, subscription)
-        (items.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
     }
 
-    private fun onPaletteReady(palette: Palette) {
+    private fun onPaletteReady(palette: androidx.palette.graphics.Palette) {
         this.palette = palette
         syncAdapterColor()
     }
@@ -92,7 +92,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
                     logo.setImageBitmap(bitmap)
                     setImageTint(TINT_HARD)
 
-                    Palette.from(bitmap).generate { palette ->
+                    androidx.palette.graphics.Palette.from(bitmap).generate { palette ->
                         palette?.let {
                             logoLoaded(bitmap, palette)
                             onPaletteReady(palette)
@@ -134,5 +134,5 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
     abstract fun getLayout(): Int
 
-    abstract fun logoLoaded(bitmap: Bitmap, palette: Palette)
+    abstract fun logoLoaded(bitmap: Bitmap, palette: androidx.palette.graphics.Palette)
 }

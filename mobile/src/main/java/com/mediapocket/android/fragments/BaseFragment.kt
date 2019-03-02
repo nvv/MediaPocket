@@ -1,12 +1,12 @@
 package com.mediapocket.android.fragments
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 
 /**
  * @author Vlad Namashko
  */
-abstract class BaseFragment: Fragment() {
+abstract class BaseFragment: androidx.fragment.app.Fragment() {
 
     abstract fun getTitle(): String
 

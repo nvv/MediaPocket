@@ -3,12 +3,12 @@ package com.mediapocket.android.adapters
 import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.drawable.Animatable
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ShareCompat
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.app.ShareCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.TextUtils
 import android.view.Gravity
@@ -53,7 +53,7 @@ class PodcastEpisodeAdapter(private val context: Context,
                             private val items: List<Item>?,
                             private val parentLink: String,
                             private val podcastId: String?,
-                            private val subscription: CompositeDisposable) : RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
+                            private val subscription: CompositeDisposable) : androidx.recyclerview.widget.RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
 
     private val data = mutableListOf<PodcastEpisode>()
     private val dataMap = LinkedHashMap<String, PodcastEpisode>()
@@ -150,7 +150,7 @@ class PodcastEpisodeAdapter(private val context: Context,
         }
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    override fun onDetachedFromRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         mediaConnection.unregisterMediaControllerCallback(callback)
     }
 
@@ -312,7 +312,7 @@ class PodcastEpisodeAdapter(private val context: Context,
         notifyDataSetChanged()
     }
 
-    inner class PodcastItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class PodcastItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         private val pubDate = itemView.findViewById<TextView>(R.id.pub_date)
         private val title = itemView.findViewById<TextView>(R.id.title)

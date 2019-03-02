@@ -3,8 +3,8 @@ package com.mediapocket.android.fragments
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +28,7 @@ abstract class BasePodcastFragment : BaseFragment() {
     protected val subscription: CompositeDisposable = CompositeDisposable()
 
     protected var loading: ProgressBar? = null
-    protected var podcasts: RecyclerView? = null
+    protected var podcasts: androidx.recyclerview.widget.RecyclerView? = null
 
     protected var animatedAdapter: Boolean = true
 
@@ -40,7 +40,7 @@ abstract class BasePodcastFragment : BaseFragment() {
         podcasts?.addItemDecoration(SpaceItemDecoration(PodcastGridAdapter.ITEM_GAP))
 
         adapter.setItemsInRowCount(calculateItemsCount())
-        podcasts?.layoutManager = GridLayoutManager(context, calculateItemsCount())
+        podcasts?.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, calculateItemsCount())
 
         subscription.add(loading().subscribe { isLoading -> syncVisibility(isLoading) })
 
@@ -53,7 +53,7 @@ abstract class BasePodcastFragment : BaseFragment() {
         super.onConfigurationChanged(newConfig)
 
         adapter.setItemsInRowCount(calculateItemsCount())
-        podcasts?.layoutManager = GridLayoutManager(view?.context, calculateItemsCount())
+        podcasts?.layoutManager = androidx.recyclerview.widget.GridLayoutManager(view?.context, calculateItemsCount())
         adapter.notifyDataSetChanged()
     }
 
