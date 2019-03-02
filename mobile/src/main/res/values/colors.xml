@@ -16,4 +16,6 @@
     <color name="pager_selected">@color/grey_light</color>
     <color name="pager_other">@color/grey</color>
 
+    <color name="dark_color">#212121</color>
+    <color name="dark_color_semi_transparent">#cc212121</color>
 </resources>

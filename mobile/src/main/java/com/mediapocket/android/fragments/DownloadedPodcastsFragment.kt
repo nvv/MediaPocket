@@ -18,6 +18,7 @@ import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.events.DeletePodcastEpisodeEvent
 import com.mediapocket.android.events.PopBackStackEvent
+import com.mediapocket.android.extensions.getResourceIdAttribute
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
@@ -48,7 +49,7 @@ class DownloadedPodcastsFragment : BaseFragment() {
 
         val view = UI {
             frameLayout {
-                backgroundResource = R.color.white
+                backgroundResource = context.getResourceIdAttribute(R.attr.primaryBackgroundColor)
                 lparams(width = matchParent, height = matchParent)
 
                 items = recyclerView {

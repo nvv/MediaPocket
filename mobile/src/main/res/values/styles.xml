@@ -6,6 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="toolbarAccentColor">@android:color/white</item>
+        <item name="primaryBackgroundColor">@color/white</item>
+        <item name="primarySemiTransparentColor">@color/white_semi_transparent</item>
+
+        <!--<item name="primaryBackgroundColor">@color/dark_color</item>-->
+        <!--<item name="primarySemiTransparentColor">@color/dark_color_semi_transparent</item>-->
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -21,21 +28,22 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="action_bar" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
+    <style name="ActionBarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">?attr/toolbarAccentColor</item>
+        <item name="android:textColorSecondary">?attr/toolbarAccentColor</item>
+        <item name="actionMenuTextColor">?attr/toolbarAccentColor</item>
     </style>
 
-
-    <style name="exp_toolbar_title" parent="@android:style/TextAppearance.Holo.Medium">
-        <item name="android:textSize">30sp</item>
+    <style name="ExpandedToolbarTitle" parent="@android:style/TextAppearance.Holo.Medium">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">?attr/toolbarAccentColor</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="coll_toolbar_title" parent="@android:style/TextAppearance.Medium">
+
+    <style name="CollapsedToolbarTitle" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?attr/toolbarAccentColor</item>
         <item name="android:background">@drawable/text_bg_gradient</item>
     </style>
 

@@ -37,8 +37,6 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
 
     init {
         collapsingToolbar = findViewById(R.id.collapsing_toolbar)
-        collapsingToolbar?.setCollapsedTitleTextAppearance(R.style.coll_toolbar_title)
-        collapsingToolbar?.setExpandedTitleTextAppearance(R.style.exp_toolbar_title)
 
         toolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationOnClickListener {
@@ -101,9 +99,7 @@ class PodcastDetailsViewPortrait(context: Context?, attrs: AttributeSet?, defSty
     }
 
     override fun logoLoaded(bitmap: Bitmap, palette: androidx.palette.graphics.Palette) {
-        collapsingToolbar?.setExpandedTitleColor(resources.getColor(R.color.white))
         val color = palette.getDarkVibrantColor(R.attr.colorPrimary) or 0xFF000000.toInt()
-//        val color = palette.getDarkVibrantColor(R.attr.colorPrimary)
         description.setBackgroundColor(color)
 
         collapsingToolbar?.setContentScrimColor(color)

@@ -33,6 +33,7 @@ import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_ADDE
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_WAITING_FOR_NETWORK
 import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.PlayPodcastEvent
+import com.mediapocket.android.extensions.getResourceIdAttribute
 import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.model.Item
 import com.mediapocket.android.playback.model.RssEpisodeItem
@@ -172,7 +173,7 @@ class PodcastEpisodeAdapter(private val context: Context,
 
                 linearLayout {
                     setPadding(dip(16), dip(16), dip(16), dip(16))
-                    backgroundResource = R.color.white_semi_transparent
+                    backgroundResource = context.getResourceIdAttribute(R.attr.primarySemiTransparentColor)
                     layoutTransition = LayoutTransition()
                     lparams(width = matchParent, height = wrapContent)
                     orientation = LinearLayout.VERTICAL

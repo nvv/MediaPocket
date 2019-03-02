@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="toolbarAccentColor" format="reference|color" />
+    <attr name="primaryBackgroundColor" format="reference|color" />
+    <attr name="primarySemiTransparentColor" format="reference|color" />
+
+</resources>
