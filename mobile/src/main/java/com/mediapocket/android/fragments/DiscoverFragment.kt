@@ -41,7 +41,7 @@ class DiscoverFragment : BaseFragment() {
         model = ViewModelProviders.of(this).get(PodcastViewModel::class.java)
 
         subscription.add(
-                model.getDiscoverData(getString(R.string.default_podcasts).split(",")).subscribe { data: DiscoverData ->
+                model.getDiscoverData().subscribe { data: DiscoverData ->
                     discoverData = data
                     if (view != null) {
                         initPodcasts()

@@ -9,7 +9,6 @@ import com.mediapocket.android.service.ItunesPodcastRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.function.BiFunction
 import javax.inject.Inject
 
 /**
@@ -19,6 +18,8 @@ class PodcastViewModel : LoadableViewModel() {
 
     @set:Inject
     lateinit var database: AppDatabase
+
+    private val defaultGenres = DependencyLocator.getInstance().context.getString(R.string.default_podcasts).split(",")
 
     init {
         MainComponentLocator.mainComponent.inject(this)
@@ -50,6 +51,10 @@ class PodcastViewModel : LoadableViewModel() {
 
     fun getFeatured(): Single<GenreResult> {
         return ItunesPodcastRepository.loadFeatured()
+    }
+
+    fun getDiscoverData() : Single<DiscoverData> {
+        return getDiscoverData(defaultGenres)
     }
 
     fun getDiscoverData(podcasts: List<String>): Single<DiscoverData> {

@@ -37,12 +37,16 @@ object ItunesPodcastRepository {
 
     private val country = GlobalUtils.getUserCountry(DependencyLocator.getInstance().context)
 
+    private val genreKey = CacheKey(Genres::class.java, listOf(country))
+    private val featuredKey = CacheKey(GenreResult::class.java, listOf(country, "featured"))
+    private val topPodcastsKey = CacheKey(Result::class.java, listOf(country))
+
     init {
         DependencyLocator.getInstance().serviceComponent.inject(this)
     }
 
     fun loadTopPodcasts(): Single<Result> {
-        return execCacheable({ topPodcastService.get(country) }, CacheKey(Result::class.java, listOf(country)))
+        return execCacheable({ topPodcastService.get(country) }, topPodcastsKey)
     }
 
     fun loadGenres(): Single<Genres> {
@@ -60,7 +64,7 @@ object ItunesPodcastRepository {
                     }
                 })
             }
-        }, CacheKey(Genres::class.java, listOf(country)))
+        }, genreKey)
 
     }
 
@@ -102,7 +106,7 @@ object ItunesPodcastRepository {
                     }
                 })
             }
-        }, CacheKey(GenreResult::class.java, listOf(country, "featured")))
+        }, featuredKey)
     }
 
     fun lookupPodcast(id: String): Single<PodcastLookup> {
@@ -151,8 +155,10 @@ object ItunesPodcastRepository {
     private fun <R : Cacheable> execCacheable(action: () -> Single<R>, key: CacheKey): Single<R> {
         val cache: R? = Cache.get(key)
 
-        cache?.let { it -> return Single.just(it) }
-                ?: return action.invoke()
+        cache?.let {
+            return Single.just(it)
+        } ?:
+            return action.invoke()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .flatMap { result: R ->
@@ -160,5 +166,6 @@ object ItunesPodcastRepository {
                             Single.just(result)
                         }
     }
+
 
 }
