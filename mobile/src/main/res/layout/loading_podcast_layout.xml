@@ -30,12 +30,12 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="28dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="16dp"
             android:background="@color/grey_light" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="16dp"
+            android:layout_height="20dp"
             android:background="@color/grey_light" />
 
     </LinearLayout>
