@@ -43,7 +43,9 @@ class PodcastPlaybackCompatView(context: Context?, attrs: AttributeSet?, defStyl
 
     override fun getMediaControllerCallback() = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-            visibility = View.VISIBLE
+            if (state.isPlaying) {
+                visibility = View.VISIBLE
+            }
 
             if (isPlaying != state.isPlaying && state.state != PlaybackStateCompat.STATE_BUFFERING) {
                 isPlaying = state.isPlaying

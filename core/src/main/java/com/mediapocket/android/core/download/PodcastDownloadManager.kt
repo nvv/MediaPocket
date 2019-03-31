@@ -12,9 +12,11 @@ import com.tonyodev.fetch2core.Func
 import com.tonyodev.fetch2core.Func2
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
+import io.reactivex.functions.Predicate
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -30,6 +32,7 @@ class PodcastDownloadManager(context: Context) {
     private var fetch: Fetch
 
     private val databaseSubject = BehaviorSubject.create<List<PodcastDownloadItem>>()
+    private val databaseChangesSubject = PublishSubject.create<List<PodcastDownloadItem>>()
     private val downloadsSubject = PublishSubject.create<PodcastDownloadItem>()
     private val allActiveDownloadsSubject = PublishSubject.create<List<PodcastDownloadItem>>()
 
@@ -78,7 +81,9 @@ class PodcastDownloadManager(context: Context) {
                             it.progress = 100
 
                             downloadsSubject.onNext(it)
-                            databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
+                            val database = getStoredItemsWithProgress() ?: emptyList()
+                            databaseChangesSubject.onNext(database)
+                            databaseSubject.onNext(database)
                         }
                     }
 
@@ -231,6 +236,10 @@ class PodcastDownloadManager(context: Context) {
             }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(consumer)
 
+    fun subscribeForDatabaseChanges(consumer: Consumer<List<PodcastDownloadItem>>, observeOn: Scheduler) = databaseChangesSubject
+            .subscribeOn(Schedulers.io())
+            .observeOn(observeOn).subscribe(consumer)
+
     fun subscribeForAllActiveDownloads(consumer: Consumer<List<PodcastDownloadItem>>) = allActiveDownloadsSubject.observeOn(AndroidSchedulers.mainThread()).subscribe(consumer)
 
     fun pause(id: Int) {
@@ -277,7 +286,9 @@ class PodcastDownloadManager(context: Context) {
 
                 fetch.enqueue(request)
 
-                databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
+                val database = getStoredItemsWithProgress() ?: emptyList()
+                databaseChangesSubject.onNext(database)
+                databaseSubject.onNext(database)
             }
         }
 
@@ -322,7 +333,9 @@ class PodcastDownloadManager(context: Context) {
             }
             database.downloadedPodcastItemDao().delete(item.id)
 
-            databaseSubject.onNext(getStoredItemsWithProgress() ?: emptyList())
+            val database = getStoredItemsWithProgress() ?: emptyList()
+            databaseChangesSubject.onNext(database)
+            databaseSubject.onNext(database)
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

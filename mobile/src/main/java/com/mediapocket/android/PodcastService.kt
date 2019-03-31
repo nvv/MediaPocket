@@ -22,17 +22,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
 import com.mediapocket.android.extensions.from
 import com.mediapocket.android.extensions.id
-import com.mediapocket.android.playback.LocalPlayback
+import com.mediapocket.android.playback.PlaybackUnit
 import com.mediapocket.android.playback.model.PlayableItem
 import com.mediapocket.android.service.RssRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -58,7 +61,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                     PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
             )
 
-    private lateinit var playback: LocalPlayback
+    private lateinit var playback: PlaybackUnit
 
     private lateinit var notificationBuilder: NotificationBuilder
     private lateinit var notificationManager: NotificationManagerCompat
@@ -71,6 +74,9 @@ class PodcastService : MediaBrowserServiceCompat() {
 
     @set:Inject
     lateinit var database: AppDatabase
+
+    @set:Inject
+    lateinit var downloadManager: PodcastDownloadManager
 
     private val subscription = CompositeDisposable()
 
@@ -108,8 +114,28 @@ class PodcastService : MediaBrowserServiceCompat() {
             it.registerCallback(MediaControllerCompatCallback())
         }
 
-        playback = LocalPlayback(this, mSession)
+        playback = PlaybackUnit(this, mSession)
         notificationBuilder = NotificationBuilder(this)
+
+        subscription.add(downloadManager.subscribeForDatabaseChanges(Consumer {
+            if (playback.currentMediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
+                MediaSessionConnection.getInstance(applicationContext).mediaBrowser.apply {
+                    unsubscribe(PlayableItem.MY_MEDIA_ID_DOWNLOADED)
+                    subscribe(PlayableItem.MY_MEDIA_ID_DOWNLOADED, object : MediaBrowserCompat.SubscriptionCallback() {
+
+                        override fun onChildrenLoaded(parentId: String, children: List<MediaBrowserCompat.MediaItem>) {
+                            //currentMediaId = parentId
+
+                            //playback.initWithFeedItems()
+
+
+
+                            mediaController.sendCommand(PlaybackUnit.COMMAND_RENEW_PLAYLIST, null, null)
+                        }
+                    })
+                }
+            }
+        }, Schedulers.io()))
 
 /*
         ContextCompat.startForegroundService(
@@ -140,23 +166,26 @@ class PodcastService : MediaBrowserServiceCompat() {
             // and put them in the mediaItems list...
         } else {
             result.detach()
-            if (parentMediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
-                subscription.add(Single.fromCallable {
-                    database.downloadedPodcastItemDao().getAll()
-                }.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe { items ->
-                            result.sendResult(playback.initWithLocalEpisodes(parentMediaId, items))
-                        })
-            } else {
-                subscription.add(RssRepository.loadRss(parentMediaId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe { rss ->
-                            result.sendResult(playback.initWithFeedItems(parentMediaId, rss.items()))
-                        })
-            }
+            subscription.add(loadPlaylist(parentMediaId).observeOn(AndroidSchedulers.mainThread()).subscribe { items ->
+                result.sendResult(items)
+            })
         }
+    }
 
-//        result.sendResult(mediaItems)
+    private fun loadPlaylist(mediaId: String): Single<List<MediaBrowserCompat.MediaItem>> {
+        return if (mediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
+            Single.fromCallable {
+                database.downloadedPodcastItemDao().getAll()
+            }
+                    .subscribeOn(Schedulers.io())
+                    .map { items -> playback.initWithLocalEpisodes(mediaId, items) }
+        } else {
+            RssRepository.loadRss(mediaId)
+                    .subscribeOn(Schedulers.io())
+                    .map { rss ->
+                        playback.initWithFeedItems(mediaId, rss.items())
+                    }
+        }
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
@@ -232,18 +261,18 @@ class PodcastService : MediaBrowserServiceCompat() {
         }
 
         private fun checkLoadedArt(): Bitmap? =
-                if (mSession.controller.metadata.id == currentItem && mSession.controller.metadata.albumArt == null && currentArt != null) currentArt
+                if (mSession.controller.metadata?.id == currentItem && mSession.controller.metadata?.albumArt == null && currentArt != null) currentArt
                 else null
 
         private fun loadArt() {
 //            if (mSession.controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-                if (mSession.controller.metadata.id == currentItem && mSession.controller.metadata.albumArt == null && currentArt != null) {
+                if (mSession.controller.metadata?.id == currentItem && mSession.controller.metadata?.albumArt == null && currentArt != null) {
                     updateSession(currentArt)
                 }
 
-                if (mSession.controller.metadata.albumArt == null) {
+                if (mSession.controller.metadata?.albumArt == null) {
 
-                    val imageUrl = mSession.controller.metadata.displayIconUriString
+                    val imageUrl = mSession.controller.metadata?.displayIconUriString
                     imageUrl?.let {
                         Single.fromCallable {
                             Glide.with(this@PodcastService)

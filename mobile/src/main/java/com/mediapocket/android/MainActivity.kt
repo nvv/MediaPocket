@@ -199,6 +199,10 @@ class MainActivity : AppCompatActivity() {
             window.statusBarColor = it.color
         })
 
+        disposable.add(RxBus.default.observerFor(StopPlaybackEvent::class.java).subscribe {
+            playbackControl.visibility = View.GONE
+        })
+
         val notificationBuilder = NotificationBuilder(this)
         disposable.add(downloadManager.subscribeForAllActiveDownloads(Consumer {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

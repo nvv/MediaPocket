@@ -14,13 +14,9 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.view.GestureDetectorCompat
-import androidx.palette.graphics.Palette
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
-import android.widget.ImageView
 import android.widget.SeekBar
-import android.widget.TextView
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
@@ -28,12 +24,11 @@ import com.mediapocket.android.events.ChangeStatusBarColorEvent
 import com.mediapocket.android.events.SwitchPodcastPlayerModeEvent
 import com.mediapocket.android.events.VolumeLevelKeyEvent
 import com.mediapocket.android.extensions.isPlaying
-import com.mediapocket.android.playback.LocalPlayback.Companion.ARG_PLAYBACK_RATE
-import com.mediapocket.android.playback.LocalPlayback.Companion.COMMAND_SET_PLAYBACK_RATE
+import com.mediapocket.android.playback.PlaybackUnit.Companion.ARG_PLAYBACK_RATE
+import com.mediapocket.android.playback.PlaybackUnit.Companion.COMMAND_SET_PLAYBACK_RATE
 import com.mediapocket.android.utils.ViewUtils
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.podcast_playback_expanded.view.*
-import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.backgroundDrawable
 
 
@@ -78,7 +73,7 @@ class PodcastPlaybackExpandedView(context: Context?, attrs: AttributeSet?, defSt
             mediaConnection?.mediaController?.transportControls?.rewind()
         }
 
-        gestureDetector = GestureDetectorCompat(context, object : GestureListener(this@PodcastPlaybackExpandedView) {
+        gestureDetector = GestureDetectorCompat(context, object : GestureListener(episode_logo) {
             override fun onSwipeBottom(): Boolean {
                 RxBus.default.postEvent(SwitchPodcastPlayerModeEvent.close())
                 return super.onSwipeBottom()

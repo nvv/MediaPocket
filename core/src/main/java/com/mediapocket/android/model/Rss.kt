@@ -70,7 +70,7 @@ class Rss(rss: String?, overrideLink: String? = null) : Cacheable() {
 }
 
 data class Item(val podcastTitle: String, val title: String, val description: String,
-                val pubDate: String, val link: String?, val length: Long, val imageUrl: String) {
+                val pubDate: String, val link: String?, val length: Long, val imageUrl: String) : PlaybackMediaDescriptor {
 
     private var pubDateFormatter: String? = null
 
@@ -105,7 +105,7 @@ data class Item(val podcastTitle: String, val title: String, val description: St
         return bundle
     }
 
-    fun getMediaMetadataCompat() : MediaMetadataCompat {
+    override fun getMediaMetadataCompat() : MediaMetadataCompat {
         return MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, link)
                 .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, podcastTitle)
@@ -118,7 +118,7 @@ data class Item(val podcastTitle: String, val title: String, val description: St
                 .build()
     }
 
-    fun getMediaDescription(): MediaDescriptionCompat {
+    override fun getMediaDescription(): MediaDescriptionCompat {
         return MediaDescriptionCompat.Builder()
                 .setTitle(title)
                 .setIconUri(Uri.parse(imageUrl))

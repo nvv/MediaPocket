@@ -25,32 +25,35 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
+import com.mediapocket.android.model.PlaybackMediaDescriptor
 
 /**
  * @author Vlad Namashko
  */
-class LocalPlayback(val context: Context, val mediaSession: MediaSessionCompat) {
+class PlaybackUnit(val context: Context, val mediaSession: MediaSessionCompat) {
 
-    var exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
+    private var exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
+            context,
             DefaultRenderersFactory(context),
             DefaultTrackSelector(),
             DefaultLoadControl())
 
     private val eventListener = EventListener()
 
-//    private var extractorMediaFactory: ExtractorMediaSource.Factory
-
     private var mediaConnector: MediaSessionConnector
     private var playbackPreparer: LocalPlaybackPreparer
 
     private val dataSourceFactory: DefaultDataSourceFactory
 
+    var currentMediaId: String? = null
+        private set
+
     init {
         exoPlayer.addListener(eventListener)
 
         val audioAttributes = AudioAttributes.Builder()
-                .setContentType(CONTENT_TYPE_MUSIC)
-                .setUsage(USAGE_MEDIA)
+                .setContentType(C.CONTENT_TYPE_MUSIC)
+                .setUsage(C.USAGE_MEDIA)
                 .build()
         exoPlayer.audioAttributes = audioAttributes
 
@@ -78,28 +81,18 @@ class LocalPlayback(val context: Context, val mediaSession: MediaSessionCompat) 
             it.setPlayer(exoPlayer, playbackPreparer)
         }
 
-
-
-
         mediaConnector.setQueueNavigator(QueueNavigator(mediaSession))
     }
 
-    fun initWithFeedItems(mediaId: String, items: MutableList<Item>): List<MediaBrowserCompat.MediaItem> {
-        val metadataList = mutableListOf<MediaMetadataCompat>()
-        val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
-
-        items.forEach {
-            val mediaItem = MediaBrowserCompat.MediaItem(it.getMediaDescription(), 0)
-            mediaItems.add(mediaItem)
-            metadataList.add(it.getMediaMetadataCompat())
-        }
-
-        playbackPreparer.playlist = metadataList
-
-        return mediaItems
+    fun initWithFeedItems(mediaId: String, items: List<Item>): List<MediaBrowserCompat.MediaItem> {
+       return initWithItems(mediaId, items)
     }
 
     fun initWithLocalEpisodes(mediaId: String, items: List<PodcastEpisodeItem>?): List<MediaBrowserCompat.MediaItem> {
+        return initWithItems(mediaId, items)
+    }
+
+    private fun initWithItems(mediaId: String, items : List<PlaybackMediaDescriptor>?) : List<MediaBrowserCompat.MediaItem> {
         val metadataList = mutableListOf<MediaMetadataCompat>()
         val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
 
@@ -110,10 +103,10 @@ class LocalPlayback(val context: Context, val mediaSession: MediaSessionCompat) 
         }
 
         playbackPreparer.playlist = metadataList
+        currentMediaId = mediaId
 
         return mediaItems
     }
-
 
     private inner class QueueNavigator(mediaSession: MediaSessionCompat) : TimelineQueueNavigator(mediaSession) {
 
@@ -172,6 +165,8 @@ class LocalPlayback(val context: Context, val mediaSession: MediaSessionCompat) 
 
     companion object {
         const val COMMAND_SET_PLAYBACK_RATE = "COMMAND_SET_PLAYBACK_RATE"
+        const val COMMAND_RENEW_PLAYLIST = "COMMAND_RENEW_PLAYLIST"
+
         const val ARG_PLAYBACK_RATE = "ARG_PLAYBACK_RATE"
     }
 }

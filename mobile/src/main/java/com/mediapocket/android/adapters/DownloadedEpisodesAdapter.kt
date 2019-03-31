@@ -92,7 +92,9 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
 
             itemView.duration.text = TimeUtils.millisToShortDHMS(durationTime)
 
-            itemView.size.text = FileUtils.formatBytes(File(item.localPath).length())
+            item.localPath?.let {
+                itemView.size.text = FileUtils.formatBytes(File(it).length())
+            }
 
             itemView.delete_episode_frame.setOnClickListener{
                 RxBus.default.postEvent(DeletePodcastEpisodeEvent(item, position))
@@ -112,7 +114,7 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
                 itemView.download_progress_percents.text = (download.progress.toString() + "%")
             }
 
-            itemView.root_view.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(DownloadedEpisodeItem(item.link))) }
+            itemView.root_view.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(DownloadedEpisodeItem(item.getMediaPath()))) }
 
         }
     }

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.util.Base64
+import com.mediapocket.android.model.PlaybackMediaDescriptor
 import org.jetbrains.annotations.NotNull
 import java.nio.charset.Charset
 
@@ -27,26 +28,26 @@ data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
                               @ColumnInfo(name = "favourite") var favourite: Boolean,
                               @ColumnInfo(name = "image_url") var imageUrl: String?,
                               @ColumnInfo(name = "download_id") var downloadId: Int,
-                              @ColumnInfo(name = "local_path") var localPath: String?) {
+                              @ColumnInfo(name = "local_path") var localPath: String?) : PlaybackMediaDescriptor {
 
     @ColumnInfo(name = "id")
     @PrimaryKey
     @NotNull
     var id: String = convertLinkToId(link)
 
-    fun getMediaMetadataCompat() : MediaMetadataCompat {
+    override fun getMediaMetadataCompat() : MediaMetadataCompat {
         return MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, link)
                 .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, podcastTitle)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate)
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, link)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, getMediaPath())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, if (length == null) 0 else length!!)
                 .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, imageUrl)
                 .build()
     }
 
-    fun getMediaDescription(): MediaDescriptionCompat {
+    override fun getMediaDescription(): MediaDescriptionCompat {
         return MediaDescriptionCompat.Builder()
                 .setTitle(title)
                 .setIconUri(Uri.parse(imageUrl))
@@ -62,11 +63,15 @@ data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
         bundle.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
         bundle.putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate)
         bundle.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, if (length == null) 0 else length!!)
-        bundle.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, link)
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, getMediaPath())
         bundle.putString(MediaMetadataCompat.METADATA_KEY_ART, imageUrl)
 
         return bundle
     }
+
+    fun getMediaPath() = if (isDownloaded()) localPath else link
+
+    private fun isDownloaded() = state == STATE_DOWNLOADED
 
     companion object {
         const val STATE_NONE = 0

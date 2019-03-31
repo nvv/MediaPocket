@@ -45,14 +45,14 @@ class MediaSessionConnection(context: Context) {
         }
     }
 
-    fun connected(consumer: Consumer<Unit>, onError: Consumer<in Throwable>): Disposable {
-        return subject.observeOn(AndroidSchedulers.mainThread()).subscribe(consumer, onError)
-    }
-
     val mediaBrowser: MediaBrowserCompat = MediaBrowserCompat(context,
             ComponentName(context, PodcastService::class.java),
             mediaBrowserConnectionCallback, null)
             .apply { connect() }
+
+    fun connected(consumer: Consumer<Unit>, onError: Consumer<in Throwable>): Disposable {
+        return subject.observeOn(AndroidSchedulers.mainThread()).subscribe(consumer, onError)
+    }
 
     private val mediaControllerCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
