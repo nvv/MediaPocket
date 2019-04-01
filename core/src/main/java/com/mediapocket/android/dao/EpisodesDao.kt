@@ -7,10 +7,16 @@ import com.mediapocket.android.dao.model.PodcastEpisodeItem
  * @author Vlad Namashko
  */
 @Dao
-interface DownloadedPodcastItemDao {
+interface EpisodesDao {
 
     @Query("SELECT * FROM podcast_episode_item")
     fun getAll(): List<PodcastEpisodeItem>?
+
+    @Query("SELECT * FROM podcast_episode_item WHERE state<>0")
+    fun getDownloaded(): List<PodcastEpisodeItem>?
+
+    @Query("SELECT * FROM podcast_episode_item WHERE favourite=1")
+    fun getFavourites(): List<PodcastEpisodeItem>?
 
     @Query("SELECT * FROM podcast_episode_item WHERE podcast_id=:podcastId")
     fun getFromPodcast(podcastId: String): List<PodcastEpisodeItem>?

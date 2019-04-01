@@ -1,8 +1,6 @@
 package com.mediapocket.android.viewmodels
 
-import androidx.lifecycle.ViewModel
 import com.mediapocket.android.core.AppDatabase
-import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
@@ -16,7 +14,7 @@ import javax.inject.Inject
 /**
  * @author Vlad Namashko
  */
-class DownloadedEpisodesViewModel : LoadableViewModel() {
+class EpisodesViewModel : LoadableViewModel() {
 
     @set:Inject
     lateinit var database: AppDatabase
@@ -31,9 +29,18 @@ class DownloadedEpisodesViewModel : LoadableViewModel() {
     fun getDownloadedEpisodes(): Single<List<PodcastEpisodeItem>?> {
         return doLoadingAction {
             Single.fromCallable {
-                database.downloadedPodcastItemDao().getAll()
+                database.downloadedPodcastItemDao().getDownloaded()
             }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+        }
+    }
+
+    fun getFavouritesEpisodes(): Single<List<PodcastEpisodeItem>?> {
+        return doLoadingAction {
+            Single.fromCallable {
+                database.downloadedPodcastItemDao().getFavourites()
+            }.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
         }
     }
 

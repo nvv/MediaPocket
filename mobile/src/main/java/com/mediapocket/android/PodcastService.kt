@@ -23,7 +23,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
@@ -175,7 +174,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     private fun loadPlaylist(mediaId: String): Single<List<MediaBrowserCompat.MediaItem>> {
         return if (mediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
             Single.fromCallable {
-                database.downloadedPodcastItemDao().getAll()
+                database.downloadedPodcastItemDao().getDownloaded()
             }
                     .subscribeOn(Schedulers.io())
                     .map { items -> playback.initWithLocalEpisodes(mediaId, items) }

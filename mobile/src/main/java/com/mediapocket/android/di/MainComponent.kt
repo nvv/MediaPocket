@@ -5,7 +5,7 @@ import com.mediapocket.android.PodcastService
 import com.mediapocket.android.SplashScreenActivity
 import com.mediapocket.android.adapters.DownloadedEpisodesAdapter
 import com.mediapocket.android.adapters.PodcastEpisodeAdapter
-import com.mediapocket.android.viewmodels.DownloadedEpisodesViewModel
+import com.mediapocket.android.viewmodels.EpisodesViewModel
 import com.mediapocket.android.viewmodels.PodcastDetailsViewModel
 import com.mediapocket.android.viewmodels.PodcastViewModel
 import dagger.Component
@@ -24,7 +24,7 @@ interface MainComponent {
 
     fun inject(detailsViewModel: PodcastDetailsViewModel)
 
-    fun inject(downloadedEpisodesViewModel: DownloadedEpisodesViewModel)
+    fun inject(episodesViewModel: EpisodesViewModel)
 
     fun inject(podcastViewModel: PodcastViewModel)
 

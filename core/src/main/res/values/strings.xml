@@ -7,4 +7,6 @@
     <string name="featured">Popular</string>
     <string name="networks">Networks</string>
     <string name="downloaded">Downloaded</string>
+    <string name="favourites">Favourites</string>
+    <string name="episodes">Episodes</string>
 </resources>

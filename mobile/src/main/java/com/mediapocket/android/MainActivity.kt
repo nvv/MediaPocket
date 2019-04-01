@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_downloaded -> {
-                val fragment = DownloadedPodcastsFragment.newInstance()
+                val fragment = EpisodesFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, fragment)
                         .commit()
