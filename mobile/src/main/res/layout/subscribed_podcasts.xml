@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="?attr/primaryBackgroundColor"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/primaryBackgroundColor">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/items"
@@ -16,5 +16,31 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/empty_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:background="@drawable/dotted"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginLeft="22dp"
+            android:gravity="center"
+            android:src="@drawable/ic_subscriptions" />
+
+        <TextView
+            android:text="@string/empty_subscription_list"
+            android:layout_width="128dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 </FrameLayout>

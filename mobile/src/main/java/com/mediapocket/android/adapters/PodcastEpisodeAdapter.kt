@@ -73,8 +73,10 @@ class PodcastEpisodeAdapter(private val context: Context,
 
         items?.forEachIndexed { index, it ->
             val newItem = PodcastEpisode(index, it)
-            data.add(newItem)
-            dataMap[PodcastEpisodeItem.convertLinkToId(it.link)] = newItem
+            if (!it.link.isNullOrEmpty()) {
+                data.add(newItem)
+                dataMap[PodcastEpisodeItem.convertLinkToId(it.link)] = newItem
+            }
         }
 
         subscription.add(manager.subscribeForDownloads(Consumer { download ->

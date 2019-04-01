@@ -15,6 +15,7 @@ import com.mediapocket.android.viewmodels.PodcastViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.subscribed_podcasts.*
 
 /**
  * @author Vlad Namashko
@@ -25,26 +26,41 @@ class PodcastSubscriptionFragment : SimplePodcastFragment() {
 
     override fun getLayoutId() = R.layout.subscribed_podcasts
 
-    var res : SubscriptionsLookupResult? = null
+    var result : SubscriptionsLookupResult? = null
+
+    private lateinit var items: View
+    private lateinit var emptyFrame: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
+        val view = super.onCreateView(inflater, container, savedInstanceState)?.apply {
+            items = findViewById(R.id.items)
+            emptyFrame = findViewById(R.id.empty_frame)
+        }
 
-        if (res != null) {
-            adapter.setItems(PodcastAdapterEntry.convert(res))
-            adapter.notifyDataSetChanged()
+        if (result != null) {
+            onDataLoaded()
         } else {
             subscription.add(model.doLoadingAction { model.getSubscriptions() }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { res ->
-                        this.res = res
-                        adapter.setItems(PodcastAdapterEntry.convert(res))
-                        adapter.notifyDataSetChanged()
+                        result = res
+                        onDataLoaded()
                     })
         }
 
         return view
+    }
+
+    private fun onDataLoaded() {
+        val hasData = result != null && !result?.items.isNullOrEmpty()
+        if (hasData) {
+            adapter.setItems(PodcastAdapterEntry.convert(result))
+            adapter.notifyDataSetChanged()
+        }
+
+        items.visibility = if (hasData) View.VISIBLE else View.GONE
+        emptyFrame.visibility = if (!hasData) View.VISIBLE else View.GONE
     }
 
     override fun hasBackNavigation() = false
