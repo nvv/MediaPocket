@@ -23,7 +23,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
 import com.mediapocket.android.extensions.from
@@ -31,6 +30,7 @@ import com.mediapocket.android.extensions.id
 import com.mediapocket.android.playback.PlaybackUnit
 import com.mediapocket.android.playback.model.PlayableItem
 import com.mediapocket.android.service.RssRepository
+import dagger.android.AndroidInjection
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -77,13 +77,17 @@ class PodcastService : MediaBrowserServiceCompat() {
     @set:Inject
     lateinit var downloadManager: PodcastDownloadManager
 
+    @set:Inject
+    lateinit var rssRepository: RssRepository
+
     private val subscription = CompositeDisposable()
 
     override fun onCreate() {
         super.onCreate()
         DependencyLocator.initInstance(this)
+        AndroidInjection.inject(this)
 
-        MainComponentLocator.mainComponent.inject(this)
+//        MainComponentLocator.mainComponent.inject(this)
 
         val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
         val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
@@ -179,7 +183,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                     .subscribeOn(Schedulers.io())
                     .map { items -> playback.initWithLocalEpisodes(mediaId, items) }
         } else {
-            RssRepository.loadRss(mediaId)
+            rssRepository.loadRss(mediaId)
                     .subscribeOn(Schedulers.io())
                     .map { rss ->
                         playback.initWithFeedItems(mediaId, rss.items())

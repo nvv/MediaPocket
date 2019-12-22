@@ -20,18 +20,6 @@ interface MainComponent {
 
     fun inject(adapter : PodcastEpisodeAdapter)
 
-    fun inject(activity : MainActivity)
-
-    fun inject(detailsViewModel: PodcastDetailsViewModel)
-
-    fun inject(episodesViewModel: EpisodesViewModel)
-
-    fun inject(podcastViewModel: PodcastViewModel)
-
     fun inject(adapter: DownloadedEpisodesAdapter)
-
-    fun inject(service: PodcastService)
-
-    fun inject(splash: SplashScreenActivity)
 
 }

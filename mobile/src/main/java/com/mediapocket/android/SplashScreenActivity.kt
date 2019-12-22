@@ -3,19 +3,19 @@ package com.mediapocket.android
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.Storage
-import com.mediapocket.android.di.MainComponentLocator
+import dagger.android.AndroidInjection
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.splash_screen.*
 import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
  */
-class SplashScreenActivity : AppCompatActivity() {
+class SplashScreenActivity : DaggerAppCompatActivity() {
 
     @set:Inject
     lateinit var storage: Storage
@@ -23,7 +23,7 @@ class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DependencyLocator.initInstance(this)
-        MainComponentLocator.mainComponent.inject(this)
+        AndroidInjection.inject(this)
 
         setContentView(R.layout.splash_screen)
 

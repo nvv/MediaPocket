@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 class DependencyLocator private constructor(val context: Context) {
 
-    val coreModule: CoreModule = CoreModule(context)
+//    val coreModule: CoreModule = CoreModule(context)
 
-    val serviceComponent: ServiceComponent = DaggerServiceComponent.builder().build()
-    val coreComponent: CoreComponent = DaggerCoreComponent.builder().coreModule(coreModule).build()
+//    val serviceComponent: ServiceComponent = DaggerServiceComponent.builder().build()
+//    val coreComponent: CoreComponent = DaggerCoreComponent.builder().coreModule(coreModule).build()
     //val database = Room.databaseBuilder(context, AppDatabase::class.java, "media_pocket_database").build()
     //val podcastDownloadManager = PodcastDownloadManager(context, database)
 

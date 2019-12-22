@@ -25,15 +25,15 @@ interface ItunesTopPodcastService {
     @GET("api/v1/{country}/podcasts/top-podcasts/all/20/explicit.json")
     fun get(@Path(value="country") country: String): Single<Result>
 
-    companion object Factory {
-        fun create(): ItunesTopPodcastService {
-            val retrofit = Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://rss.itunes.apple.com")
-                    .build()
-
-            return retrofit.create(ItunesTopPodcastService::class.java)
-        }
-    }
+//    companion object Factory {
+//        fun create(): ItunesTopPodcastService {
+//            val retrofit = Retrofit.Builder()
+//                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .baseUrl("https://rss.itunes.apple.com")
+//                    .build()
+//
+//            return retrofit.create(ItunesTopPodcastService::class.java)
+//        }
+//    }
 }

@@ -1,7 +1,6 @@
 package com.mediapocket.android.service
 
 import android.mediapocket.com.core.R
-import android.os.Handler
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.mediapocket.android.core.Cache
@@ -9,41 +8,31 @@ import com.mediapocket.android.core.CacheKey
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.model.*
 import com.mediapocket.android.utils.GlobalUtils
-import io.reactivex.Emitter
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
-import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.Callable
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * @author Vlad Namashko
  */
-object ItunesPodcastRepository {
+@Singleton
+class ItunesPodcastRepository constructor(
+        private val topPodcastService: ItunesTopPodcastService,
+        private val searchPodcastService: ItunesPodcastSearchService
+) {
 
-    private const val PODCAST_ID = 26
-
-    @set:Inject
-    lateinit var topPodcastService: ItunesTopPodcastService
-
-    @set:Inject
-    lateinit var searchPodcastService: ItunesPodcastSearchService
+    private val PODCAST_ID = 26
 
     private val country = GlobalUtils.getUserCountry(DependencyLocator.getInstance().context)
 
     private val genreKey = CacheKey(Genres::class.java, listOf(country))
     private val featuredKey = CacheKey(GenreResult::class.java, listOf(country, "featured"))
     private val topPodcastsKey = CacheKey(Result::class.java, listOf(country))
-
-    init {
-        DependencyLocator.getInstance().serviceComponent.inject(this)
-    }
 
     fun loadTopPodcasts(): Single<Result> {
         return execCacheable({ topPodcastService.get(country) }, topPodcastsKey)

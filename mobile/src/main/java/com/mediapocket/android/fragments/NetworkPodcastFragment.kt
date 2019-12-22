@@ -43,8 +43,8 @@ class NetworkPodcastFragment : SimplePodcastFragment() {
         return view
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 activity?.supportFragmentManager?.popBackStack()
                 true

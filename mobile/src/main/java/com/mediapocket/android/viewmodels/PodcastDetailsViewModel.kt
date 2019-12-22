@@ -2,9 +2,7 @@ package com.mediapocket.android.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.mediapocket.android.core.AppDatabase
-import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.dao.model.SubscribedPodcast
-import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.model.Rss
@@ -18,18 +16,15 @@ import javax.inject.Inject
 /**
  * @author Vlad Namashko
  */
-class PodcastDetailsViewModel : ViewModel() {
-
-    @set:Inject
-    lateinit var database: AppDatabase
-
-    init {
-        MainComponentLocator.mainComponent.inject(this)
-    }
+class PodcastDetailsViewModel @Inject constructor(
+        private val database: AppDatabase,
+        private val itunesPodcastRepository: ItunesPodcastRepository,
+        private val rssRepository: RssRepository
+) : ViewModel() {
 
     fun load(podcast: PodcastAdapterEntry) : Single<PodcastDetails> {
         return if (podcast.feedUrl() == null) {
-            ItunesPodcastRepository.lookupPodcast(podcast.id()).flatMap {
+            itunesPodcastRepository.lookupPodcast(podcast.id()).flatMap {
                 Single.just(PodcastDetails(it.feedUrl(), it.artwork(), it.primaryGenreName(), it.genreIds(), it.artistId(), it.artistName()))
             }.observeOn(AndroidSchedulers.mainThread())
         } else {
@@ -39,7 +34,7 @@ class PodcastDetailsViewModel : ViewModel() {
     }
 
     fun loadFeed(podcast: PodcastDetails) : Single<Rss> {
-        return RssRepository.loadRss(podcast.feedUrl)
+        return rssRepository.loadRss(podcast.feedUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

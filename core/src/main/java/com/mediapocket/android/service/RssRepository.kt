@@ -15,18 +15,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * @author Vlad Namashko
  */
-object RssRepository {
-
-    @set:Inject
-    lateinit var rssService: RssService
-
-    init {
-        DependencyLocator.getInstance().serviceComponent.inject(this)
-    }
+@Singleton
+class RssRepository constructor(private val rssService: RssService) {
 
     fun loadRss(url: String): Single<Rss> {
         return execCacheable({

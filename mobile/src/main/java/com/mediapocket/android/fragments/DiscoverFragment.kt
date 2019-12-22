@@ -38,7 +38,7 @@ class DiscoverFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        model = ViewModelProviders.of(this).get(PodcastViewModel::class.java)
+        model = ViewModelProviders.of(this, viewModelFactory).get(PodcastViewModel::class.java)
 
         subscription.add(
                 model.getDiscoverData().subscribe { data: DiscoverData ->

@@ -18,15 +18,15 @@ interface RssService {
     @GET
     fun getFeed(@Url feedUrl: String): Call<String>
 
-    companion object Factory {
-        fun create(): RssService {
-            val retrofit = Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .baseUrl("https://rss.itunes.apple.com")
-                    .build()
-
-            return retrofit.create(RssService::class.java)
-        }
-    }
+//    companion object Factory {
+//        fun create(): RssService {
+//            val retrofit = Retrofit.Builder()
+//                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                    .addConverterFactory(ScalarsConverterFactory.create())
+//                    .baseUrl("https://rss.itunes.apple.com")
+//                    .build()
+//
+//            return retrofit.create(RssService::class.java)
+//        }
+//    }
 }

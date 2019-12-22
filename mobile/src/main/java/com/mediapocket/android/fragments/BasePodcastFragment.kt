@@ -28,7 +28,7 @@ abstract class BasePodcastFragment : BaseFragment() {
     protected val subscription: CompositeDisposable = CompositeDisposable()
 
     protected var loading: ProgressBar? = null
-    protected var podcasts: androidx.recyclerview.widget.RecyclerView? = null
+    protected var podcasts: RecyclerView? = null
 
     protected var animatedAdapter: Boolean = true
 
@@ -49,7 +49,7 @@ abstract class BasePodcastFragment : BaseFragment() {
         return view
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
         adapter.setItemsInRowCount(calculateItemsCount())

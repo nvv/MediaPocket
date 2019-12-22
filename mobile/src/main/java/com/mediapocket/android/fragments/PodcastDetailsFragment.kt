@@ -51,7 +51,7 @@ class PodcastDetailsFragment : BaseFragment() {
         }
 
         podcast = arguments?.getParcelable(ARG_PODCAST)
-        model = ViewModelProviders.of(this).get(PodcastDetailsViewModel::class.java)
+        model = ViewModelProviders.of(this, viewModelFactory).get(PodcastDetailsViewModel::class.java)
 
         subscribe = view.findViewById(R.id.subscribe)
         podcast?.let {

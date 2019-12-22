@@ -35,19 +35,19 @@ interface ItunesPodcastSearchService {
     @GET("/{country}/rss/toppodcasts/genre={genre}/json")
     fun featured(@Path(value="country") country: String, @Path(value="genre") genre: String): Call<JsonObject>
 
-    /**
-     * Companion object to create the Service
-     */
-    companion object Factory {
-        fun create(): ItunesPodcastSearchService {
-            val retrofit = Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://itunes.apple.com/")
-                    .build()
-
-            return retrofit.create(ItunesPodcastSearchService::class.java)
-        }
-    }
+//    /**
+//     * Companion object to create the Service
+//     */
+//    companion object Factory {
+//        fun create(): ItunesPodcastSearchService {
+//            val retrofit = Retrofit.Builder()
+//                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .baseUrl("https://itunes.apple.com/")
+//                    .build()
+//
+//            return retrofit.create(ItunesPodcastSearchService::class.java)
+//        }
+//    }
 
 }

@@ -26,7 +26,7 @@ class PodcastSearchFragment : BasePodcastFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        model = ViewModelProviders.of(this).get(SearchPodcastViewModel::class.java)
+        model = ViewModelProviders.of(this, viewModelFactory).get(SearchPodcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,8 +89,8 @@ class PodcastSearchFragment : BasePodcastFragment() {
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 hideKeyboard()
                 activity?.supportFragmentManager?.popBackStack()

@@ -1,6 +1,5 @@
 package com.mediapocket.android
 
-//import com.mediapocket.android.service.ItunesPodcastSearchService
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.app.NotificationManager
@@ -10,38 +9,38 @@ import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.support.v4.media.MediaBrowserCompat
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mediapocket.android.audio.AudioVolumeObserver
 import com.mediapocket.android.audio.OnAudioVolumeChangedListener
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.*
 import com.mediapocket.android.fragments.*
 import com.mediapocket.android.fragments.transition.DetailsTransition
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.PodcastPlaybackCompatView
 import com.mediapocket.android.view.PodcastPlaybackExpandedView
+import dagger.android.AndroidInjection
+import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     lateinit var toolbar: Toolbar
 
@@ -101,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         DependencyLocator.initInstance(this)
 
-        MainComponentLocator.mainComponent.inject(this)
+        AndroidInjection.inject(this)
 
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
@@ -354,7 +353,7 @@ class MainActivity : AppCompatActivity() {
 //        return super.onKeyDown(keyCode, event)
 //    }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val fragment = supportFragmentManager.findFragmentById(R.id.frame)
         if (fragment != null && fragment is PodcastDetailsFragment) {

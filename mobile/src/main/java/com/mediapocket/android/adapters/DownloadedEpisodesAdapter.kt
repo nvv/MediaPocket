@@ -1,8 +1,6 @@
 package com.mediapocket.android.adapters
 
-import android.app.AlertDialog
 import android.media.MediaMetadataRetriever
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,6 @@ import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.DeletePodcastEpisodeEvent
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.playback.model.DownloadedEpisodeItem
@@ -26,7 +23,6 @@ import java.io.File
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
@@ -38,11 +34,11 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
     private val swipeLayoutHelper: ViewBinderHelper
     private val metaRetriever = MediaMetadataRetriever()
 
-    @set:Inject
+//    @set:Inject
     lateinit var manager: PodcastDownloadManager
 
     init {
-        MainComponentLocator.mainComponent.inject(this)
+//        MainComponentLocator.mainComponent.inject(this)
 
         manager.subscribeForDownloads(Consumer { download ->
 

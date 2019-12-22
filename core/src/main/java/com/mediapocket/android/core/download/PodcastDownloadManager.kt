@@ -27,7 +27,10 @@ import javax.inject.Inject
 /**
  * @author Vlad Namashko
  */
-class PodcastDownloadManager(context: Context) {
+class PodcastDownloadManager(
+        private val context: Context,
+        private val database: AppDatabase
+) {
 
     private var fetch: Fetch
 
@@ -38,11 +41,7 @@ class PodcastDownloadManager(context: Context) {
 
     private val downloadingItems = mutableMapOf<String, PodcastDownloadItem>()
 
-    @set:Inject
-    lateinit var database: AppDatabase
-
     init {
-        DependencyLocator.getInstance().coreComponent.inject(this)
 
         val fetchConfiguration = FetchConfiguration.Builder(context)
                 .setDownloadConcurrentLimit(4)

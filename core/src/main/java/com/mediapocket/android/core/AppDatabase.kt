@@ -10,7 +10,9 @@ import com.mediapocket.android.dao.model.SubscribedPodcast
 /**
  * @author Vlad Namashko
  */
-@Database(entities = [(SubscribedPodcast::class), (PodcastEpisodeItem::class)], version = 1)
+@Database(entities = [
+    SubscribedPodcast::class,
+    PodcastEpisodeItem::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun subscribedPodcastDao(): SubscribedPodcastDao

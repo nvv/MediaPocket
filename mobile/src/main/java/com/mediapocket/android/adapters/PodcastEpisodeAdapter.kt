@@ -3,12 +3,10 @@ package com.mediapocket.android.adapters
 import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.drawable.Animatable
-import com.google.android.material.snackbar.Snackbar
 import androidx.core.app.ShareCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.TextUtils
 import android.view.Gravity
@@ -17,34 +15,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
-import com.mediapocket.android.core.AppDatabase
-import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.core.download.extensions.isDownloaded
 import com.mediapocket.android.core.download.extensions.isError
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_ADDED
-import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_WAITING_FOR_NETWORK
-import com.mediapocket.android.di.MainComponentLocator
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.extensions.getResourceIdAttribute
 import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.model.Item
 import com.mediapocket.android.playback.model.RssEpisodeItem
 import com.mediapocket.android.utils.GlobalUtils
-import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.customView
-import javax.inject.Inject
 
 
 /**
@@ -64,12 +54,12 @@ class PodcastEpisodeAdapter(private val context: Context,
     private val callback: MediaControllerCompat.Callback
     private var lastActiveEpisode: PodcastEpisode? = null
 
-    @set:Inject
+//    @set:Inject
     lateinit var manager: PodcastDownloadManager
 
     init {
 
-        MainComponentLocator.mainComponent.inject(this)
+//        MainComponentLocator.mainComponent.inject(this)
 
         items?.forEachIndexed { index, it ->
             val newItem = PodcastEpisode(index, it)

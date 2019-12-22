@@ -18,7 +18,7 @@ class CoreModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun providePodcastDownloadManager() = PodcastDownloadManager(context)
+    fun providePodcastDownloadManager(database: AppDatabase) = PodcastDownloadManager(context, database)
 
     @Provides
     @Singleton
