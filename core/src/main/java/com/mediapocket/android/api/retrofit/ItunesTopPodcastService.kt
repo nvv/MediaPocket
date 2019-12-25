@@ -1,4 +1,4 @@
-package com.mediapocket.android.service
+package com.mediapocket.android.api.retrofit
 
 import com.google.gson.JsonObject
 import com.mediapocket.android.model.Cacheable
@@ -23,17 +23,6 @@ interface ItunesTopPodcastService {
 //    https://itunes.apple.com/us/rss/topaudiopodcasts/json
 
     @GET("api/v1/{country}/podcasts/top-podcasts/all/20/explicit.json")
-    fun get(@Path(value="country") country: String): Single<Result>
+    suspend fun get(@Path(value="country") country: String): Result
 
-//    companion object Factory {
-//        fun create(): ItunesTopPodcastService {
-//            val retrofit = Retrofit.Builder()
-//                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .baseUrl("https://rss.itunes.apple.com")
-//                    .build()
-//
-//            return retrofit.create(ItunesTopPodcastService::class.java)
-//        }
-//    }
 }

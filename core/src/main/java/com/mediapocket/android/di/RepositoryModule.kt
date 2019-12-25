@@ -1,6 +1,10 @@
 package com.mediapocket.android.di
 
-import com.mediapocket.android.service.*
+import com.mediapocket.android.api.retrofit.ItunesPodcastSearchService
+import com.mediapocket.android.api.retrofit.ItunesTopPodcastService
+import com.mediapocket.android.api.retrofit.RssService
+import com.mediapocket.android.repository.ItunesPodcastRepository
+import com.mediapocket.android.repository.RssRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

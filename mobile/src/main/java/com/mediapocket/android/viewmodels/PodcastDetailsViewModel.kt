@@ -1,16 +1,21 @@
 package com.mediapocket.android.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.dao.model.SubscribedPodcast
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.model.Rss
-import com.mediapocket.android.service.ItunesPodcastRepository
-import com.mediapocket.android.service.RssRepository
+import com.mediapocket.android.model.SearchResult
+import com.mediapocket.android.repository.ItunesPodcastRepository
+import com.mediapocket.android.repository.RssRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 /**
@@ -22,21 +27,27 @@ class PodcastDetailsViewModel @Inject constructor(
         private val rssRepository: RssRepository
 ) : ViewModel() {
 
-    fun load(podcast: PodcastAdapterEntry) : Single<PodcastDetails> {
-        return if (podcast.feedUrl() == null) {
-            itunesPodcastRepository.lookupPodcast(podcast.id()).flatMap {
-                Single.just(PodcastDetails(it.feedUrl(), it.artwork(), it.primaryGenreName(), it.genreIds(), it.artistId(), it.artistName()))
-            }.observeOn(AndroidSchedulers.mainThread())
+    private val _loadPodcast = MutableLiveData<PodcastDetails>()
+    val loadPodcast: LiveData<PodcastDetails> = _loadPodcast
+
+    private val _rssData = MutableLiveData<Rss>()
+    val rssData: LiveData<Rss> = _rssData
+
+    suspend fun load(podcast: PodcastAdapterEntry) {
+        if (podcast.feedUrl().isNullOrEmpty()) {
+             val lookup = GlobalScope.async { itunesPodcastRepository.lookupPodcast(podcast.id()) }.await()
+
+            _loadPodcast.postValue(PodcastDetails(lookup.feedUrl(), lookup.artwork(), lookup.primaryGenreName(),
+                    lookup.genreIds(), lookup.artistId(), lookup.artistName()))
+
         } else {
-            Single.just(PodcastDetails(podcast.feedUrl()!!, primaryGenreName = podcast.primaryGenreName(),
+            _loadPodcast.postValue(PodcastDetails(podcast.feedUrl() ?: "", primaryGenreName = podcast.primaryGenreName(),
                     genreIds = podcast.genreIds(), authorId = podcast.artistId().toString(), authorName = podcast.artistName()))
         }
     }
 
-    fun loadFeed(podcast: PodcastDetails) : Single<Rss> {
-        return rssRepository.loadRss(podcast.feedUrl)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    suspend fun loadFeed(podcast: PodcastDetails) {
+        _rssData.postValue(rssRepository.loadRss(podcast.feedUrl))
     }
 
     fun isSubscribed(id: String): Single<Boolean> {

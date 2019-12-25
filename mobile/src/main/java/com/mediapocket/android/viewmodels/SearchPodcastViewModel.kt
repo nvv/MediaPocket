@@ -1,9 +1,12 @@
 package com.mediapocket.android.viewmodels
 
-import com.mediapocket.android.core.AppDatabase
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.mediapocket.android.model.SearchResult
-import com.mediapocket.android.service.ItunesPodcastRepository
+import com.mediapocket.android.repository.ItunesPodcastRepository
 import io.reactivex.Single
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -11,7 +14,10 @@ import javax.inject.Inject
  */
 class SearchPodcastViewModel @Inject constructor(private val itunesPodcastRepository: ItunesPodcastRepository) : LoadableViewModel() {
 
-    fun search(term: String): Single<SearchResult> {
-        return doLoadingAction { itunesPodcastRepository.searchPodcasts(term) }
+    private val _searchResult = MutableLiveData<SearchResult>()
+    val searchResult: LiveData<SearchResult> = _searchResult
+
+    suspend fun search(term: String) {
+        _searchResult.postValue(doAction { itunesPodcastRepository.searchPodcasts(term) })
     }
 }

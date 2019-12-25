@@ -44,7 +44,8 @@ class PodcastEpisodeAdapter(private val context: Context,
                             private val items: List<Item>?,
                             private val parentLink: String,
                             private val podcastId: String?,
-                            private val subscription: CompositeDisposable) : androidx.recyclerview.widget.RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
+                            private val subscription: CompositeDisposable,
+                            private val manager: PodcastDownloadManager) : androidx.recyclerview.widget.RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
 
     private val data = mutableListOf<PodcastEpisode>()
     private val dataMap = LinkedHashMap<String, PodcastEpisode>()
@@ -55,7 +56,7 @@ class PodcastEpisodeAdapter(private val context: Context,
     private var lastActiveEpisode: PodcastEpisode? = null
 
 //    @set:Inject
-    lateinit var manager: PodcastDownloadManager
+//    lateinit var manager: PodcastDownloadManager
 
     init {
 

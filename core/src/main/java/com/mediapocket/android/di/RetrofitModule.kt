@@ -3,9 +3,10 @@ package com.mediapocket.android.di
 import android.mediapocket.com.core.BuildConfig
 import com.google.gson.GsonBuilder
 import com.mediapocket.android.api.ApiSettings
-import com.mediapocket.android.service.ItunesPodcastSearchService
-import com.mediapocket.android.service.ItunesTopPodcastService
-import com.mediapocket.android.service.RssService
+import com.mediapocket.android.api.retrofit.ItunesPodcastSearchService
+import com.mediapocket.android.api.retrofit.ItunesTopPodcastService
+import com.mediapocket.android.api.retrofit.RssService
+import com.mediapocket.android.model.Genres
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -91,6 +92,18 @@ class RetrofitModule {
 
     @Provides
     @Singleton
+    @Named("RssXmlItunesRetrofit")
+    fun provideRssXmlItunesRetrofit(@Named("ScalarsConverterFactory") scalarsConverterFactory: ScalarsConverterFactory,
+                                    @Named("OkHttpClient") client: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(ApiSettings.SERVER_RSS_ITUNES)
+                .addConverterFactory(scalarsConverterFactory)
+                .client(client)
+                .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideItunesPodcastSearchService(@Named("ItunesRetrofit") retrofit: Retrofit) =
             retrofit.create(ItunesPodcastSearchService::class.java)
 
@@ -101,7 +114,7 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideRssService(@Named("RssItunesRetrofit") retrofit: Retrofit) =
+    fun provideRssService(@Named("RssXmlItunesRetrofit") retrofit: Retrofit) =
             retrofit.create(RssService::class.java)
 
 

@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.mediapocket.android.R
 import com.mediapocket.android.adapters.PodcastGridAdapter
 import com.mediapocket.android.utils.ViewUtils
@@ -44,6 +46,10 @@ abstract class BasePodcastFragment : BaseFragment() {
 
         subscription.add(loading().subscribe { isLoading -> syncVisibility(isLoading) })
 
+        isLoading().observe(this, Observer {
+            syncVisibility(it)
+        })
+
         podcasts?.adapter = if (animatedAdapter) ScaleInAnimationAdapter(adapter, 0.9f) else adapter
         animatedAdapter = false
         return view
@@ -66,6 +72,8 @@ abstract class BasePodcastFragment : BaseFragment() {
             if (ViewUtils.isTablet())
                 if (activity?.resources?.configuration?.orientation == ORIENTATION_PORTRAIT) 3 else 4
             else 2
+
+    protected abstract fun isLoading(): LiveData<Boolean>
 
     protected abstract fun loading(): BehaviorSubject<Boolean>
 

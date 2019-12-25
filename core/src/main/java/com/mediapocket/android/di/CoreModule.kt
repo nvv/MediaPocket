@@ -5,7 +5,6 @@ import android.content.Context
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.Storage
 import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.service.ItunesTopPodcastService
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

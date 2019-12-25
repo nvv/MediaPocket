@@ -7,6 +7,7 @@ import android.os.Parcelable
 import androidx.appcompat.widget.*
 import android.view.*
 import android.widget.ProgressBar
+import androidx.lifecycle.Observer
 import com.mediapocket.android.ItemListView
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
@@ -20,6 +21,9 @@ import com.mediapocket.android.view.NetworkListView
 import com.mediapocket.android.view.PodcastListView
 import com.mediapocket.android.viewmodels.PodcastViewModel
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.discover_podcast.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -31,8 +35,6 @@ class DiscoverFragment : BaseFragment() {
 
     protected val subscription: CompositeDisposable = CompositeDisposable()
 
-    protected var loading: ProgressBar? = null
-    protected var podcastList: androidx.recyclerview.widget.RecyclerView? = null
     private var discoverData: DiscoverData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,17 +42,13 @@ class DiscoverFragment : BaseFragment() {
 
         model = ViewModelProviders.of(this, viewModelFactory).get(PodcastViewModel::class.java)
 
-        subscription.add(
-                model.getDiscoverData().subscribe { data: DiscoverData ->
-                    discoverData = data
-                    if (view != null) {
-                        initPodcasts()
-                    }
-                })
+        GlobalScope.launch {
+            model.discoverData()
+        }
     }
 
     private fun initPodcasts() {
-        podcastList?.layoutManager?.onRestoreInstanceState(arguments?.getParcelable<Parcelable>("MAIN_POS"))
+        podcastList.layoutManager?.onRestoreInstanceState(arguments?.getParcelable<Parcelable>("MAIN_POS"))
         discoverData?.let {
 
             val states = mutableMapOf<Int, Parcelable?>()
@@ -61,9 +59,8 @@ class DiscoverFragment : BaseFragment() {
             }
 
 
-            podcastList?.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(podcastList?.context)
-            podcastList?.adapter = Adapter(requireActivity(), it, states)
-
+            podcastList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(podcastList?.context)
+            podcastList.adapter = Adapter(requireActivity(), it, states)
         }
 
     }
@@ -71,12 +68,16 @@ class DiscoverFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.discover_podcast, container, false)
 
-        podcastList = view?.findViewById(R.id.podcasts)
-        loading = view?.findViewById(R.id.loading)
+        model.isLoading.observe(this, Observer {
+            syncVisibility(it)
+        })
 
-        subscription.add(model.loading().subscribe { isLoading -> syncVisivility(isLoading) })
-
-        initPodcasts()
+        model.getDiscoverData.observe(this, Observer { data ->
+            discoverData = data
+            if (view != null) {
+                initPodcasts()
+            }
+        })
 
         setHasOptionsMenu(true)
 
@@ -120,9 +121,9 @@ class DiscoverFragment : BaseFragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun syncVisivility(isLoading: Boolean) {
-        podcastList?.visibility = if (isLoading) View.GONE else View.VISIBLE
-        loading?.visibility = if (isLoading) View.VISIBLE else View.GONE
+    private fun syncVisibility(isLoading: Boolean) {
+        podcastList.visibility = if (isLoading) View.GONE else View.VISIBLE
+        loading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onDetach() {

@@ -36,7 +36,8 @@ class Genres(response: JsonObject) : Cacheable() {
     }
 
     companion object {
-        private val colors = mapOf(1318 to R.color.cooper,
+        private val colors = mapOf(
+                1318 to R.color.cooper,
                 1315 to R.color.cooper,
                 1316 to R.color.orange,
                 1304 to R.color.silver,
@@ -51,7 +52,8 @@ class Genres(response: JsonObject) : Cacheable() {
                 1305 to R.color.yellow,
                 1321 to R.color.blue_light,
                 1323 to R.color.purple,
-                1303 to R.color.yellow)
+                1303 to R.color.yellow
+        )
 
         fun getColor(id : Int) : Int {
             return colors[id] ?: R.color.genre_default
@@ -59,4 +61,9 @@ class Genres(response: JsonObject) : Cacheable() {
     }
 }
 
-data class Genre(val genreId: Int, val name: String, val url: String, val subgenres: MutableMap<Int, Genre>?)
+data class Genre(
+        val genreId: Int,
+        val name: String,
+        val url: String,
+        val subgenres: MutableMap<Int, Genre>?
+)

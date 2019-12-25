@@ -2,12 +2,15 @@ package com.mediapocket.android.fragments
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import com.mediapocket.android.viewmodels.PodcastViewModel
 
 /**
  * @author Vlad Namashko
  */
 abstract class SimplePodcastFragment : BasePodcastFragment() {
+
+    override fun isLoading() = model.isLoading
 
     override fun hasNavigation() = true
 

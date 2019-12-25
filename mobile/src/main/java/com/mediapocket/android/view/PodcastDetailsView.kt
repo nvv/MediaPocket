@@ -29,6 +29,7 @@ import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.mediapocket.android.core.download.PodcastDownloadManager
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -62,13 +63,13 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         shimmerContainer.startShimmerAnimation()
     }
 
-    fun feedLoaded(rss: Rss, podcastId: String?) {
+    fun feedLoaded(rss: Rss, podcastId: String?, manager: PodcastDownloadManager) {
         shimmerContainer.stopShimmerAnimation()
         shimmerContainer.visibility = View.GONE
 
         description.text = Html.fromHtml(rss.description())
 
-        items.adapter = PodcastEpisodeAdapter(context, rss.items(), rss.link(), podcastId, subscription)
+        items.adapter = PodcastEpisodeAdapter(context, rss.items(), rss.link(), podcastId, subscription, manager)
         (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))

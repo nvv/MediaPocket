@@ -12,13 +12,18 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
+import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.events.LoadNetworkItemsEvent
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.view.PodcastDetailsView
 import com.mediapocket.android.viewmodels.PodcastDetailsViewModel
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /**
@@ -40,6 +45,9 @@ class PodcastDetailsFragment : BaseFragment() {
     private var openWebSiteMenu: MenuItem? = null
     private var moreFromAuthor: MenuItem? = null
 
+    @Inject
+    lateinit var manager: PodcastDownloadManager
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.podcast_fragmnet_view, container, false)
 
@@ -55,7 +63,8 @@ class PodcastDetailsFragment : BaseFragment() {
 
         subscribe = view.findViewById(R.id.subscribe)
         podcast?.let {
-            subscription.add(model.load(it).subscribe { podcastDetails ->
+
+            model.loadPodcast.observe(this, Observer { podcastDetails->
                 podcastDetails.artwork?.let {
                     dataLoaded = true
                     podcastView.loadLogo(it)
@@ -94,8 +103,8 @@ class PodcastDetailsFragment : BaseFragment() {
                     }
                 }
 
-                subscription.add(model.loadFeed(podcastDetails).subscribe({rss ->
-                    podcastView.feedLoaded(rss, podcast?.id())
+                model.rssData.observe(this, Observer{ rss ->
+                    podcastView.feedLoaded(rss, podcast?.id(), manager)
 
                     openWebSiteMenu?.setOnMenuItemClickListener {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(rss.webSite())))
@@ -108,10 +117,16 @@ class PodcastDetailsFragment : BaseFragment() {
                         }
                         false
                     }
-                }, {err ->
-                    err.printStackTrace()
-                }))
+                })
+
+                GlobalScope.launch {
+                    model.loadFeed(podcastDetails)
+                }
             })
+
+            GlobalScope.launch {
+                model.load(it)
+            }
         }
 
         return view

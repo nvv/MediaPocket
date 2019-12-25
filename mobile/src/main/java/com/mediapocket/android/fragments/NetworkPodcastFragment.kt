@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.model.PodcastAdapterEntry
@@ -14,6 +15,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * @author Vlad Namashko
@@ -27,16 +30,27 @@ class NetworkPodcastFragment : SimplePodcastFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        arguments?.getString(ARG_NETWORK_ID)?.let {
-            subscription.add(model.doLoadingAction { model.getNetowrkPodcasts(it) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ res ->
-                        adapter.setItems(PodcastAdapterEntry.convert(res))
-                        adapter.notifyDataSetChanged()
-                    }, { err ->
-                        err.printStackTrace() }))
+        arguments?.getString(ARG_NETWORK_ID)?.let {networkId ->
+            model.getNetworkPodcasts.observe(this, Observer { result ->
+                adapter.setItems(PodcastAdapterEntry.convert(result))
+                adapter.notifyDataSetChanged()
+            })
+
+            GlobalScope.launch {
+                model.getNetowrkPodcasts(networkId)
+            }
         }
+
+//        arguments?.getString(ARG_NETWORK_ID)?.let {
+//            subscription.add(model.doLoadingAction { model.getNetowrkPodcasts(it) }
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe({ res ->
+//                        adapter.setItems(PodcastAdapterEntry.convert(res))
+//                        adapter.notifyDataSetChanged()
+//                    }, { err ->
+//                        err.printStackTrace() }))
+//        }
 
         setHasOptionsMenu(true)
 

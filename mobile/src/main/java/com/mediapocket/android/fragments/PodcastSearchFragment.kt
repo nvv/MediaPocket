@@ -7,12 +7,16 @@ import androidx.appcompat.widget.SearchView
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.viewmodels.PodcastViewModel
 import com.mediapocket.android.viewmodels.SearchPodcastViewModel
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -27,6 +31,11 @@ class PodcastSearchFragment : BasePodcastFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = ViewModelProviders.of(this, viewModelFactory).get(SearchPodcastViewModel::class.java)
+
+        model.searchResult.observe(this, Observer {
+            adapter.setItems(PodcastAdapterEntry.convert(it))
+            adapter.notifyDataSetChanged()
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,6 +49,8 @@ class PodcastSearchFragment : BasePodcastFragment() {
 
         return view
     }
+
+    override fun isLoading() = model.isLoading
 
     override fun getLayoutId(): Int {
         return R.layout.search_podcast
@@ -101,10 +112,14 @@ class PodcastSearchFragment : BasePodcastFragment() {
     }
 
     private fun searchPodcast(query: String?) {
-        subscription.add(model.search(query!!).subscribe { res ->
-            adapter.setItems(PodcastAdapterEntry.convert(res))
-            adapter.notifyDataSetChanged()
-        })
+//        subscription.add(model.search(query!!).subscribe { res ->
+//            adapter.setItems(PodcastAdapterEntry.convert(res))
+//            adapter.notifyDataSetChanged()
+//        })
+
+        GlobalScope.launch {
+            model.search(query!!)
+        }
     }
 
     private fun hideKeyboard() {

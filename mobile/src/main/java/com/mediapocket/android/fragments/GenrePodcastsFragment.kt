@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.viewmodels.PodcastViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * @author Vlad Namashko
@@ -26,15 +29,18 @@ class GenrePodcastsFragment : SimplePodcastFragment() {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
         arguments?.getInt(ARG_GENRE_ID)?.let {
-            subscription.add(model.doLoadingAction { model.getTop(it, 100) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { res ->
-                        activity?.title = res.title()
-                        adapter.setItems(PodcastAdapterEntry.convert(res))
-                        adapter.notifyDataSetChanged()
-                    })
+            model.genreTopPodcasts.observe(this, Observer { result ->
+                activity?.title = result.title()
+                adapter.setItems(PodcastAdapterEntry.convert(result))
+                adapter.notifyDataSetChanged()
+            })
+
+            GlobalScope.launch {
+                model.requestTop(it, 100)
+            }
         }
+
+
 
         setHasOptionsMenu(true)
 

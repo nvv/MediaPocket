@@ -29,7 +29,7 @@ import com.mediapocket.android.extensions.from
 import com.mediapocket.android.extensions.id
 import com.mediapocket.android.playback.PlaybackUnit
 import com.mediapocket.android.playback.model.PlayableItem
-import com.mediapocket.android.service.RssRepository
+import com.mediapocket.android.repository.RssRepository
 import dagger.android.AndroidInjection
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -183,11 +183,12 @@ class PodcastService : MediaBrowserServiceCompat() {
                     .subscribeOn(Schedulers.io())
                     .map { items -> playback.initWithLocalEpisodes(mediaId, items) }
         } else {
-            rssRepository.loadRss(mediaId)
-                    .subscribeOn(Schedulers.io())
-                    .map { rss ->
-                        playback.initWithFeedItems(mediaId, rss.items())
-                    }
+//            rssRepository.loadRss(mediaId)
+//                    .subscribeOn(Schedulers.io())
+//                    .map { rss ->
+//                        playback.initWithFeedItems(mediaId, rss.items())
+//                    }
+            TODO("rssRepository.loadRss(mediaId)")
         }
     }
 

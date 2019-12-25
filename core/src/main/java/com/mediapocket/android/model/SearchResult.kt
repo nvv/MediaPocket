@@ -14,10 +14,16 @@ data class SearchResult(val resultCount: Int, val results: List<Podcast>) : Cach
     override fun title(): String = DependencyLocator.getInstance().context.getString(android.R.string.search_go)
 }
 
-data class Podcast(val artistId: Int, val collectionId: Int,
-                   val artistName: String, val collectionName: String, val feedUrl: String,
-                   val artworkUrl600: String, val releaseDate: String, val primaryGenreName: String,
-                   val genreIds: List<Int>, val genres: List<String>)
+data class Podcast(val artistId: Int,
+                   val collectionId: Int,
+                   val artistName: String,
+                   val collectionName: String,
+                   val feedUrl: String,
+                   val artworkUrl600: String,
+                   val releaseDate: String,
+                   val primaryGenreName: String,
+                   val genreIds: List<Int>,
+                   val genres: List<String>)
 
 //"wrapperType":"track",
 //"kind":"podcast",
