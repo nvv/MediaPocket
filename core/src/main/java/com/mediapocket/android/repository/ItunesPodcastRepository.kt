@@ -40,25 +40,7 @@ class ItunesPodcastRepository constructor(
     }
 
     suspend fun loadGenres(): Genres {
-        val response = searchPodcastService.genres(PODCAST_ID)
-        return execCacheAble({ Genres(response.get(PODCAST_ID.toString()).asJsonObject) }, genreKey)
-
-//        return execCacheable({
-//            Single.create { emitter: SingleEmitter<Genres> ->
-//                searchPodcastService.genres(PODCAST_ID).enqueue(object : Callback<JsonObject> {
-//                    override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
-//                        emitter.onError(t!!)
-//                    }
-//
-//                    override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
-//                        response?.body()?.get(PODCAST_ID.toString())?.let {
-//                            emitter.onSuccess(Genres(it.asJsonObject))
-//                        }
-//                    }
-//                })
-//            }
-//        }, genreKey)
-
+        return execCacheAble({ Genres(searchPodcastService.genres(PODCAST_ID).get(PODCAST_ID.toString()).asJsonObject) }, genreKey)
     }
 
 
@@ -73,7 +55,7 @@ class ItunesPodcastRepository constructor(
     }
 
     suspend fun lookupPodcast(id: String): PodcastLookup {
-        return execCacheAble({ PodcastLookup(searchPodcastService.lookup(id).asJsonObject) }, CacheKey(PodcastLookup::class.java, listOf(id)))
+        return execCacheAble({ PodcastLookup(searchPodcastService.lookup(id).get("results")?.asJsonArray?.get(0)?.asJsonObject) }, CacheKey(PodcastLookup::class.java, listOf(id)))
     }
 
     suspend fun lookupNetworkPodcasts(id: String, limit: Int = 50): SearchResult {

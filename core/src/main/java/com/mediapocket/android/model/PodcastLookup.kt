@@ -5,17 +5,18 @@ import com.google.gson.JsonObject
 /**
  * @author Vlad Namashko
  */
-class PodcastLookup(response: JsonObject) : Cacheable() {
+class PodcastLookup(response: JsonObject?) : Cacheable() {
 
-    private val artwork: String = response.get("artworkUrl600").asString
-    private val feedUrl: String = response.get("feedUrl").asString
-    private val primaryGenreName: String = response.get("primaryGenreName").asString
-    private val genreIds = mutableListOf<Int>()
-    private val artistId: String? = response.get("artistId")?.asString
-    private val artistName: String? = response.get("artistName")?.asString
+    val artwork: String by lazy { response?.get("artworkUrl600")?.asString ?: "" }
+    val feedUrl: String by lazy {  response?.get("feedUrl")?.asString ?: "" }
+    val primaryGenreName: String by lazy {  response?.get("primaryGenreName")?.asString ?: "" }
+    val artistId: String? by lazy {  response?.get("artistId")?.asString }
+    val artistName: String? by lazy {  response?.get("artistName")?.asString }
+
+    val genreIds = mutableListOf<Int>()
 
     init {
-        response.get("genreIds")?.asJsonArray?.forEach {
+        response?.get("genreIds")?.asJsonArray?.forEach {
             genreIds.add(it.asInt)
         }
     }
@@ -24,15 +25,4 @@ class PodcastLookup(response: JsonObject) : Cacheable() {
 
     override fun keepFor() = 1440 * 60 * 1000 // day
 
-    fun artwork() = artwork
-
-    fun feedUrl() = feedUrl
-
-    fun primaryGenreName() = primaryGenreName
-
-    fun genreIds() = genreIds
-
-    fun artistId() = artistId
-
-    fun artistName() = artistName
 }

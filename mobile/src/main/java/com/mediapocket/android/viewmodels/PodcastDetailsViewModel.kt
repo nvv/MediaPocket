@@ -37,8 +37,8 @@ class PodcastDetailsViewModel @Inject constructor(
         if (podcast.feedUrl().isNullOrEmpty()) {
              val lookup = GlobalScope.async { itunesPodcastRepository.lookupPodcast(podcast.id()) }.await()
 
-            _loadPodcast.postValue(PodcastDetails(lookup.feedUrl(), lookup.artwork(), lookup.primaryGenreName(),
-                    lookup.genreIds(), lookup.artistId(), lookup.artistName()))
+            _loadPodcast.postValue(PodcastDetails(lookup.feedUrl, lookup.artwork, lookup.primaryGenreName,
+                    lookup.genreIds, lookup.artistId, lookup.artistName))
 
         } else {
             _loadPodcast.postValue(PodcastDetails(podcast.feedUrl() ?: "", primaryGenreName = podcast.primaryGenreName(),
