@@ -100,47 +100,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/loading_podcast_layout" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_light" />
-
-            <include layout="@layout/loading_podcast_layout" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_light" />
-
-            <include layout="@layout/loading_podcast_layout" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_light" />
-
-            <include layout="@layout/loading_podcast_layout" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_light" />
-
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
+    <include layout="@layout/podcast_details_episodes_placeholder"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/items"
