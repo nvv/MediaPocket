@@ -9,6 +9,18 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="list_item_avatar_size">40dp</dimen>
 
+    <dimen name="margin_x_small">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_med">12dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_x_large">36dp</dimen>
+    <dimen name="margin_xx_large">48dp</dimen>
+
+    <dimen name="padding_x_small">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_med">12dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+
     <dimen name="pager_height">4dip</dimen>
     <dimen name="pager_width">24dip</dimen>
 

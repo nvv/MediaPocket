@@ -10,10 +10,7 @@ import com.mediapocket.android.repository.ItunesPodcastRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -63,8 +60,10 @@ class PodcastViewModel @Inject constructor(
         return itunesPodcastRepository.loadFeatured()
     }
 
-    suspend fun discoverData() {
-        _getDiscoverData.postValue(doAction { getDiscoverData(defaultGenres) })
+    fun discoverData() {
+        GlobalScope.launch {
+            _getDiscoverData.postValue(doAction { getDiscoverData(defaultGenres) })
+        }
     }
 
     private suspend fun getDiscoverData(podcasts: List<String>): DiscoverData {

@@ -4,6 +4,7 @@ import com.mediapocket.android.MainActivity
 import com.mediapocket.android.PodcastService
 import com.mediapocket.android.SplashScreenActivity
 import com.mediapocket.android.fragments.*
+import com.mediapocket.android.journeys.discover.DiscoverFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
