@@ -44,8 +44,6 @@ abstract class BasePodcastFragment : BaseFragment() {
         adapter.setItemsInRowCount(calculateItemsCount())
         podcasts?.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, calculateItemsCount())
 
-        subscription.add(loading().subscribe { isLoading -> syncVisibility(isLoading) })
-
         isLoading().observe(this, Observer {
             syncVisibility(it)
         })
@@ -74,8 +72,6 @@ abstract class BasePodcastFragment : BaseFragment() {
             else 2
 
     protected abstract fun isLoading(): LiveData<Boolean>
-
-    protected abstract fun loading(): BehaviorSubject<Boolean>
 
     protected abstract fun getLayoutId(): Int
 }

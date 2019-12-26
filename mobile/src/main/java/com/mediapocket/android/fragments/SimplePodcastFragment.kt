@@ -16,8 +16,6 @@ abstract class SimplePodcastFragment : BasePodcastFragment() {
 
     override fun hasBackNavigation() = true
 
-    override fun loading() = model.loading()
-
     protected lateinit var model: PodcastViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

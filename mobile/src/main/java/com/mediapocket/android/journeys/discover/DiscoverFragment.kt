@@ -115,7 +115,6 @@ class DiscoverFragment : BaseFragment() {
         search.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 RxBus.default.postEvent(OpenSearchEvent())
-
             }
         }
 

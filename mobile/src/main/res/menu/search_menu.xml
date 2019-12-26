@@ -8,5 +8,5 @@
         android:id="@+id/action_search"
         android:title="@string/title_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

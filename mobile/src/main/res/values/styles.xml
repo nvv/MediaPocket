@@ -32,6 +32,9 @@
         <item name="android:textColorPrimary">?attr/toolbarAccentColor</item>
         <item name="android:textColorSecondary">?attr/toolbarAccentColor</item>
         <item name="actionMenuTextColor">?attr/toolbarAccentColor</item>
+
+        <item name="android:editTextColor">?attr/toolbarAccentColor</item>
+        <item name="android:textColorHint">?attr/toolbarAccentColor</item>
     </style>
 
     <style name="ExpandedToolbarTitle" parent="@android:style/TextAppearance.Holo.Medium">

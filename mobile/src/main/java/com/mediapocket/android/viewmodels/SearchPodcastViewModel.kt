@@ -17,7 +17,9 @@ class SearchPodcastViewModel @Inject constructor(private val itunesPodcastReposi
     private val _searchResult = MutableLiveData<SearchResult>()
     val searchResult: LiveData<SearchResult> = _searchResult
 
-    suspend fun search(term: String) {
-        _searchResult.postValue(doAction { itunesPodcastRepository.searchPodcasts(term) })
+    fun search(term: String) {
+        GlobalScope.launch {
+            _searchResult.postValue(doAction { itunesPodcastRepository.searchPodcasts(term) })
+        }
     }
 }

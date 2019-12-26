@@ -21,7 +21,7 @@ abstract class BaseFragment: Fragment() {
         AndroidSupportInjection.inject(this)
     }
 
-    abstract fun getTitle(): String
+    abstract fun getTitle(): String?
 
     abstract fun hasNavigation(): Boolean
 

@@ -17,7 +17,7 @@ import com.mediapocket.android.utils.ViewUtils
 /**
  * @author Vlad Namashko
  */
-class PodcastGridAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<PodcastGridAdapter.PodcastViewHolder>() {
+class PodcastGridAdapter : RecyclerView.Adapter<PodcastGridAdapter.PodcastViewHolder>() {
 
     private var items: List<PodcastAdapterEntry>? = null
     private var itemsInRow: Int = 2
@@ -39,12 +39,11 @@ class PodcastGridAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<Pod
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PodcastViewHolder {
-        val vh = PodcastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.podcast_item, parent, false))
-        return vh
+        return PodcastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.podcast_item, parent, false))
     }
 
 
-    class PodcastViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    class PodcastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title = itemView.findViewById<TextView>(R.id.title)
         val image = itemView.findViewById<ImageView>(R.id.image)
 
@@ -54,21 +53,6 @@ class PodcastGridAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<Pod
 
 
             Glide.with(image.context).load(podcast.logo()).into(image)
-//            Glide.with(image.context).load(podcast.logo()).listener(object : RequestListener<Drawable> {
-//                override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
-//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                }
-//                override fun onResourceReady(p0: Drawable?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
-//
-//                    image.layoutParams.width = p0?.intrinsicWidth!!
-//                    image.layoutParams.height = p0?.intrinsicHeight!!
-//
-//                    image.setImageDrawable(p0)
-//                    //do something when picture already loaded
-//                    return false
-//                }
-//            }).into(image)
-
             ViewCompat.setTransitionName(image, position.toString() + "_image")
             itemView.setOnClickListener({ _ -> RxBus.default.postEvent(PodcastSelectedEvent(podcast, image))})
         }
