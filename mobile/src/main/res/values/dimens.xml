@@ -30,6 +30,8 @@
     <dimen name="pager_height">4dip</dimen>
     <dimen name="pager_width">24dip</dimen>
 
+    <dimen name="episode_item_icon_size">20dip</dimen>
+
     <dimen name="podcast_details_image_height">256dip</dimen>
 
 </resources>

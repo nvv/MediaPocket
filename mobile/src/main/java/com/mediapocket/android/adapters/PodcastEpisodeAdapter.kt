@@ -1,20 +1,17 @@
 package com.mediapocket.android.adapters
 
-import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.drawable.Animatable
-import androidx.core.app.ShareCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.Html
-import android.text.TextUtils
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.app.ShareCompat
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
@@ -25,7 +22,6 @@ import com.mediapocket.android.core.download.extensions.isError
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.events.PlayPodcastEvent
-import com.mediapocket.android.extensions.getResourceIdAttribute
 import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.model.Item
 import com.mediapocket.android.playback.model.RssEpisodeItem
@@ -33,8 +29,6 @@ import com.mediapocket.android.utils.GlobalUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import org.jetbrains.anko.*
-import org.jetbrains.anko.custom.customView
 
 
 /**
@@ -149,7 +143,7 @@ class PodcastEpisodeAdapter(private val context: Context,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PodcastItemViewHolder {
-        return PodcastItemViewHolder(ItemView().createView(AnkoContext.create(parent.context, parent)))
+        return PodcastItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.podcast_episode_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -160,147 +154,6 @@ class PodcastEpisodeAdapter(private val context: Context,
         holder.bind(data[position])
     }
 
-    class ItemView : AnkoComponent<ViewGroup> {
-        override fun createView(ui: AnkoContext<ViewGroup>): View {
-            return with(ui) {
-
-                linearLayout {
-                    setPadding(dip(16), dip(16), dip(16), dip(16))
-                    backgroundResource = context.getResourceIdAttribute(R.attr.primarySemiTransparentColor)
-                    layoutTransition = LayoutTransition()
-                    lparams(width = matchParent, height = wrapContent)
-                    orientation = LinearLayout.VERTICAL
-
-
-                    linearLayout {
-                        lparams(width = matchParent, height = wrapContent)
-                        orientation = LinearLayout.HORIZONTAL
-                        layoutTransition = LayoutTransition()
-                        gravity = Gravity.LEFT
-
-                        textView {
-                            id = R.id.pub_date
-                            ellipsize = TextUtils.TruncateAt.END
-                            gravity = Gravity.CENTER
-                            maxLines = 2
-                            textColorResource = R.color.grey
-                        }.lparams(width = wrapContent, height = wrapContent) {
-                            rightMargin = dip(16)
-                            gravity = Gravity.CENTER
-                        }
-
-                        linearLayout {
-                            gravity = Gravity.CENTER_VERTICAL
-                            orientation = LinearLayout.VERTICAL
-
-                            textView {
-                                id = R.id.title
-                                ellipsize = TextUtils.TruncateAt.END
-                                maxLines = 1
-                                textSize = 16f
-                                textColorResource = R.color.black
-                            }.lparams(width = wrapContent, height = wrapContent)
-
-                            textView {
-                                id = R.id.description
-                                ellipsize = TextUtils.TruncateAt.END
-                                maxLines = 2
-                                textSize = 13f
-                                textColorResource = R.color.black
-                            }.lparams(width = wrapContent, height = wrapContent) {
-                                topMargin = dip(4)
-                            }
-
-                        }.lparams(width = wrapContent, height = wrapContent) {
-                            rightMargin = dip(16)
-                            gravity = Gravity.CENTER_VERTICAL
-                            weight = 1f
-                        }
-
-
-                        imageView {
-                            id = R.id.episode_playback_status
-                            setImageResource(R.drawable.ic_play_state)
-                        }.lparams(width = dip(20), height = dip(20)) {
-                            gravity = Gravity.CENTER
-                        }
-                    }
-                    linearLayout {
-                        orientation = LinearLayout.HORIZONTAL
-                        gravity = Gravity.LEFT
-
-                        frameLayout {
-                            frameLayout {
-
-                                customView<CircularProgressBar> {
-                                    id = R.id.download_progress
-                                    visibility = View.GONE
-                                }.lparams(width = matchParent, height = matchParent) {
-                                    gravity = Gravity.CENTER
-                                }
-
-                                imageView {
-                                    id = R.id.download_status
-                                    imageResource = R.drawable.ic_download
-                                }.lparams(width = dip(20), height = dip(20)) {
-                                    gravity = Gravity.CENTER
-                                }
-
-                            }.lparams(width = dip(24), height = dip(24)) {
-                                gravity = Gravity.LEFT and Gravity.CENTER_VERTICAL
-                            }
-
-                        }.lparams(width = 0, height = wrapContent) {
-                            weight = 1f
-                            leftMargin = dip(12)
-                        }
-
-                        imageView {
-                            id = R.id.episode_favorite
-                            setImageResource(R.drawable.ic_star_animated)
-                        }.lparams(width = dip(20), height = dip(20)) {
-                            gravity = Gravity.LEFT
-                            weight = 1f
-                        }
-
-                        imageView {
-                            id = R.id.episode_share
-                            imageResource = R.drawable.ic_share
-                        }.lparams(width = dip(20), height = dip(20)) {
-                            gravity = Gravity.CENTER and Gravity.CENTER_VERTICAL
-                            weight = 1f
-                        }
-
-                        frameLayout {
-                            imageView {
-                                id = R.id.episode_context_menu
-                                imageResource = R.drawable.ic_more_horizontal
-                            }.lparams(width = dip(20), height = dip(20)) {
-                                gravity = Gravity.RIGHT
-                            }
-                        }.lparams(width = 0, height = wrapContent) {
-                            weight = 1f
-                            rightMargin = dip(12)
-                        }
-
-                        textView {
-                            id = R.id.error_download
-                            textResource = R.string.error_download
-                            ellipsize = TextUtils.TruncateAt.END
-                            maxLines = 1
-                            textSize = 12f
-                            textColorResource = R.color.red
-                        }.lparams(width = wrapContent, height = wrapContent)
-                    }.lparams(width = matchParent, height = wrapContent) {
-                        topMargin = dip(16)
-                    }
-
-                }
-            }
-        }
-
-    }
-
     fun setColors(accentColor: Int) {
         this.accentColor = accentColor
         notifyDataSetChanged()
@@ -308,17 +161,17 @@ class PodcastEpisodeAdapter(private val context: Context,
 
     inner class PodcastItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
-        private val pubDate = itemView.findViewById<TextView>(R.id.pub_date)
+        private val pubDate = itemView.findViewById<TextView>(R.id.pubDate)
         private val title = itemView.findViewById<TextView>(R.id.title)
         private val description = itemView.findViewById<TextView>(R.id.description)
-        private val error = itemView.findViewById<TextView>(R.id.error_download)
-        private val status = itemView.findViewById<ImageView>(R.id.download_status)
-        private val progress = itemView.findViewById<CircularProgressBar>(R.id.download_progress)
+        private val error = itemView.findViewById<TextView>(R.id.error)
+        private val status = itemView.findViewById<ImageView>(R.id.downloadStatus)
+        private val progress = itemView.findViewById<CircularProgressBar>(R.id.downloadProgress)
 //        private val delete = itemView.findViewById<ImageView>(R.id.delete_episode)
-        private val playback = itemView.findViewById<ImageView>(R.id.episode_playback_status)
-        private val favourite = itemView.findViewById<ImageView>(R.id.episode_favorite)
-        private val share = itemView.findViewById<ImageView>(R.id.episode_share)
-        private val more = itemView.findViewById<ImageView>(R.id.episode_context_menu)
+        private val playback = itemView.findViewById<ImageView>(R.id.episodePlaybackStatus)
+        private val favourite = itemView.findViewById<ImageView>(R.id.episodeFavorite)
+        private val share = itemView.findViewById<ImageView>(R.id.episodeShare)
+        private val more = itemView.findViewById<ImageView>(R.id.episodeContextMenu)
 
         fun bind(item: PodcastEpisode) {
             title.text = item.title
