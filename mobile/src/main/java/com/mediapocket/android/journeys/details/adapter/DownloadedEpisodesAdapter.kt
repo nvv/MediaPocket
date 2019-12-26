@@ -1,4 +1,4 @@
-package com.mediapocket.android.adapters
+package com.mediapocket.android.journeys.details.adapter
 
 import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater

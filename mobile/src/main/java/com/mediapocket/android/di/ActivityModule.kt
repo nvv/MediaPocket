@@ -4,6 +4,7 @@ import com.mediapocket.android.MainActivity
 import com.mediapocket.android.PodcastService
 import com.mediapocket.android.SplashScreenActivity
 import com.mediapocket.android.fragments.*
+import com.mediapocket.android.journeys.details.PodcastDetailsFragment
 import com.mediapocket.android.journeys.discover.DiscoverFragment
 import com.mediapocket.android.journeys.discover.PodcastSearchFragment
 import dagger.Module

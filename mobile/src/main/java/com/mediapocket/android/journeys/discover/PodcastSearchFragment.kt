@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.mediapocket.android.R
 import com.mediapocket.android.fragments.BasePodcastFragment
 import com.mediapocket.android.model.PodcastAdapterEntry
-import com.mediapocket.android.viewmodels.SearchPodcastViewModel
+import com.mediapocket.android.journeys.discover.vm.SearchPodcastViewModel
 
 
 /**

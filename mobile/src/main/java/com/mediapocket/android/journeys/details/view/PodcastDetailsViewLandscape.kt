@@ -1,4 +1,4 @@
-package com.mediapocket.android.view
+package com.mediapocket.android.journeys.details.view
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -6,12 +6,12 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import androidx.palette.graphics.Palette
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.ViewGroup
 import com.mediapocket.android.R
 import com.mediapocket.android.model.PodcastAdapterEntry
+import com.mediapocket.android.view.AnimatedImageView
 
 /**
  * @author Vlad Namashko

@@ -1,10 +1,10 @@
-package com.mediapocket.android.viewmodels
+package com.mediapocket.android.journeys.discover.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mediapocket.android.model.SearchResult
 import com.mediapocket.android.repository.ItunesPodcastRepository
-import io.reactivex.Single
+import com.mediapocket.android.viewmodels.LoadableViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

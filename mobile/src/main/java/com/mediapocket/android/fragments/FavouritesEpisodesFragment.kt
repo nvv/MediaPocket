@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mediapocket.android.adapters.DownloadedEpisodesAdapter
+import com.mediapocket.android.journeys.details.adapter.DownloadedEpisodesAdapter
 
 /**
  * @author Vlad Namashko

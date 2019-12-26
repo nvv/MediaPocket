@@ -1,12 +1,9 @@
-package com.mediapocket.android.view
+package com.mediapocket.android.journeys.details.view
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import androidx.palette.graphics.Palette
 import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
 import android.view.Menu
@@ -18,6 +15,7 @@ import com.mediapocket.android.events.ChangeStatusBarColorEvent
 import com.mediapocket.android.events.PopBackStackEvent
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.PodcastDetails
+import com.mediapocket.android.view.DotPager
 import kotlinx.android.synthetic.main.podcast_details_view_phone.view.*
 import org.jetbrains.anko.backgroundColor
 

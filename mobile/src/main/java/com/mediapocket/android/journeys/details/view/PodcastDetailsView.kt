@@ -1,12 +1,9 @@
-package com.mediapocket.android.view
+package com.mediapocket.android.journeys.details.view
 
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -28,7 +25,6 @@ import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import io.reactivex.disposables.CompositeDisposable
 
@@ -52,8 +48,6 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         LayoutInflater.from(context).inflate(getLayout(), this)
 
         items = findViewById(R.id.items)
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-        items.layoutManager = layoutManager
 
         logo = findViewById(R.id.background)
 

@@ -1,9 +1,7 @@
-package com.mediapocket.android.fragments
+package com.mediapocket.android.journeys.details
 
 import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.graphics.drawable.Animatable
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,12 +15,10 @@ import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.events.LoadNetworkItemsEvent
+import com.mediapocket.android.fragments.BaseFragment
 import com.mediapocket.android.model.PodcastAdapterEntry
-import com.mediapocket.android.view.PodcastDetailsView
-import com.mediapocket.android.viewmodels.PodcastDetailsViewModel
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.mediapocket.android.journeys.details.view.PodcastDetailsView
+import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
 import javax.inject.Inject
 
 
@@ -32,11 +28,9 @@ import javax.inject.Inject
 class PodcastDetailsFragment : BaseFragment() {
 
     private lateinit var model: PodcastDetailsViewModel
-    public var podcast: PodcastAdapterEntry? = null
+    var podcast: PodcastAdapterEntry? = null
 
     private lateinit var podcastView: PodcastDetailsView
-
-    private val subscription: CompositeDisposable = CompositeDisposable()
 
     private var dataLoaded = false
 
@@ -62,9 +56,9 @@ class PodcastDetailsFragment : BaseFragment() {
         model = ViewModelProviders.of(this, viewModelFactory).get(PodcastDetailsViewModel::class.java)
 
         subscribe = view.findViewById(R.id.subscribe)
-        podcast?.let {
+        podcast?.let { podcast ->
 
-            model.loadPodcast.observe(this, Observer { podcastDetails->
+            model.loadPodcast.observe(this, Observer { podcastDetails ->
                 podcastDetails.artwork?.let {
                     dataLoaded = true
                     podcastView.loadLogo(it)
@@ -75,36 +69,31 @@ class PodcastDetailsFragment : BaseFragment() {
 
                 subscribe?.let {
 
-                    var subscribed = false
-                    subscription.add(model.isSubscribed(podcast!!.id()).subscribe { isSubscribed ->
-                        subscribed = isSubscribed
-                        syncSubscribeButton(subscribed)
+                    model.isSubscribed.observe(this, Observer { isSubscribed ->
+                        syncSubscribeButton(isSubscribed)
                     })
 
+                    model.isSubscribed(podcast.id())
+
                     it.setOnClickListener {
-
-                        val stateSet = intArrayOf(android.R.attr.state_checked * if (!subscribed) 1 else -1)
-                        subscribe?.setImageState(stateSet, true)
-
-                        subscription.add(model.subscribe(podcast!!, podcastDetails).subscribe { _ ->
-                            subscribed = !subscribed
-
-                            val snackbar = Snackbar.make(view.findViewById(R.id.podcast_details),
-                                    getString(if (subscribed) R.string.action_subscribed else R.string.action_unsubscribed, podcast?.title()), Snackbar.LENGTH_SHORT)
-                            snackbar.setAction(getString(R.string.action_undo)) {
-                                subscription.add(model.subscribe(podcast!!, podcastDetails).subscribe {value ->
-                                    subscribed = value
-                                    syncSubscribeButton(subscribed)
-                                })
-                            }
-                            snackbar.show()
-                            syncSubscribeButton(subscribed, true)
-                        })
+                        model.subscribe(podcast, podcastDetails, explicitlyInvoked = true)
                     }
+
+                    model.showUndo.observe(this, Observer {isSubscribed ->
+                        val snackbar = Snackbar.make(view.findViewById(R.id.podcast_details),
+                                getString(if (isSubscribed) R.string.action_subscribed else
+                                    R.string.action_unsubscribed, podcast.title()), Snackbar.LENGTH_SHORT)
+
+                        snackbar.setAction(getString(R.string.action_undo)) {
+                            model.subscribe(podcast, podcastDetails)
+                        }
+
+                        snackbar.show()
+                    })
                 }
 
-                model.rssData.observe(this, Observer{ rss ->
-                    podcastView.feedLoaded(rss, podcast?.id(), manager)
+                model.rssData.observe(this, Observer { rss ->
+                    podcastView.feedLoaded(rss, podcast.id(), manager)
 
                     openWebSiteMenu?.setOnMenuItemClickListener {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(rss.webSite())))
@@ -119,25 +108,25 @@ class PodcastDetailsFragment : BaseFragment() {
                     }
                 })
 
-                GlobalScope.launch {
-                    model.loadFeed(podcastDetails)
-                }
+                model.loadFeed(podcastDetails)
+
             })
 
-            GlobalScope.launch {
-                model.load(it)
-            }
+            model.load(podcast)
         }
 
         return view
     }
 
-    private fun syncSubscribeButton(subscribed: Boolean, manualyInvoked : Boolean = false) {
+    private fun syncSubscribeButton(subscribed: Boolean, manualyInvoked: Boolean = false) {
         if (!manualyInvoked) {
             val stateSet = intArrayOf(android.R.attr.state_checked * if (subscribed) 1 else -1)
             subscribe?.setImageState(stateSet, true)
         }
         subscribeMenu?.setTitle(if (subscribed) R.string.unsubscribe else R.string.subscribe)
+
+        val stateSet = intArrayOf(android.R.attr.state_checked * if (subscribed) 1 else -1)
+        subscribe?.setImageState(stateSet, true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -145,23 +134,26 @@ class PodcastDetailsFragment : BaseFragment() {
         podcastView.fragmentCreated(podcast)
     }
 
-    companion object {
-
-        private val ARG_PODCAST = "arg_podcast"
-
-        fun newInstance(podcast: PodcastAdapterEntry): PodcastDetailsFragment {
-            val fragment = PodcastDetailsFragment()
-            fragment.arguments = Bundle()
-            fragment.arguments?.putParcelable(ARG_PODCAST, podcast)
-            return fragment
-        }
-
-        val TAG = "PodcastDetailsFragment"
-    }
-
     override fun getTitle() = ""
 
     override fun hasNavigation() = false
 
     override fun hasBackNavigation() = true
+
+    companion object {
+
+        private val ARG_PODCAST = "arg_podcast"
+
+        val TAG = "PodcastDetailsFragment"
+
+        fun newInstance(podcast: PodcastAdapterEntry): PodcastDetailsFragment {
+            return PodcastDetailsFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_PODCAST, podcast)
+                }
+            }
+        }
+
+    }
+
 }
