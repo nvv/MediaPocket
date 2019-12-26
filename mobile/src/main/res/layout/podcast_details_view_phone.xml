@@ -19,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
             app:collapsedTitleTextAppearance="@style/CollapsedToolbarTitle"
+            app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@style/ExpandedToolbarTitle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="true">
@@ -32,7 +32,7 @@
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
-                    android:layout_height="256dp">
+                    android:layout_height="@dimen/podcast_details_image_height">
 
                     <FrameLayout
                         android:id="@+id/background_frame"
@@ -41,21 +41,21 @@
 
                         <ImageView
                             android:id="@+id/background"
-                            android:transitionName="logo"
                             android:layout_width="match_parent"
-                            android:layout_height="256dp"
-                            android:scaleType="centerCrop" />
+                            android:layout_height="@dimen/podcast_details_image_height"
+                            android:scaleType="centerCrop"
+                            android:transitionName="logo" />
 
                         <TextView
-                            android:layout_gravity="right|top"
                             android:id="@+id/genre"
-                            android:layout_marginRight="24dp"
-                            android:layout_marginTop="64dp"
-                            android:padding="8dp"
-                            android:textSize="16sp"
-                            android:textColor="@color/white"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|top"
+                            android:layout_marginTop="@dimen/margin_xxx_large"
+                            android:layout_marginEnd="@dimen/margin_large"
+                            android:padding="@dimen/padding_x_small"
+                            android:textColor="@color/white"
+                            android:textSize="?attr/genreTextSize" />
 
                     </FrameLayout>
 
@@ -65,12 +65,12 @@
                         android:layout_height="match_parent"
                         android:ellipsize="end"
                         android:maxLines="9"
-                        android:paddingBottom="60dp"
-                        android:paddingLeft="32dp"
-                        android:paddingRight="32dp"
-                        android:paddingTop="40dp"
+                        android:paddingStart="@dimen/padding_x_large"
+                        android:paddingTop="@dimen/padding_xx_large"
+                        android:paddingEnd="@dimen/padding_x_large"
+                        android:paddingBottom="@dimen/padding_xxx_large"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="?attr/textDescriptionSize" />
 
                 </androidx.viewpager.widget.ViewPager>
 
@@ -79,7 +79,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="@dimen/margin_med" />
 
             </FrameLayout>
 
@@ -100,14 +100,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/podcast_details_episodes_placeholder"/>
+    <include layout="@layout/podcast_details_episodes_placeholder" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/items"
-        android:paddingTop="16dp"
-        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/padding_med"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -115,11 +115,11 @@
         android:id="@+id/subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_med"
         android:tint="@color/white"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        app:srcCompat="@drawable/ic_subscribe_animated"
         app:backgroundTint="@color/colorPrimaryDark"
         app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"
+        app:srcCompat="@drawable/ic_subscribe_animated" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

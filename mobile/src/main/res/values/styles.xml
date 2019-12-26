@@ -11,6 +11,9 @@
         <item name="primaryBackgroundColor">@color/white</item>
         <item name="primarySemiTransparentColor">@color/white_semi_transparent</item>
 
+        <item name="genreTextSize">16sp</item>
+        <item name="textDescriptionSize">14sp</item>
+
         <!--<item name="primaryBackgroundColor">@color/dark_color</item>-->
         <!--<item name="primarySemiTransparentColor">@color/dark_color_semi_transparent</item>-->
     </style>

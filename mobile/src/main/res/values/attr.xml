@@ -4,4 +4,8 @@
     <attr name="primaryBackgroundColor" format="reference|color" />
     <attr name="primarySemiTransparentColor" format="reference|color" />
 
+    <!-- text size -->
+    <attr name="genreTextSize" format="reference|dimension" />
+    <attr name="textDescriptionSize" format="reference|dimension" />
+
 </resources>
