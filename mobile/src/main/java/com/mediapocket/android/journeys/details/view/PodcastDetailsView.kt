@@ -26,6 +26,7 @@ import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
 import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -63,7 +64,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
 
         description.text = Html.fromHtml(rss.description())
 
-        items.adapter = PodcastEpisodeAdapter(context, rss.items(), rss.link(), podcastId, subscription, manager)
+        items.adapter = PodcastEpisodeAdapter(context, rss.items().map { PodcastEpisodeViewItem(it, rss.link(), podcastId) }, subscription, manager)
         (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))

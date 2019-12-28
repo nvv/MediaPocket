@@ -36,6 +36,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -169,26 +172,28 @@ class PodcastService : MediaBrowserServiceCompat() {
             // and put them in the mediaItems list...
         } else {
             result.detach()
-            subscription.add(loadPlaylist(parentMediaId).observeOn(AndroidSchedulers.mainThread()).subscribe { items ->
-                result.sendResult(items)
-            })
+            GlobalScope.launch {
+                result.sendResult(loadPlaylist(parentMediaId))
+            }
+
+//            subscription.add(loadPlaylist(parentMediaId).observeOn(AndroidSchedulers.mainThread()).subscribe { items ->
+//                result.sendResult(items)
+//            })
         }
     }
 
-    private fun loadPlaylist(mediaId: String): Single<List<MediaBrowserCompat.MediaItem>> {
+    private suspend fun loadPlaylist(mediaId: String): List<MediaBrowserCompat.MediaItem> {
         return if (mediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
-            Single.fromCallable {
-                database.downloadedPodcastItemDao().getDownloaded()
-            }
-                    .subscribeOn(Schedulers.io())
-                    .map { items -> playback.initWithLocalEpisodes(mediaId, items) }
+            GlobalScope.async {
+                val items = database.downloadedPodcastItemDao().getDownloaded()
+                playback.initWithLocalEpisodes(mediaId, items)
+            }.await()
+
         } else {
-//            rssRepository.loadRss(mediaId)
-//                    .subscribeOn(Schedulers.io())
-//                    .map { rss ->
-//                        playback.initWithFeedItems(mediaId, rss.items())
-//                    }
-            TODO("rssRepository.loadRss(mediaId)")
+            GlobalScope.async {
+                val rss = rssRepository.loadRss(mediaId)
+                playback.initWithFeedItems(mediaId, rss.items())
+            }.await()
         }
     }
 
