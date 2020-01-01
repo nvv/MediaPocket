@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ShareCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.MediaSessionConnection
@@ -36,10 +38,10 @@ import io.reactivex.functions.Consumer
 /**
  * @author Vlad Namashko
  */
-class PodcastEpisodeAdapter(private val context: Context,
-                            private val items: List<PodcastEpisodeViewItem>,
-                            private val subscription: CompositeDisposable,
-                            private val manager: PodcastDownloadManager
+class PodcastEpisodeAdapter(
+        private val items: List<PodcastEpisodeViewItem>,
+        private val context: Context,
+        private val listener: EpisodeItemListener? = null
 ) : RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
 
 //    private val data = mutableListOf<PodcastEpisode>()
@@ -217,6 +219,10 @@ class PodcastEpisodeAdapter(private val context: Context,
 //                clickDownload(item, manager)
             }
 
+            favourite.setOnClickListener {
+                listener?.favouriteClicked(item)
+            }
+
 //            favourite.setOnClickListener {
 //                subscription.add(manager.favourite(podcastId, item.item).subscribe { items ->
 //                    processItems(items)
@@ -233,18 +239,18 @@ class PodcastEpisodeAdapter(private val context: Context,
 //            }
 
 //            val download = item.download != null && item.download?.favourite!!
-//            val stateSet = intArrayOf(android.R.attr.state_checked * if (download) 1 else -1)
-//            favourite.setImageState(stateSet, true)
+            val stateSet = intArrayOf(android.R.attr.state_checked * if (item.isFavourite) 1 else -1)
+            favourite.setImageState(stateSet, true)
 //
 
             playback.visibility = if (item.isPlaying) View.VISIBLE else View.GONE
 
-//            item.isPlaying?.let { isPlaying ->
-//
-//                if (!(playback.drawable as Animatable).isRunning) {
-//                    (playback.drawable as Animatable).start()
-//                }
-//            }
+            item.isPlaying.let {
+
+                if (!(playback.drawable as Animatable).isRunning) {
+                    (playback.drawable as Animatable).start()
+                }
+            }
 
 //            error.visibility = if (item.download?.state == PodcastEpisodeItem.STATE_ERROR) View.VISIBLE else View.GONE
 
@@ -300,5 +306,12 @@ class PodcastEpisodeAdapter(private val context: Context,
 //
 //        var isPlaying: Boolean? = null
 //    }
+
+
+    interface EpisodeItemListener {
+
+        fun favouriteClicked(item: PodcastEpisodeViewItem)
+
+    }
 
 }

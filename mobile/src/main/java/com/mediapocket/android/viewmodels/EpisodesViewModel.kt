@@ -21,7 +21,7 @@ class EpisodesViewModel @Inject constructor(
     fun getDownloadedEpisodes(): Single<List<PodcastEpisodeItem>?> {
         return doLoadingAction {
             Single.fromCallable {
-                database.downloadedPodcastItemDao().getDownloaded()
+                database.podcastEpisodeItemDao().getDownloaded()
             }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
         }
@@ -30,7 +30,7 @@ class EpisodesViewModel @Inject constructor(
     fun getFavouritesEpisodes(): Single<List<PodcastEpisodeItem>?> {
         return doLoadingAction {
             Single.fromCallable {
-                database.downloadedPodcastItemDao().getFavourites()
+                database.podcastEpisodeItemDao().getFavourites()
             }.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
         }

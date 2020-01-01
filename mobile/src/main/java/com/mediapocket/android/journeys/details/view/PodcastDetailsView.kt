@@ -58,16 +58,24 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         shimmerContainer.startShimmerAnimation()
     }
 
-    fun feedLoaded(rss: Rss, podcastId: String?, manager: PodcastDownloadManager) {
+    fun setDescription(htmlDescription: String) {
+        description.text = Html.fromHtml(htmlDescription)
+    }
+
+    fun setItems(rssItems: List<PodcastEpisodeViewItem>, listener: PodcastEpisodeAdapter.EpisodeItemListener) {
         shimmerContainer.stopShimmerAnimation()
         shimmerContainer.visibility = View.GONE
 
-        description.text = Html.fromHtml(rss.description())
-
-        items.adapter = PodcastEpisodeAdapter(context, rss.items().map { PodcastEpisodeViewItem(it, rss.link(), podcastId) }, subscription, manager)
+        items.adapter = PodcastEpisodeAdapter(rssItems, context, listener)
         (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
+    }
+
+    fun notifyDataSetChanged(changed: Set<Int>) {
+        changed.forEach {
+            items.adapter?.notifyItemChanged(it)
+        }
     }
 
     private fun onPaletteReady(palette: androidx.palette.graphics.Palette) {

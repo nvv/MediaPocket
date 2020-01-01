@@ -17,6 +17,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun subscribedPodcastDao(): SubscribedPodcastDao
 
-    abstract fun downloadedPodcastItemDao(): EpisodesDao
+    abstract fun podcastEpisodeItemDao(): EpisodesDao
 
 }

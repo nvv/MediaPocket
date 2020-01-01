@@ -3,7 +3,10 @@ package com.mediapocket.android.di
 import com.mediapocket.android.api.retrofit.ItunesPodcastSearchService
 import com.mediapocket.android.api.retrofit.ItunesTopPodcastService
 import com.mediapocket.android.api.retrofit.RssService
+import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.repository.ItunesPodcastRepository
+import com.mediapocket.android.repository.PodcastEpisodeRepository
+import com.mediapocket.android.repository.PodcastRepository
 import com.mediapocket.android.repository.RssRepository
 import dagger.Module
 import dagger.Provides
@@ -27,4 +30,15 @@ class RepositoryModule {
         return RssRepository(rssService)
     }
 
+    @Provides
+    @Singleton
+    fun providePodcastEpisodeRepository(database: AppDatabase): PodcastEpisodeRepository {
+        return PodcastEpisodeRepository(database)
+    }
+
+    @Provides
+    @Singleton
+    fun providePodcastRepository(database: AppDatabase): PodcastRepository {
+        return PodcastRepository(database)
+    }
 }

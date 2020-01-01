@@ -16,13 +16,11 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
-import io.reactivex.functions.Predicate
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
@@ -67,7 +65,7 @@ class PodcastDownloadManager(
             override fun onCompleted(download: Download) {
                 onItemChanged(download)
                 Completable.fromAction {
-                    val dao = database.downloadedPodcastItemDao()
+                    val dao = database.podcastEpisodeItemDao()
                     val item = dao.get(PodcastEpisodeItem.convertLinkToId(download.url))
                     item?.let {
                         item.state = PodcastEpisodeItem.STATE_DOWNLOADED
@@ -110,7 +108,7 @@ class PodcastDownloadManager(
                         fetch.remove(download.id)
                     }
 
-                    val dao = database.downloadedPodcastItemDao()
+                    val dao = database.podcastEpisodeItemDao()
                     val dbItem = dao.get(PodcastEpisodeItem.convertLinkToId(download.url))
                     dbItem?.let {
                         dao.delete(dbItem.id)
@@ -180,7 +178,7 @@ class PodcastDownloadManager(
 
     private fun internalPause(download: Download, state: Int) {
         Completable.fromAction {
-            val dao = database.downloadedPodcastItemDao()
+            val dao = database.podcastEpisodeItemDao()
             val id = PodcastEpisodeItem.convertLinkToId(download.url)
             val item = downloadingItems[id]
             item?.let {
@@ -195,7 +193,7 @@ class PodcastDownloadManager(
         }.subscribeOn(Schedulers.io()).subscribe()
     }
 
-    private fun getStoredItems() = database.downloadedPodcastItemDao()
+    private fun getStoredItems() = database.podcastEpisodeItemDao()
             .getAll()
             ?.map { it ->
                 PodcastDownloadItem(it.id, it.state, 0, it.podcastId, it.podcastTitle,
@@ -259,7 +257,7 @@ class PodcastDownloadManager(
 
             item.link?.let {
                 val file = getItemLocalPath(podcastId ?: "_", item.link)
-                val dao = database.downloadedPodcastItemDao()
+                val dao = database.podcastEpisodeItemDao()
 
                 val request = Request(item.link, file)
                 request.priority = Priority.HIGH
@@ -301,7 +299,7 @@ class PodcastDownloadManager(
 
     fun favourite(podcastId: String?, item: Item) : Single<List<PodcastDownloadItem>> {
         return Single.fromCallable {
-            val dao = database.downloadedPodcastItemDao()
+            val dao = database.podcastEpisodeItemDao()
 
             val id = PodcastEpisodeItem.convertLinkToId(item.link)
             val downloadingItem = downloadingItems[id]
@@ -330,7 +328,7 @@ class PodcastDownloadManager(
             if (episode.exists()) {
                 episode.delete()
             }
-            database.downloadedPodcastItemDao().delete(item.id)
+            database.podcastEpisodeItemDao().delete(item.id)
 
             val database = getStoredItemsWithProgress() ?: emptyList()
             databaseChangesSubject.onNext(database)
@@ -339,5 +337,5 @@ class PodcastDownloadManager(
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun allDownloads() = database.downloadedPodcastItemDao().getAll()
+    fun allDownloads() = database.podcastEpisodeItemDao().getAll()
 }

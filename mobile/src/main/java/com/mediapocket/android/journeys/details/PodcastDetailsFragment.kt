@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
@@ -11,13 +14,18 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
+import com.mediapocket.android.adapters.PodcastEpisodeAdapter
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.events.LoadNetworkItemsEvent
+import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.fragments.BaseFragment
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.journeys.details.view.PodcastDetailsView
+import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
 import javax.inject.Inject
 
@@ -92,23 +100,30 @@ class PodcastDetailsFragment : BaseFragment() {
                     })
                 }
 
-                model.rssData.observe(this, Observer { rss ->
-                    podcastView.feedLoaded(rss, podcast.id(), manager)
-
-                    openWebSiteMenu?.setOnMenuItemClickListener {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(rss.webSite())))
-                        false
-                    }
-
-                    moreFromAuthor?.setOnMenuItemClickListener {
-                        podcastDetails?.authorId?.let {
-                            RxBus.default.postEvent(LoadNetworkItemsEvent(it, podcastDetails.authorName))
+                model.episodes.observe(this, Observer { items ->
+                    podcastView.setItems(items, object: PodcastEpisodeAdapter.EpisodeItemListener {
+                        override fun favouriteClicked(item: PodcastEpisodeViewItem) {
+                            model.favouriteEpisode(item)
                         }
+                    })
+                })
+
+                model.description.observe(this, Observer { description ->
+                    podcastView.setDescription(description)
+                })
+
+                model.webSite.observe(this, Observer { webSite ->
+                    openWebSiteMenu?.setOnMenuItemClickListener {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(webSite)))
                         false
                     }
                 })
 
-                model.loadFeed(podcastDetails)
+                model.episodesChanged.observe(this, Observer { changed ->
+                    podcastView.notifyDataSetChanged(changed)
+                })
+
+                model.loadFeed(podcastDetails, podcast.id())
 
             })
 

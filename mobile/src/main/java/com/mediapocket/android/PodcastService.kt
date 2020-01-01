@@ -185,7 +185,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     private suspend fun loadPlaylist(mediaId: String): List<MediaBrowserCompat.MediaItem> {
         return if (mediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
             GlobalScope.async {
-                val items = database.downloadedPodcastItemDao().getDownloaded()
+                val items = database.podcastEpisodeItemDao().getDownloaded()
                 playback.initWithLocalEpisodes(mediaId, items)
             }.await()
 
