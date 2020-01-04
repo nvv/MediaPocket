@@ -55,24 +55,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.budiyev.android.circularprogressbar.CircularProgressBar
-        android:id="@+id/downloadProgress"
-        android:layout_width="@dimen/episode_item_icon_size"
-        android:layout_height="@dimen/episode_item_icon_size"
-        app:layout_constraintBottom_toTopOf="@+id/error"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/downloadStatus"
-        android:layout_width="@dimen/episode_item_icon_size"
-        android:layout_height="@dimen/episode_item_icon_size"
-        android:src="@drawable/ic_download"
+    <FrameLayout
+        android:id="@+id/downloadStatusFrame"
+        android:layout_width="@dimen/episode_item_icon_size_progress"
+        android:layout_height="@dimen/episode_item_icon_size_progress"
         app:layout_constraintBottom_toTopOf="@+id/error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.budiyev.android.circularprogressbar.CircularProgressBar
+            android:id="@+id/downloadProgress"
+            android:layout_width="@dimen/episode_item_icon_size_progress"
+            android:layout_height="@dimen/episode_item_icon_size_progress" />
+
+        <ImageView
+            android:id="@+id/downloadStatus"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/episode_item_icon_size"
+            android:layout_height="@dimen/episode_item_icon_size"
+            android:src="@drawable/ic_download"
+            app:layout_constraintBottom_toTopOf="@+id/error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent" />
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/episodeFavorite"
@@ -82,7 +89,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.35"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/downloadStatus" />
+        app:layout_constraintTop_toTopOf="@+id/downloadStatusFrame" />
 
     <ImageView
         android:id="@+id/episodeShare"
@@ -92,7 +99,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/downloadStatus" />
+        app:layout_constraintTop_toTopOf="@+id/downloadStatusFrame" />
 
     <ImageView
         android:id="@+id/episodeContextMenu"
@@ -102,7 +109,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/downloadStatus" />
+        app:layout_constraintTop_toTopOf="@+id/downloadStatusFrame" />
 
     <TextView
         android:id="@+id/error"

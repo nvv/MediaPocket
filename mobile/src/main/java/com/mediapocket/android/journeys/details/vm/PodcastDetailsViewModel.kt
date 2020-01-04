@@ -9,9 +9,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.core.AppDatabase
+import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
+import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.SubscribedPodcast
 import com.mediapocket.android.extensions.isPlaying
+import com.mediapocket.android.journeys.details.viewitem.DownloadProgress
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.PodcastDetails
@@ -22,6 +25,7 @@ import com.mediapocket.android.repository.PodcastRepository
 import com.mediapocket.android.repository.RssRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +34,7 @@ import javax.inject.Inject
  */
 class PodcastDetailsViewModel @Inject constructor(
         private val context: Context,
+        private val downloadManager: PodcastDownloadManager,
         private val itunesPodcastRepository: ItunesPodcastRepository,
         private val rssRepository: RssRepository,
         private val podcastEpisodeRepository: PodcastEpisodeRepository,
@@ -39,6 +44,7 @@ class PodcastDetailsViewModel @Inject constructor(
     private lateinit var mediaConnection: MediaSessionConnection
     private val mediaCallback: MediaControllerCompat.Callback
 
+    // TODO: tmp
     private var episodeItems : List<PodcastEpisodeViewItem>? = null
 
     private val _loadPodcast = MutableLiveData<PodcastDetails>()
@@ -132,9 +138,12 @@ class PodcastDetailsViewModel @Inject constructor(
             val rss = rssRepository.loadRss(podcast.feedUrl)
 
             val favourites = podcastEpisodeRepository.getFavourites()?.map { item -> item.id }
+            val downloads = podcastEpisodeRepository.getDownloads()?.map { it.id to it }?.toMap()
+//            val downloadIds = downloads?.map { item -> item.id }
             episodeItems = rss.items().mapIndexed { index, item ->
                 PodcastEpisodeViewItem(index, item, rss.link(), podcastId).apply {
                     isFavourite = favourites?.contains(id) ?: false
+                    downloadProgress = if (downloads?.contains(id) == true) DownloadProgress(isDownloaded = downloads[id]?.state == STATE_DOWNLOADED) else null
                 }
             }
 
@@ -151,6 +160,24 @@ class PodcastDetailsViewModel @Inject constructor(
         }
     }
 
+    fun download(episode: PodcastEpisodeViewItem) {
+        val process = downloadManager.download(episode.podcastId, episode.item)
+
+        GlobalScope.launch {
+            process?.consumeEach { item ->
+                if (episode.downloadProgress == null) {
+                    episode.downloadProgress = DownloadProgress()
+                }
+
+                episode.downloadProgress?.percent = item.progress
+                // TODO
+                episode.downloadProgress?.isDownloaded = item.progress == 100
+                _episodesChanged.postValue(setOf(episode.position))
+            }
+
+        }
+    }
+
     fun isSubscribed(id: String) {
         GlobalScope.async {
             _isSubscribed.postValue(podcastRepository.isSubscribed(id))
@@ -159,10 +186,10 @@ class PodcastDetailsViewModel @Inject constructor(
 
     fun subscribe(podcast: PodcastAdapterEntry, details: PodcastDetails, explicitlyInvoked: Boolean = false) {
         GlobalScope.async {
-            val podcast = SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl,
+            val subscribedPodcast = SubscribedPodcast(podcast.id(), podcast.title(), podcast.logo(), details.feedUrl,
                     details.primaryGenreName, details.genreIds?.joinToString(), details.authorId, details.authorName)
 
-            val isSubscribed = podcastRepository.toggleSubscribe(podcast)
+            val isSubscribed = podcastRepository.toggleSubscribe(subscribedPodcast)
             _isSubscribed.postValue(isSubscribed)
 
             if (explicitlyInvoked) {

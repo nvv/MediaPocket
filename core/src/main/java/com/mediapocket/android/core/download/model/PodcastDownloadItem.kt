@@ -5,9 +5,10 @@ import com.mediapocket.android.dao.model.PodcastEpisodeItem
 /**
  * @author Vlad Namashko
  */
-data class PodcastDownloadItem (var id: String, var state: Int, var progress: Int, var podcastId: String?, var podcastTitle: String?,
-                                var title: String?, var description: String?, var link: String?, var pubDate: String?,
-                                var length: Long?, var favourite: Boolean, var imageUrl: String?, var downloadId: Int, var localPath: String?) {
+data class PodcastDownloadItem (val id: String, var state: Int, var progress: Int, val podcastId: String?,
+                                val podcastTitle: String?, val title: String?, val description: String?,
+                                val link: String?, val pubDate: String?, val length: Long?, val favourite: Boolean,
+                                val imageUrl: String?, val downloadId: Int, val localPath: String?) {
 
     constructor(item: PodcastEpisodeItem) : this(item.id, item.state, 0, item.podcastId,
                 item.podcastTitle, item.title, item.description, item.link,

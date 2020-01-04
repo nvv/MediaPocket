@@ -75,12 +75,11 @@ data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
 
     companion object {
         const val STATE_NONE = 0
-        const val STATE_ADDED = 1
-        const val STATE_DOWNLOADING = 2
-        const val STATE_DOWNLOADED = 3
-        const val STATE_PAUSED = 4
-        const val STATE_ERROR = 5
-        const val STATE_WAITING_FOR_NETWORK = 6
+        const val STATE_DOWNLOADING = 1
+        const val STATE_DOWNLOADED = 2
+        const val STATE_PAUSED = 3
+        const val STATE_ERROR = 4
+        const val STATE_WAITING_FOR_NETWORK = 5
 
         fun convertLinkToId(link: String?) = Base64.encodeToString(link?.toByteArray(Charset.forName("UTF-8")), Base64.DEFAULT)
     }

@@ -1,18 +1,25 @@
 package com.mediapocket.android.repository
 
-import com.mediapocket.android.core.AppDatabase
+import com.mediapocket.android.dao.EpisodesDao
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
 
-class PodcastEpisodeRepository(private val database: AppDatabase) {
+class PodcastEpisodeRepository(private val dao: EpisodesDao) {
 
-    fun getFavourites(): List<PodcastEpisodeItem>? = database.podcastEpisodeItemDao().getFavourites()
+    fun get(id: String): PodcastEpisodeItem? = dao.get(id)
+
+    fun insert(podcasts: PodcastEpisodeItem) = dao.insert(podcasts)
+
+    fun update(podcasts: PodcastEpisodeItem) = dao.update(podcasts)
+
+    fun getDownloads() = dao.getDownloads()
+
+    fun getFavourites(): List<PodcastEpisodeItem>? = dao.getFavourites()
 
     /**
      * Toggle favourite status
      */
     fun toggleFavourite(podcastId: String?, item: Item): Boolean {
-        val dao = database.podcastEpisodeItemDao()
         val id = PodcastEpisodeItem.convertLinkToId(item.link)
         var storedItem = dao.get(id)
         if (storedItem == null) {

@@ -1,9 +1,6 @@
 package com.mediapocket.android.core
 
-import androidx.room.Room
 import android.content.Context
-import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.di.*
 import com.mediapocket.android.utils.ViewUtils
 import java.util.concurrent.atomic.AtomicBoolean
 

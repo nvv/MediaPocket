@@ -1,11 +1,11 @@
 package com.mediapocket.android.repository
 
-import com.mediapocket.android.core.AppDatabase
+import com.mediapocket.android.dao.SubscribedPodcastDao
 import com.mediapocket.android.dao.model.SubscribedPodcast
 
-class PodcastRepository(private val database: AppDatabase) {
+class PodcastRepository(private val dao: SubscribedPodcastDao) {
 
-    fun isSubscribed(id: String) = database.subscribedPodcastDao().get(id) != null
+    fun isSubscribed(id: String) = dao.get(id) != null
 
     /**
      * Subscribe/unsubscribe to the <code>podcast</code>.
@@ -15,7 +15,6 @@ class PodcastRepository(private val database: AppDatabase) {
      * @return <code>true</code> if user is subscribed to the podcast (after toggle is done), <code>false</code> otherwise.
      */
     fun toggleSubscribe(podcast: SubscribedPodcast): Boolean {
-        val dao = database.subscribedPodcastDao()
         if (isSubscribed(podcast.id)) {
             dao.delete(podcast.id)
         } else {

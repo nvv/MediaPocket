@@ -2,9 +2,6 @@ package com.mediapocket.android.adapters
 
 import android.content.Context
 import android.graphics.drawable.Animatable
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -12,27 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ShareCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.budiyev.android.circularprogressbar.CircularProgressBar
-import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.core.download.extensions.isDownloaded
-import com.mediapocket.android.core.download.extensions.isError
-import com.mediapocket.android.core.download.model.PodcastDownloadItem
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.events.PlayPodcastEvent
-import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
-import com.mediapocket.android.model.Item
 import com.mediapocket.android.playback.model.RssEpisodeItem
 import com.mediapocket.android.utils.GlobalUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 
 /**
@@ -204,6 +188,7 @@ class PodcastEpisodeAdapter(
 
             status.setOnClickListener {
 //                clickDownload(item, manager)
+                listener?.download(item)
             }
 
             share.setOnClickListener {
@@ -262,7 +247,25 @@ class PodcastEpisodeAdapter(
 //                else -> R.drawable.ic_download
 //            })
 
-//            progress.visibility = if (item.download != null && (item.download?.state == PodcastEpisodeItem.STATE_ADDED || item.download?.state == PodcastEpisodeItem.STATE_DOWNLOADING)) View.VISIBLE else View.GONE
+//            (status.parent as ViewGroup).visibility = if (item.isDownloaded) View.GONE else View.VISIBLE
+//            status.setImageResource(when (item.downloadProgress?.isDownloaded) {
+//                true -> R.drawable.ic_downloaded
+//                else -> R.drawable.ic_download
+//            })
+
+            when {
+                item.downloadProgress != null && item.downloadProgress?.isDownloaded == true -> status.setImageResource(R.drawable.ic_downloaded)
+                item.downloadProgress != null -> status.setImageResource(R.drawable.ic_pause)
+                else -> status.setImageResource(R.drawable.ic_download)
+            }
+
+            item.downloadProgress?.let {
+                progress.visibility = if (it.isDownloaded) View.GONE else View.VISIBLE
+                progress.progress = it.percent.toFloat()
+            } ?: run {
+                progress.visibility = View.GONE
+            }
+
 //            delete.visibility = if (item.download?.state == PodcastEpisodeItem.STATE_DOWNLOADED) View.VISIBLE else View.GONE
 
 //            item.download?.let {
@@ -312,6 +315,7 @@ class PodcastEpisodeAdapter(
 
         fun favouriteClicked(item: PodcastEpisodeViewItem)
 
+        fun download(item: PodcastEpisodeViewItem)
     }
 
 }

@@ -1,7 +1,7 @@
 package com.mediapocket.android.viewmodels
 
 import com.mediapocket.android.core.AppDatabase
-import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import io.reactivex.Completable
@@ -21,7 +21,7 @@ class EpisodesViewModel @Inject constructor(
     fun getDownloadedEpisodes(): Single<List<PodcastEpisodeItem>?> {
         return doLoadingAction {
             Single.fromCallable {
-                database.podcastEpisodeItemDao().getDownloaded()
+                database.podcastEpisodeItemDao().getDownloads()
             }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
         }
@@ -36,6 +36,6 @@ class EpisodesViewModel @Inject constructor(
         }
     }
 
-    fun deleteEpisode(item: PodcastDownloadItem): Completable = manager.delete(item)
+    fun deleteEpisode(item: PodcastDownloadItem): Completable = TODO("delete")
 
 }

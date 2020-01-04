@@ -22,7 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
-import com.mediapocket.android.core.download.PodcastDownloadManager
+import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.extensions.albumArt
 import com.mediapocket.android.extensions.displayIconUriString
 import com.mediapocket.android.extensions.from
@@ -123,25 +123,27 @@ class PodcastService : MediaBrowserServiceCompat() {
         playback = PlaybackUnit(this, mSession)
         notificationBuilder = NotificationBuilder(this)
 
-        subscription.add(downloadManager.subscribeForDatabaseChanges(Consumer {
-            if (playback.currentMediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
-                MediaSessionConnection.getInstance(applicationContext).mediaBrowser.apply {
-                    unsubscribe(PlayableItem.MY_MEDIA_ID_DOWNLOADED)
-                    subscribe(PlayableItem.MY_MEDIA_ID_DOWNLOADED, object : MediaBrowserCompat.SubscriptionCallback() {
+//        TODO("repository")
+//        subscription.add(downloadManager.subscribeForDatabaseChanges(Consumer {
+//            if (playback.currentMediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
+//                MediaSessionConnection.getInstance(applicationContext).mediaBrowser.apply {
+//                    unsubscribe(PlayableItem.MY_MEDIA_ID_DOWNLOADED)
+//                    subscribe(PlayableItem.MY_MEDIA_ID_DOWNLOADED, object : MediaBrowserCompat.SubscriptionCallback() {
+//
+//                        override fun onChildrenLoaded(parentId: String, children: List<MediaBrowserCompat.MediaItem>) {
+//                            //currentMediaId = parentId
+//
+//                            //playback.initWithFeedItems()
+//
+//
+//
+//                            mediaController.sendCommand(PlaybackUnit.COMMAND_RENEW_PLAYLIST, null, null)
+//                        }
+//                    })
+//                }
+//            }
+//        }, Schedulers.io()))
 
-                        override fun onChildrenLoaded(parentId: String, children: List<MediaBrowserCompat.MediaItem>) {
-                            //currentMediaId = parentId
-
-                            //playback.initWithFeedItems()
-
-
-
-                            mediaController.sendCommand(PlaybackUnit.COMMAND_RENEW_PLAYLIST, null, null)
-                        }
-                    })
-                }
-            }
-        }, Schedulers.io()))
 
 /*
         ContextCompat.startForegroundService(
@@ -185,7 +187,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     private suspend fun loadPlaylist(mediaId: String): List<MediaBrowserCompat.MediaItem> {
         return if (mediaId == PlayableItem.MY_MEDIA_ID_DOWNLOADED) {
             GlobalScope.async {
-                val items = database.podcastEpisodeItemDao().getDownloaded()
+                val items = database.podcastEpisodeItemDao().getDownloads()
                 playback.initWithLocalEpisodes(mediaId, items)
             }.await()
 

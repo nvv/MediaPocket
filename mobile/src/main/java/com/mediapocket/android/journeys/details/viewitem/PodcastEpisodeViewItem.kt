@@ -25,4 +25,12 @@ class PodcastEpisodeViewItem(
 
     var isFavourite: Boolean = false
 
+    var downloadProgress: DownloadProgress? = null
 }
+
+data class DownloadProgress(
+        var isDownloaded: Boolean = false,
+        var percent: Int = 0,
+        var state: Int = PodcastEpisodeItem.STATE_NONE
+
+)

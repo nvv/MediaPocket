@@ -18,14 +18,12 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.mediapocket.android.R
 import com.mediapocket.android.adapters.PodcastEpisodeAdapter
 import com.mediapocket.android.model.PodcastAdapterEntry
-import com.mediapocket.android.model.Rss
 import android.view.Menu
 import com.mediapocket.android.extensions.doubleLet
 import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.view.decoration.DividerItemDecoration.Companion.VERTICAL_LIST
-import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import io.reactivex.disposables.CompositeDisposable
 

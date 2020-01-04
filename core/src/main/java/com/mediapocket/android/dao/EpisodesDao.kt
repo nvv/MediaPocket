@@ -13,7 +13,7 @@ interface EpisodesDao {
     fun getAll(): List<PodcastEpisodeItem>?
 
     @Query("SELECT * FROM podcast_episode_item WHERE state<>0")
-    fun getDownloaded(): List<PodcastEpisodeItem>?
+    fun getDownloads(): List<PodcastEpisodeItem>?
 
     @Query("SELECT * FROM podcast_episode_item WHERE favourite=1")
     fun getFavourites(): List<PodcastEpisodeItem>?

@@ -1,32 +1,23 @@
 package com.mediapocket.android.journeys.details
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.mediapocket.android.MediaSessionConnection
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.mediapocket.android.R
 import com.mediapocket.android.adapters.PodcastEpisodeAdapter
-import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.events.LoadNetworkItemsEvent
-import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.fragments.BaseFragment
-import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.journeys.details.view.PodcastDetailsView
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
+import com.mediapocket.android.model.PodcastAdapterEntry
 import javax.inject.Inject
 
 
@@ -46,9 +37,6 @@ class PodcastDetailsFragment : BaseFragment() {
     private var subscribeMenu: MenuItem? = null
     private var openWebSiteMenu: MenuItem? = null
     private var moreFromAuthor: MenuItem? = null
-
-    @Inject
-    lateinit var manager: PodcastDownloadManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.podcast_fragmnet_view, container, false)
@@ -102,6 +90,10 @@ class PodcastDetailsFragment : BaseFragment() {
 
                 model.episodes.observe(this, Observer { items ->
                     podcastView.setItems(items, object: PodcastEpisodeAdapter.EpisodeItemListener {
+                        override fun download(item: PodcastEpisodeViewItem) {
+                            model.download(item)
+                        }
+
                         override fun favouriteClicked(item: PodcastEpisodeViewItem) {
                             model.favouriteEpisode(item)
                         }

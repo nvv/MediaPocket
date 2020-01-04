@@ -23,8 +23,7 @@ import com.mediapocket.android.audio.AudioVolumeObserver
 import com.mediapocket.android.audio.OnAudioVolumeChangedListener
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.core.download.PodcastDownloadManager
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
+import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.events.*
 import com.mediapocket.android.fragments.*
 import com.mediapocket.android.fragments.transition.DetailsTransition
@@ -39,6 +38,10 @@ import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -98,6 +101,7 @@ class MainActivity : DaggerAppCompatActivity() {
         false
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DependencyLocator.initInstance(this)
@@ -205,24 +209,39 @@ class MainActivity : DaggerAppCompatActivity() {
         })
 
         val notificationBuilder = NotificationBuilder(this)
-        disposable.add(downloadManager.subscribeForAllActiveDownloads(Consumer {
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            if (it.isEmpty()) {
-                manager.cancel(NotificationBuilder.DOWNLOADING_NOTIFICATION)
-            } else {
-                manager.notify(NotificationBuilder.DOWNLOADING_NOTIFICATION, notificationBuilder.buildDownloadNotification(it))
-            }
-        }))
+        GlobalScope.launch {
+            downloadManager.activeDownloads.consumeEach {
+                val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        disposable.add(downloadManager.subscribeForDownloads(Consumer { download ->
-            if (download.state == PodcastEpisodeItem.STATE_WAITING_FOR_NETWORK) {
-                Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
-            } else if (download.state == PodcastEpisodeItem.STATE_ADDED) {
-                Toast.makeText(DependencyLocator.getInstance().context,
-                        resources.getString(R.string.downloading_episode, download.title), Toast.LENGTH_LONG).show()
+                if (it.isEmpty()) {
+                    manager.cancel(NotificationBuilder.DOWNLOADING_NOTIFICATION)
+                } else {
+                    manager.notify(NotificationBuilder.DOWNLOADING_NOTIFICATION, notificationBuilder.buildDownloadNotification(it))
+                }
             }
-        }))
+        }
+
+//        disposable.add(downloadManager.subscribeForAllActiveDownloads(Consumer {
+//            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//            if (it.isEmpty()) {
+//                manager.cancel(NotificationBuilder.DOWNLOADING_NOTIFICATION)
+//            } else {
+//                manager.notify(NotificationBuilder.DOWNLOADING_NOTIFICATION, notificationBuilder.buildDownloadNotification(it))
+//            }
+//        }))
+
+//        disposable.add(downloadManager.subscribeForDownloads(Consumer { download ->
+//            if (download.state == PodcastEpisodeItem.STATE_WAITING_FOR_NETWORK) {
+//                Toast.makeText(DependencyLocator.getInstance().context, R.string.waiting_for_network, Toast.LENGTH_LONG).show()
+//            } else if (download.state == PodcastEpisodeItem.STATE_DOWNLOADING) {
+//                Toast.makeText(DependencyLocator.getInstance().context,
+//                        resources.getString(R.string.downloading_episode, download.title), Toast.LENGTH_LONG).show()
+//            }
+//        }))
+
+
 
         var currentMediaId: String? = null
         disposable.add(RxBus.default.observerFor(PlayPodcastEvent::class.java).subscribe { event ->

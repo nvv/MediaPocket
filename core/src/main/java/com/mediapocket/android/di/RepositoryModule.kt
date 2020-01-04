@@ -33,12 +33,12 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun providePodcastEpisodeRepository(database: AppDatabase): PodcastEpisodeRepository {
-        return PodcastEpisodeRepository(database)
+        return PodcastEpisodeRepository(database.podcastEpisodeItemDao())
     }
 
     @Provides
     @Singleton
     fun providePodcastRepository(database: AppDatabase): PodcastRepository {
-        return PodcastRepository(database)
+        return PodcastRepository(database.subscribedPodcastDao())
     }
 }

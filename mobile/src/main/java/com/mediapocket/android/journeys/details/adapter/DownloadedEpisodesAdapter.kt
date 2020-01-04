@@ -9,7 +9,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.core.download.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.events.DeletePodcastEpisodeEvent
@@ -17,7 +16,6 @@ import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.playback.model.DownloadedEpisodeItem
 import com.mediapocket.android.utils.FileUtils
 import com.mediapocket.android.utils.TimeUtils
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.downloaded_episode.view.*
 import java.io.File
 import java.lang.Exception
@@ -35,18 +33,18 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
     private val metaRetriever = MediaMetadataRetriever()
 
 //    @set:Inject
-    lateinit var manager: PodcastDownloadManager
+//    lateinit var manager: PodcastDownloadManager
 
     init {
 //        MainComponentLocator.mainComponent.inject(this)
 
-        manager.subscribeForDownloads(Consumer { download ->
-
-            localEpisodes.find { it -> it.downloadId == download.downloadId }?.let {
-                it.state = download.state
-                notifyItemChanged(localEpisodes.indexOf(it), download)
-            }
-        })
+//        manager.subscribeForDownloads(Consumer { download ->
+//
+//            localEpisodes.find { it -> it.downloadId == download.downloadId }?.let {
+//                it.state = download.state
+//                notifyItemChanged(localEpisodes.indexOf(it), download)
+//            }
+//        })
 
         swipeLayoutHelper = ViewBinderHelper()
         swipeLayoutHelper.setOpenOnlyOne(true)
