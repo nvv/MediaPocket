@@ -16,6 +16,7 @@ import com.mediapocket.android.adapters.PodcastEpisodeAdapter
 import com.mediapocket.android.fragments.BaseFragment
 import com.mediapocket.android.journeys.details.view.PodcastDetailsView
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
+import com.mediapocket.android.journeys.details.viewitem.isDownloading
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
 import com.mediapocket.android.model.PodcastAdapterEntry
 import javax.inject.Inject
@@ -90,8 +91,17 @@ class PodcastDetailsFragment : BaseFragment() {
 
                 model.episodes.observe(this, Observer { items ->
                     podcastView.setItems(items, object: PodcastEpisodeAdapter.EpisodeItemListener {
-                        override fun download(item: PodcastEpisodeViewItem) {
-                            model.download(item)
+                        override fun downloadClicked(item: PodcastEpisodeViewItem) {
+                            if (item.downloadState == null) {
+                                model.downloadItem(item)
+                            } else {
+                                if (item.isDownloading) {
+                                    model.pauseDownload(item)
+                                } else {
+                                    model.resumeDownload(item)
+                                }
+                            }
+
                         }
 
                         override fun favouriteClicked(item: PodcastEpisodeViewItem) {

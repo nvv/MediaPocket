@@ -1,6 +1,7 @@
 package com.mediapocket.android.core.download.manager
 
 import android.content.Context
+import com.mediapocket.android.core.download.extensions.isDownloading
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
@@ -29,12 +30,12 @@ class PodcastDownloadManager(
             mutableMapOf<String, BroadcastChannel<PodcastDownloadItem>>()
 
     /**
-     * All active downloading items.
+     * All active downloading items, including manually paused or paused due to network error.
      */
     private val downloadingItems = mutableMapOf<String, PodcastDownloadItem>()
 
     /**
-     * All active download channels.
+     * Channel to track all currently running downloads. Paused downloads won't be included in the channel.
      * "Subscribe" on this channel to receive for downloads updates.
      */
     val activeDownloads = BroadcastChannel<List<PodcastDownloadItem>>(Channel.CONFLATED)
@@ -69,12 +70,13 @@ class PodcastDownloadManager(
                     downloadingChannels.remove(id)?.let { channel ->
                         downloadingItem?.let {
                             downloadingItem.progress = 100
+                            downloadingItem.isDownloaded = true
                             channel.send(downloadingItem)
                         }
                         channel.close()
                     }
 
-                    activeDownloads.send(downloadingItems.values.toList())
+                    notifyActiveDownloadsChanged()
                 }
             }
 
@@ -91,22 +93,11 @@ class PodcastDownloadManager(
             }
 
             override fun onPaused(download: Download) {
-
+                onItemChanged(download) { item -> item.state = PodcastEpisodeItem.STATE_PAUSED }
             }
 
             override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
-                val id = PodcastEpisodeItem.convertLinkToId(download.url)
-                val item = downloadingItems[id]
-                downloadingChannels[id].let { channel ->
-                    item?.let {
-                        item.progress = download.progress
-                        GlobalScope.launch {
-                            channel?.send(item)
-
-                            activeDownloads.send(downloadingItems.values.toList())
-                        }
-                    }
-                }
+                onItemChanged(download) { item -> item.progress = download.progress }
             }
 
             override fun onQueued(download: Download, waitingOnNetwork: Boolean) {
@@ -118,7 +109,7 @@ class PodcastDownloadManager(
             }
 
             override fun onResumed(download: Download) {
-
+                onItemChanged(download) { item -> item.state = PodcastEpisodeItem.STATE_DOWNLOADING }
             }
 
             override fun onStarted(download: Download, downloadBlocks: List<DownloadBlock>, totalBlocks: Int) {
@@ -129,6 +120,19 @@ class PodcastDownloadManager(
 
             }
 
+            private fun onItemChanged(download: Download, func : (item: PodcastDownloadItem) -> Unit) {
+                val id = PodcastEpisodeItem.convertLinkToId(download.url)
+                val item = downloadingItems[id]
+                downloadingChannels[id].let { channel ->
+                    item?.let {
+                        func(item)
+                        GlobalScope.launch {
+                            channel?.send(item)
+                            notifyActiveDownloadsChanged()
+                        }
+                    }
+                }
+            }
         })
     }
 
@@ -159,18 +163,34 @@ class PodcastDownloadManager(
                     repository.update(storedItem)
                 }
 
-                val downloadItem = PodcastDownloadItem(storedItem)
+                val downloadItem = PodcastDownloadItem(storedItem.id, storedItem.state, 0, false, storedItem.title, request.id)
                 downloadingItems[storedItem.id] = downloadItem
 
                 fetch.enqueue(request)
 
                 progress.send(downloadItem)
 
-                activeDownloads.send(downloadingItems.values.toList())
+                notifyActiveDownloadsChanged()
             }
         }
 
         return progress
+    }
+
+    fun pauseDownload(item: Item) {
+        downloadingItems[PodcastEpisodeItem.convertLinkToId(item.link)]?.let { download ->
+            fetch.pause(download.downloadId)
+        }
+    }
+
+    fun resumeDownload(item: Item) {
+        downloadingItems[PodcastEpisodeItem.convertLinkToId(item.link)]?.let { download ->
+            fetch.resume(download.downloadId)
+        }
+    }
+
+    private suspend fun notifyActiveDownloadsChanged() {
+        activeDownloads.send(downloadingItems.values.filter { it.isDownloading }.toList())
     }
 
     private fun buildDatabaseItem(podcastId: String?, item: Item) =

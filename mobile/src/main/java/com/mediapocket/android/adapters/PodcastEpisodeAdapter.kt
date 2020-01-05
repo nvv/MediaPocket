@@ -15,6 +15,9 @@ import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
+import com.mediapocket.android.journeys.details.viewitem.isDownloaded
+import com.mediapocket.android.journeys.details.viewitem.isDownloading
+import com.mediapocket.android.journeys.details.viewitem.isPaused
 import com.mediapocket.android.playback.model.RssEpisodeItem
 import com.mediapocket.android.utils.GlobalUtils
 
@@ -187,8 +190,7 @@ class PodcastEpisodeAdapter(
 //            }
 
             status.setOnClickListener {
-//                clickDownload(item, manager)
-                listener?.download(item)
+                listener?.downloadClicked(item)
             }
 
             share.setOnClickListener {
@@ -254,15 +256,16 @@ class PodcastEpisodeAdapter(
 //            })
 
             when {
-                item.downloadProgress != null && item.downloadProgress?.isDownloaded == true -> status.setImageResource(R.drawable.ic_downloaded)
-                item.downloadProgress != null -> status.setImageResource(R.drawable.ic_pause)
+                item.isDownloaded -> status.setImageResource(R.drawable.ic_downloaded)
+                item.isPaused -> status.setImageResource(R.drawable.ic_play)
+                item.downloadState != null -> status.setImageResource(R.drawable.ic_pause)
                 else -> status.setImageResource(R.drawable.ic_download)
             }
 
-            item.downloadProgress?.let {
-                progress.visibility = if (it.isDownloaded) View.GONE else View.VISIBLE
-                progress.progress = it.percent.toFloat()
-            } ?: run {
+            if (item.isDownloading) {
+                progress.visibility = View.VISIBLE
+                progress.progress = item.downloadState?.progress?.toFloat() ?: 0F
+            } else {
                 progress.visibility = View.GONE
             }
 
@@ -315,7 +318,7 @@ class PodcastEpisodeAdapter(
 
         fun favouriteClicked(item: PodcastEpisodeViewItem)
 
-        fun download(item: PodcastEpisodeViewItem)
+        fun downloadClicked(item: PodcastEpisodeViewItem)
     }
 
 }

@@ -25,12 +25,22 @@ class PodcastEpisodeViewItem(
 
     var isFavourite: Boolean = false
 
-    var downloadProgress: DownloadProgress? = null
+    var downloadState: DownloadState? = null
 }
 
-data class DownloadProgress(
+data class DownloadState(
         var isDownloaded: Boolean = false,
-        var percent: Int = 0,
+        var progress: Int = 0,
         var state: Int = PodcastEpisodeItem.STATE_NONE
-
 )
+
+
+inline val PodcastEpisodeViewItem.isDownloading
+    get() = (downloadState?.state == PodcastEpisodeItem.STATE_DOWNLOADING)
+
+inline val PodcastEpisodeViewItem.isDownloaded
+    get() = (downloadState?.isDownloaded ?: false)
+
+
+inline val PodcastEpisodeViewItem.isPaused
+    get() = (downloadState?.state == PodcastEpisodeItem.STATE_PAUSED)

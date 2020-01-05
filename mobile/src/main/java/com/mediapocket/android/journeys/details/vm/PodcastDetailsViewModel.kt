@@ -8,17 +8,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mediapocket.android.MediaSessionConnection
-import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.SubscribedPodcast
 import com.mediapocket.android.extensions.isPlaying
-import com.mediapocket.android.journeys.details.viewitem.DownloadProgress
+import com.mediapocket.android.journeys.details.viewitem.DownloadState
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.model.PodcastAdapterEntry
 import com.mediapocket.android.model.PodcastDetails
-import com.mediapocket.android.model.Rss
 import com.mediapocket.android.repository.ItunesPodcastRepository
 import com.mediapocket.android.repository.PodcastEpisodeRepository
 import com.mediapocket.android.repository.PodcastRepository
@@ -143,7 +141,7 @@ class PodcastDetailsViewModel @Inject constructor(
             episodeItems = rss.items().mapIndexed { index, item ->
                 PodcastEpisodeViewItem(index, item, rss.link(), podcastId).apply {
                     isFavourite = favourites?.contains(id) ?: false
-                    downloadProgress = if (downloads?.contains(id) == true) DownloadProgress(isDownloaded = downloads[id]?.state == STATE_DOWNLOADED) else null
+                    downloadState = if (downloads?.contains(id) == true) DownloadState(isDownloaded = downloads[id]?.state == STATE_DOWNLOADED) else null
                 }
             }
 
@@ -160,22 +158,31 @@ class PodcastDetailsViewModel @Inject constructor(
         }
     }
 
-    fun download(episode: PodcastEpisodeViewItem) {
+    fun downloadItem(episode: PodcastEpisodeViewItem) {
         val process = downloadManager.download(episode.podcastId, episode.item)
 
         GlobalScope.launch {
             process?.consumeEach { item ->
-                if (episode.downloadProgress == null) {
-                    episode.downloadProgress = DownloadProgress()
+                if (episode.downloadState == null) {
+                    episode.downloadState = DownloadState()
                 }
 
-                episode.downloadProgress?.percent = item.progress
+                episode.downloadState?.state = item.state
+                episode.downloadState?.progress = item.progress
                 // TODO
-                episode.downloadProgress?.isDownloaded = item.progress == 100
+                episode.downloadState?.isDownloaded = item.progress == 100
                 _episodesChanged.postValue(setOf(episode.position))
             }
 
         }
+    }
+
+    fun pauseDownload(episode: PodcastEpisodeViewItem) {
+        downloadManager.pauseDownload(episode.item)
+    }
+
+    fun resumeDownload(episode: PodcastEpisodeViewItem) {
+        downloadManager.resumeDownload(episode.item)
     }
 
     fun isSubscribed(id: String) {

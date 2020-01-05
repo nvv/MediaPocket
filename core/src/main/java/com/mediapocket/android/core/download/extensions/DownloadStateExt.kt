@@ -7,6 +7,9 @@ import com.mediapocket.android.dao.model.PodcastEpisodeItem
  * @author Vlad Namashko
  */
 
+inline val PodcastDownloadItem.isDownloading
+    get() = (state == PodcastEpisodeItem.STATE_DOWNLOADING)
+
 inline val PodcastDownloadItem.isDownloaded
     get() = (state == PodcastEpisodeItem.STATE_DOWNLOADED)
 

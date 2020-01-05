@@ -28,23 +28,23 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment() {
         })
 
 
-        subscription.add(RxBus.default.observerFor(DeletePodcastEpisodeEvent::class.java).subscribe { event ->
-                val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
-                builder.setTitle(R.string.confirm)
-                        .setMessage(R.string.confirm_message)
-                        .setPositiveButton(R.string.btn_ok) { dialog, which ->
-                            run {
-                                dialog.dismiss()
-                                subscription.add(model.deleteEpisode(PodcastDownloadItem(event.item)).subscribe {
-                                    (items.adapter as DownloadedEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
-                                })
-                            }
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { dialog, which -> dialog.dismiss() }
-
-                builder.create().show()
-
-        })
+//        subscription.add(RxBus.default.observerFor(DeletePodcastEpisodeEvent::class.java).subscribe { event ->
+//                val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
+//                builder.setTitle(R.string.confirm)
+//                        .setMessage(R.string.confirm_message)
+//                        .setPositiveButton(R.string.btn_ok) { dialog, which ->
+//                            run {
+//                                dialog.dismiss()
+//                                subscription.add(model.deleteEpisode(PodcastDownloadItem(event.item)).subscribe {
+//                                    (items.adapter as DownloadedEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
+//                                })
+//                            }
+//                        }
+//                        .setNegativeButton(R.string.btn_cancel) { dialog, which -> dialog.dismiss() }
+//
+//                builder.create().show()
+//
+//        })
 
         return view
     }

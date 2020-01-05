@@ -20,7 +20,7 @@ import javax.inject.Singleton
 class RssRepository constructor(private val rssService: RssService) : CacheableRepository() {
 
     suspend fun loadRss(url: String): Rss {
-        return execCacheAble({ Rss(rssService.getFeed(url), overrideLink = url) },
+         return execCacheAble({ Rss(rssService.getFeed(url), overrideLink = url) },
                 CacheKey(Rss::class.java, listOf(url.replace("/", "$").replace("_", "$"))))
 
 //        val l = execCacheAble({ rssService.getFeed(url) },
