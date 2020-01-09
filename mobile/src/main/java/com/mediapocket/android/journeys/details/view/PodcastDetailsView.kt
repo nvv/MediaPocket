@@ -64,7 +64,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         shimmerContainer.stopShimmerAnimation()
         shimmerContainer.visibility = View.GONE
 
-        items.adapter = PodcastEpisodeAdapter(rssItems, context, listener)
+        items.adapter = PodcastEpisodeAdapter(rssItems, listener)
         (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
         syncAdapterColor()
         items.addItemDecoration(DividerItemDecoration(context, VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))

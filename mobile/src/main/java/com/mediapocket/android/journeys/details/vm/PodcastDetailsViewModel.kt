@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mediapocket.android.MediaSessionConnection
 import com.mediapocket.android.core.download.manager.PodcastDownloadManager
+import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.SubscribedPodcast
@@ -145,6 +146,18 @@ class PodcastDetailsViewModel @Inject constructor(
                 }
             }
 
+            downloadManager.getActiveDownloads(podcastId)?.forEach { item ->
+                episodeItems?.find { it -> it.id == item.id }?.let { episode ->
+                    downloadManager.listenForDownloadProgress(episode.id)?.let { process ->
+                        GlobalScope.launch {
+                            process?.consumeEach { item ->
+                                handleDownloadProgress(episode, item)
+                            }
+                        }
+                    }
+                }
+            }
+
             _episodes.postValue(episodeItems)
             _description.postValue(rss.description())
             _webSite.postValue(rss.webSite())
@@ -163,18 +176,21 @@ class PodcastDetailsViewModel @Inject constructor(
 
         GlobalScope.launch {
             process?.consumeEach { item ->
-                if (episode.downloadState == null) {
-                    episode.downloadState = DownloadState()
-                }
-
-                episode.downloadState?.state = item.state
-                episode.downloadState?.progress = item.progress
-                // TODO
-                episode.downloadState?.isDownloaded = item.progress == 100
-                _episodesChanged.postValue(setOf(episode.position))
+                handleDownloadProgress(episode, item)
             }
-
         }
+    }
+
+    private fun handleDownloadProgress(episode: PodcastEpisodeViewItem, item: PodcastDownloadItem) {
+        if (episode.downloadState == null) {
+            episode.downloadState = DownloadState()
+        }
+
+        episode.downloadState?.state = item.state
+        episode.downloadState?.progress = item.progress
+        // TODO
+        episode.downloadState?.isDownloaded = item.progress == 100
+        _episodesChanged.postValue(setOf(episode.position))
     }
 
     fun pauseDownload(episode: PodcastEpisodeViewItem) {

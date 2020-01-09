@@ -27,7 +27,6 @@ import com.mediapocket.android.utils.GlobalUtils
  */
 class PodcastEpisodeAdapter(
         private val items: List<PodcastEpisodeViewItem>,
-        private val context: Context,
         private val listener: EpisodeItemListener? = null
 ) : RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
 
@@ -194,12 +193,12 @@ class PodcastEpisodeAdapter(
             }
 
             share.setOnClickListener {
-                ShareCompat.IntentBuilder.from(GlobalUtils.getActivity(context))
-                        .setText(item.link)
-                        .setSubject(item.title)
-                        .setType("text/plain")
-                        .setChooserTitle(R.string.sharing)
-                        .startChooser()
+//                ShareCompat.IntentBuilder.from(GlobalUtils.getActivity(context))
+//                        .setText(item.link)
+//                        .setSubject(item.title)
+//                        .setType("text/plain")
+//                        .setChooserTitle(R.string.sharing)
+//                        .startChooser()
             }
 
             error.setOnClickListener {

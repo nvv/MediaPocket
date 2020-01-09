@@ -136,6 +136,14 @@ class PodcastDownloadManager(
         })
     }
 
+    /**
+     * Get currently active downloads for <code>podcastId</code>
+     */
+    fun getActiveDownloads(podcastId: String?): List<PodcastDownloadItem>? =
+            downloadingItems.filter { it.value.podcastId == podcastId }.values.toList()
+
+    fun listenForDownloadProgress(id: String): BroadcastChannel<PodcastDownloadItem>? = downloadingChannels[id]
+
     fun download(podcastId: String?, item: Item): BroadcastChannel<PodcastDownloadItem>? {
         val progress = BroadcastChannel<PodcastDownloadItem>(Channel.CONFLATED)
         downloadingChannels[PodcastEpisodeItem.convertLinkToId(item.link)] = progress
@@ -163,7 +171,8 @@ class PodcastDownloadManager(
                     repository.update(storedItem)
                 }
 
-                val downloadItem = PodcastDownloadItem(storedItem.id, storedItem.state, 0, false, storedItem.title, request.id)
+                val downloadItem = PodcastDownloadItem(storedItem.id, storedItem.state, 0,
+                        false, storedItem.title, request.id, storedItem.podcastId ?: "")
                 downloadingItems[storedItem.id] = downloadItem
 
                 fetch.enqueue(request)
