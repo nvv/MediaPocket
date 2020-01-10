@@ -142,6 +142,11 @@ class PodcastDownloadManager(
     fun getActiveDownloads(podcastId: String?): List<PodcastDownloadItem>? =
             downloadingItems.filter { it.value.podcastId == podcastId }.values.toList()
 
+    /**
+     * Request download progress channel.
+     *
+     * @param id download item item
+     */
     fun listenForDownloadProgress(id: String): BroadcastChannel<PodcastDownloadItem>? = downloadingChannels[id]
 
     fun download(podcastId: String?, item: Item): BroadcastChannel<PodcastDownloadItem>? {
