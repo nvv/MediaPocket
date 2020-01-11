@@ -27,106 +27,7 @@ class PodcastEpisodeAdapter(
         private val listener: EpisodeItemListener? = null
 ) : RecyclerView.Adapter<PodcastEpisodeAdapter.PodcastItemViewHolder>() {
 
-//    private val data = mutableListOf<PodcastEpisode>()
-//    private val dataMap = LinkedHashMap<String, PodcastEpisode>()
     private var accentColor: Int = -1
-
-//    private val mediaConnection : MediaSessionConnection
-//    private val callback: MediaControllerCompat.Callback
-//    private var lastActiveEpisode: PodcastEpisode? = null
-
-//    @set:Inject
-//    lateinit var manager: PodcastDownloadManager
-
-    init {
-
-//        MainComponentLocator.mainComponent.inject(this)
-
-//        items?.forEachIndexed { index, it ->
-//            val newItem = PodcastEpisode(index, it)
-//            if (!it.link.isNullOrEmpty()) {
-//                data.add(newItem)
-//                dataMap[PodcastEpisodeItem.convertLinkToId(it.link)] = newItem
-//            }
-//        }
-//
-//        subscription.add(manager.subscribeForDownloads(Consumer { download ->
-//            val updateItem = dataMap[download.id]
-//            updateItem?.let {
-//                updateItem.download = download
-//                notifyItemChanged(updateItem.position, download)
-//            }
-//        }))
-//
-//        subscription.add(manager.subscribeForDatabase(Consumer { records ->
-//            processItems(records)
-//            notifyDataSetChanged()
-//        }))
-//
-//        mediaConnection = MediaSessionConnection.getInstance(context)
-//
-//        callback = object : MediaControllerCompat.Callback() {
-//            override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-//                mediaConnection.mediaController.metadata?.description?.mediaId?.let {
-//                    itemPlaybackChanged(it, state.isPlaying)
-//                }
-//            }
-//
-//            override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-//                metadata?.description?.mediaId?.let {
-//                    itemPlaybackChanged(it, mediaConnection.mediaController.playbackState.isPlaying)
-//                }
-//            }
-//
-//            private fun itemPlaybackChanged(itemLink: String, isPlaying: Boolean): Unit? {
-//                val item = dataMap[PodcastEpisodeItem.convertLinkToId(itemLink)]
-//                return item?.let { episode ->
-//                    if (lastActiveEpisode != episode) {
-//                        lastActiveEpisode?.let {
-//                            it.isPlaying = null
-//                            notifyItemChanged(it.position)
-//                        }
-//                    }
-//                    lastActiveEpisode = episode
-//
-//                    item.isPlaying = isPlaying
-//                    notifyItemChanged(episode.position)
-//                }
-//            }
-//
-//        }
-//
-//        mediaConnection.mediaController.metadata?.let {
-//            it.description?.mediaId?.let {
-//                val item = dataMap[PodcastEpisodeItem.convertLinkToId(it)]
-//                item?.let { episode ->
-//                    lastActiveEpisode = episode
-//
-//                    item.isPlaying = mediaConnection.mediaController.playbackState.isPlaying
-//                    notifyItemChanged(episode.position)
-//                }
-//            }
-//        }
-//
-//        mediaConnection.registerMediaControllerCallback(callback)
-    }
-
-//    private fun processItems(records: List<PodcastDownloadItem>) {
-//        data.forEach {
-//            it.download = null
-//        }
-//
-//        records.forEach { download ->
-//            val item = dataMap[download.id]
-//            item?.let {
-//                item.download = download
-//            }
-//        }
-//    }
-//
-//    override fun onDetachedFromRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
-//        mediaConnection.unregisterMediaControllerCallback(callback)
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PodcastItemViewHolder {
         return PodcastItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.podcast_episode_item, parent, false))
@@ -178,13 +79,6 @@ class PodcastEpisodeAdapter(
                 RxBus.default.postEvent(PlayPodcastEvent(RssEpisodeItem(item.link, item.rssLink)))
             }
 
-
-//            item.download?.let { download ->
-//                delete.setOnClickListener {
-//                    subscription.add(manager.delete(download).subscribe())
-//                }
-//            }
-
             status.setOnClickListener {
                 listener?.downloadClicked(item)
             }
@@ -206,49 +100,16 @@ class PodcastEpisodeAdapter(
                 listener?.favouriteClicked(item)
             }
 
-//            favourite.setOnClickListener {
-//                subscription.add(manager.favourite(podcastId, item.item).subscribe { items ->
-//                    processItems(items)
-//                    val updated = items.find {
-//                        it.id == PodcastEpisodeItem.convertLinkToId(item.link)
-//                    }
-//                    updated?.let {
-//                        val stateSet = intArrayOf(android.R.attr.state_checked * if (updated.favourite) 1 else -1)
-//                        favourite.post {
-//                            favourite.setImageState(stateSet, true)
-//                        }
-//                    }
-//                })
-//            }
-
-//            val download = item.download != null && item.download?.favourite!!
             val stateSet = intArrayOf(android.R.attr.state_checked * if (item.isFavourite) 1 else -1)
             favourite.setImageState(stateSet, true)
-//
 
             playback.visibility = if (item.isPlaying) View.VISIBLE else View.GONE
 
             item.isPlaying.let {
-
                 if (!(playback.drawable as Animatable).isRunning) {
                     (playback.drawable as Animatable).start()
                 }
             }
-
-
-//            (status.parent as ViewGroup).visibility = if (item.download?.state == PodcastEpisodeItem.STATE_DOWNLOADED) View.GONE else View.VISIBLE
-//            status.setImageResource(when (item.download?.state) {
-//                PodcastEpisodeItem.STATE_DOWNLOADED -> R.drawable.ic_downloaded
-//                PodcastEpisodeItem.STATE_PAUSED -> R.drawable.ic_play
-//                PodcastEpisodeItem.STATE_DOWNLOADING, PodcastEpisodeItem.STATE_ADDED, PodcastEpisodeItem.STATE_WAITING_FOR_NETWORK -> R.drawable.ic_pause
-//                else -> R.drawable.ic_download
-//            })
-
-//            (status.parent as ViewGroup).visibility = if (item.isDownloaded) View.GONE else View.VISIBLE
-//            status.setImageResource(when (item.downloadProgress?.isDownloaded) {
-//                true -> R.drawable.ic_downloaded
-//                else -> R.drawable.ic_download
-//            })
 
             if (item.isError) {
                 error.visibility = View.VISIBLE
@@ -271,50 +132,8 @@ class PodcastEpisodeAdapter(
                 progress.visibility = View.GONE
             }
 
-//            delete.visibility = if (item.download?.state == PodcastEpisodeItem.STATE_DOWNLOADED) View.VISIBLE else View.GONE
-
-//            item.download?.let {
-//                progress.progress = it.progress.toFloat()
-//            }
-
         }
-
-//        private fun clickDownload(item: PodcastEpisode, manager: PodcastDownloadManager) {
-//            if (item.download != null && item.download?.state != PodcastEpisodeItem.STATE_NONE) {
-//                item.download?.let {
-//                    if (it.isDownloaded) {
-//
-//                    } else if (!it.isError) {
-//                        manager.pause(it.downloadId)
-//                    } else {
-//                        subscription.add(manager.download(podcastId, item.item)
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                                .subscribe())
-//                    }
-//                }
-//            } else {
-//                subscription.add(manager.download(podcastId, item.item)
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe())
-//            }
-//        }
     }
-
-//    inner class PodcastEpisode(val position: Int, val item: Item) {
-//
-//        val title = item.title
-//
-//        val description = item.description
-//
-//        val pubDate = item.dateFormatted()
-//
-//        val link = item.link
-//
-//        var download: PodcastDownloadItem? = null
-//
-//        var isPlaying: Boolean? = null
-//    }
-
 
     interface EpisodeItemListener {
 
