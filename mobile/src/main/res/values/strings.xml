@@ -40,7 +40,6 @@
     <string name="more_from_author">More From Author</string>
 
     <string name="waiting_for_network">Waiting for network</string>
-    <string name="error_download">Error while episode download. Retry?</string>
     <string name="sharing">Sharing</string>
     <string name="downloading_episode">Downloading episode: \"%s\"</string>
     <string name="downloading_episodes">Downloading episode(s)</string>
@@ -49,5 +48,9 @@
     <string name="confirm">Confirm</string>
     <string name="confirm_message">Are you sure you want to delete this episode?</string>
     <string name="empty_subscription_list">Your subscriptions will show up here</string>
+
+    <string name="error_common_network_error">Can\'t download file due to network error, file might be unavailable. Try again?</string>
+    <string name="error_write_file_error">Error while writing downloading file. Try again?</string>
+    <string name="error_no_network_connection">No active network connection. Try again?</string>
 
 </resources>

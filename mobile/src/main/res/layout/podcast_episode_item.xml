@@ -74,11 +74,7 @@
             android:layout_gravity="center"
             android:layout_width="@dimen/episode_item_icon_size"
             android:layout_height="@dimen/episode_item_icon_size"
-            android:src="@drawable/ic_download"
-            app:layout_constraintBottom_toTopOf="@+id/error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:src="@drawable/ic_download"/>
     </FrameLayout>
 
     <ImageView
@@ -116,13 +112,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
+        android:gravity="start"
         android:textColor="@color/red"
         android:visibility="gone"
+        android:paddingTop="@dimen/padding_med"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Error"
+        tools:text="Error while downloading file due network error. File might be unavailable or storage might be..."
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

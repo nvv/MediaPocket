@@ -14,6 +14,7 @@ import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.SubscribedPodcast
 import com.mediapocket.android.extensions.isPlaying
+import com.mediapocket.android.journeys.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.journeys.details.viewitem.DownloadState
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.model.PodcastAdapterEntry
@@ -33,6 +34,7 @@ import javax.inject.Inject
  */
 class PodcastDetailsViewModel @Inject constructor(
         private val context: Context,
+        private val errorMapper: DownloadErrorToStringMapper,
         private val downloadManager: PodcastDownloadManager,
         private val itunesPodcastRepository: ItunesPodcastRepository,
         private val rssRepository: RssRepository,
@@ -190,6 +192,9 @@ class PodcastDetailsViewModel @Inject constructor(
         episode.downloadState?.progress = item.progress
         // TODO
         episode.downloadState?.isDownloaded = item.progress == 100
+        item.error?.let {
+            episode.downloadState?.error = errorMapper.map(it)
+        }
         _episodesChanged.postValue(setOf(episode.position))
     }
 

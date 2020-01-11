@@ -10,4 +10,5 @@ data class PodcastDownloadItem(
         var isDownloaded: Boolean,
         val title: String?,
         val downloadId: Int,
-        val podcastId: String)
+        val podcastId: String,
+        var error: DownloadError? = null)

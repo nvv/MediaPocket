@@ -14,10 +14,7 @@ import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.events.PlayPodcastEvent
-import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
-import com.mediapocket.android.journeys.details.viewitem.isDownloaded
-import com.mediapocket.android.journeys.details.viewitem.isDownloading
-import com.mediapocket.android.journeys.details.viewitem.isPaused
+import com.mediapocket.android.journeys.details.viewitem.*
 import com.mediapocket.android.playback.model.RssEpisodeItem
 import com.mediapocket.android.utils.GlobalUtils
 
@@ -202,7 +199,7 @@ class PodcastEpisodeAdapter(
             }
 
             error.setOnClickListener {
-//                clickDownload(item, manager)
+                listener?.downloadClicked(item)
             }
 
             favourite.setOnClickListener {
@@ -238,7 +235,6 @@ class PodcastEpisodeAdapter(
                 }
             }
 
-//            error.visibility = if (item.download?.state == PodcastEpisodeItem.STATE_ERROR) View.VISIBLE else View.GONE
 
 //            (status.parent as ViewGroup).visibility = if (item.download?.state == PodcastEpisodeItem.STATE_DOWNLOADED) View.GONE else View.VISIBLE
 //            status.setImageResource(when (item.download?.state) {
@@ -254,11 +250,18 @@ class PodcastEpisodeAdapter(
 //                else -> R.drawable.ic_download
 //            })
 
-            when {
-                item.isDownloaded -> status.setImageResource(R.drawable.ic_downloaded)
-                item.isPaused -> status.setImageResource(R.drawable.ic_play)
-                item.downloadState != null -> status.setImageResource(R.drawable.ic_pause)
-                else -> status.setImageResource(R.drawable.ic_download)
+            if (item.isError) {
+                error.visibility = View.VISIBLE
+                error.text = item.downloadState?.error
+                status.setImageResource(R.drawable.ic_download)
+            } else {
+                error.visibility = View.GONE
+                when {
+                    item.isDownloaded -> status.setImageResource(R.drawable.ic_downloaded)
+                    item.isPaused -> status.setImageResource(R.drawable.ic_play)
+                    item.downloadState != null -> status.setImageResource(R.drawable.ic_pause)
+                    else -> status.setImageResource(R.drawable.ic_download)
+                }
             }
 
             if (item.isDownloading) {

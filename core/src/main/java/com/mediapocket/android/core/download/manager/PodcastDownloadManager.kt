@@ -2,6 +2,7 @@ package com.mediapocket.android.core.download.manager
 
 import android.content.Context
 import com.mediapocket.android.core.download.extensions.isDownloading
+import com.mediapocket.android.core.download.mapper.FetchToDownloadManagerErrorMapper
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
@@ -20,7 +21,8 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class PodcastDownloadManager(
         private val context: Context,
-        private val repository: PodcastEpisodeRepository) {
+        private val repository: PodcastEpisodeRepository,
+        private val errorMapper: FetchToDownloadManagerErrorMapper) {
 
     /**
      * All active download broadcast channels to report download progress.
@@ -89,7 +91,29 @@ class PodcastDownloadManager(
             }
 
             override fun onError(download: Download, error: Error, throwable: Throwable?) {
+                GlobalScope.launch {
+                    val id = PodcastEpisodeItem.convertLinkToId(download.url)
+                    val item = repository.get(id)
+                    item?.let {
+                        item.state = PodcastEpisodeItem.STATE_NONE
+                        repository.update(item)
+                    }
 
+                    fetch.remove(download.id)
+                    val downloadingItem = downloadingItems.remove(id)
+                    downloadingChannels.remove(id)?.let { channel ->
+                        downloadingItem?.let {
+                            downloadingItem.progress = 0
+                            downloadingItem.isDownloaded = false
+                            downloadingItem.state = PodcastEpisodeItem.STATE_ERROR
+                            downloadingItem.error = errorMapper.map(error)
+                            channel.send(downloadingItem)
+                        }
+                        channel.close()
+                    }
+
+                    notifyActiveDownloadsChanged()
+                }
             }
 
             override fun onPaused(download: Download) {

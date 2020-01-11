@@ -4,6 +4,8 @@ import androidx.room.Room
 import android.content.Context
 import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.Storage
+import com.mediapocket.android.core.download.manager.PodcastDownloadManager
+import com.mediapocket.android.core.download.mapper.FetchToDownloadManagerErrorMapper
 import com.mediapocket.android.repository.PodcastEpisodeRepository
 import dagger.Module
 import dagger.Provides
@@ -25,6 +27,7 @@ class CoreModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun providePodcastDownloadManager(repository: PodcastEpisodeRepository) =
-            com.mediapocket.android.core.download.manager.PodcastDownloadManager(context, repository)
+    fun providePodcastDownloadManager(
+            repository: PodcastEpisodeRepository,
+            mapper: FetchToDownloadManagerErrorMapper) = PodcastDownloadManager(context, repository, mapper)
 }
