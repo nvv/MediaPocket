@@ -1,15 +1,10 @@
-package com.mediapocket.android.fragments
+package com.mediapocket.android.journeys.episodes
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mediapocket.android.R
 import com.mediapocket.android.journeys.details.adapter.DownloadedEpisodesAdapter
-import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.core.download.model.PodcastDownloadItem
-import com.mediapocket.android.events.DeletePodcastEpisodeEvent
 
 /**
  * @author Vlad Namashko

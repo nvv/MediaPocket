@@ -15,7 +15,6 @@ import android.transition.Slide
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -29,7 +28,10 @@ import com.mediapocket.android.fragments.*
 import com.mediapocket.android.fragments.transition.DetailsTransition
 import com.mediapocket.android.journeys.details.PodcastDetailsFragment
 import com.mediapocket.android.journeys.discover.DiscoverFragment
+import com.mediapocket.android.journeys.discover.GenrePodcastsFragment
+import com.mediapocket.android.journeys.discover.NetworkPodcastFragment
 import com.mediapocket.android.journeys.discover.PodcastSearchFragment
+import com.mediapocket.android.journeys.episodes.EpisodesFragment
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.PodcastPlaybackCompatView
 import com.mediapocket.android.view.PodcastPlaybackExpandedView

@@ -1,4 +1,4 @@
-package com.mediapocket.android.fragments
+package com.mediapocket.android.journeys.episodes
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
 import androidx.fragment.app.FragmentManager
+import com.mediapocket.android.fragments.BaseFragment
 import kotlinx.android.synthetic.main.episodes_view.*
 
 

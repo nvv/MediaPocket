@@ -6,7 +6,12 @@ import com.mediapocket.android.SplashScreenActivity
 import com.mediapocket.android.fragments.*
 import com.mediapocket.android.journeys.details.PodcastDetailsFragment
 import com.mediapocket.android.journeys.discover.DiscoverFragment
+import com.mediapocket.android.journeys.discover.GenrePodcastsFragment
+import com.mediapocket.android.journeys.discover.NetworkPodcastFragment
 import com.mediapocket.android.journeys.discover.PodcastSearchFragment
+import com.mediapocket.android.journeys.episodes.DownloadedEpisodesFragment
+import com.mediapocket.android.journeys.episodes.EpisodesFragment
+import com.mediapocket.android.journeys.episodes.FavouritesEpisodesFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

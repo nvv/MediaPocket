@@ -1,6 +1,5 @@
-package com.mediapocket.android.fragments
+package com.mediapocket.android.journeys.discover
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -9,10 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.fragments.SimplePodcastFragment
 import com.mediapocket.android.model.PodcastAdapterEntry
-import com.mediapocket.android.viewmodels.PodcastViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -62,7 +59,7 @@ class GenrePodcastsFragment : SimplePodcastFragment() {
         private const val ARG_GENRE_ID = "arg_genre_id"
 
         fun newInstance(id: Int): GenrePodcastsFragment {
-            val fragment =  GenrePodcastsFragment()
+            val fragment = GenrePodcastsFragment()
             fragment.arguments = Bundle().apply {
                 putInt(ARG_GENRE_ID, id)
             }

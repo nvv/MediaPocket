@@ -1,6 +1,5 @@
-package com.mediapocket.android.fragments
+package com.mediapocket.android.journeys.discover
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -8,13 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.mediapocket.android.R
-import com.mediapocket.android.core.DependencyLocator
+import com.mediapocket.android.fragments.SimplePodcastFragment
 import com.mediapocket.android.model.PodcastAdapterEntry
-import com.mediapocket.android.viewmodels.PodcastViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -30,7 +24,7 @@ class NetworkPodcastFragment : SimplePodcastFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        arguments?.getString(ARG_NETWORK_ID)?.let {networkId ->
+        arguments?.getString(ARG_NETWORK_ID)?.let { networkId ->
             model.getNetworkPodcasts.observe(this, Observer { result ->
                 adapter.setItems(PodcastAdapterEntry.convert(result))
                 adapter.notifyDataSetChanged()
@@ -73,7 +67,7 @@ class NetworkPodcastFragment : SimplePodcastFragment() {
         private const val ARG_NETWORK_TITLE = "arg_network_title"
 
         fun newInstance(id: String, title: String?): NetworkPodcastFragment {
-            val fragment =  NetworkPodcastFragment()
+            val fragment = NetworkPodcastFragment()
             fragment.arguments = Bundle().apply {
                 putString(ARG_NETWORK_ID, id)
                 putString(ARG_NETWORK_TITLE, title)

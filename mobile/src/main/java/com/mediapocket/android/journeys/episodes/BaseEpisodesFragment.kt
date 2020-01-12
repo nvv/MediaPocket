@@ -1,4 +1,4 @@
-package com.mediapocket.android.fragments
+package com.mediapocket.android.journeys.episodes
 
 import android.content.Context
 import android.os.Bundle
