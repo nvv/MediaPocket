@@ -84,12 +84,7 @@ class PodcastEpisodeAdapter(
             }
 
             share.setOnClickListener {
-//                ShareCompat.IntentBuilder.from(GlobalUtils.getActivity(context))
-//                        .setText(item.link)
-//                        .setSubject(item.title)
-//                        .setType("text/plain")
-//                        .setChooserTitle(R.string.sharing)
-//                        .startChooser()
+                listener?.share(item)
             }
 
             error.setOnClickListener {
@@ -140,6 +135,8 @@ class PodcastEpisodeAdapter(
         fun favouriteClicked(item: PodcastEpisodeViewItem)
 
         fun downloadClicked(item: PodcastEpisodeViewItem)
+
+        fun share(item: PodcastEpisodeViewItem)
     }
 
 }

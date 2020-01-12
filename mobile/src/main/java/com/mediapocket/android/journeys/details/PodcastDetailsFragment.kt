@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -103,6 +104,15 @@ class PodcastDetailsFragment : BaseFragment() {
                                 }
                             }
 
+                        }
+
+                        override fun share(item: PodcastEpisodeViewItem) {
+                            ShareCompat.IntentBuilder.from(requireActivity())
+                                    .setText(item.link)
+                                    .setSubject(item.title)
+                                    .setType("text/plain")
+                                    .setChooserTitle(R.string.sharing)
+                                    .startChooser()
                         }
 
                         override fun favouriteClicked(item: PodcastEpisodeViewItem) {
