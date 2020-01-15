@@ -50,7 +50,7 @@ class EpisodesFragment : BaseFragment() {
         const val TAG = "EpisodesFragment"
     }
 
-    class EpisodesPagerAdapter(manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
+    class EpisodesPagerAdapter(manager: FragmentManager) : FragmentStatePagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         private val fragmentList = mutableListOf<Fragment>()
         private val fragmentTitleList = mutableListOf<String>()
@@ -64,12 +64,7 @@ class EpisodesFragment : BaseFragment() {
         }
 
         override fun getPageTitle(position: Int): CharSequence? {
-            return fragmentTitleList.get(position)
-        }
-
-        fun addFrag(fragment: Fragment) {
-            fragmentList.add(fragment)
-            fragmentTitleList.add("")
+            return fragmentTitleList[position]
         }
 
         fun addFrag(fragment: Fragment, title: String) {

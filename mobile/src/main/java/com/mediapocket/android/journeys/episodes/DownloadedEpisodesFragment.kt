@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import com.mediapocket.android.R
 import com.mediapocket.android.journeys.details.adapter.DownloadedEpisodesAdapter
 
 /**
@@ -15,12 +17,11 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment() {
 
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        subscription.add(model.getDownloadedEpisodes().subscribe {
-            episodes ->
-            episodes?.let {
-                items.adapter = DownloadedEpisodesAdapter(it)
-            }
+        model.downloadedEpisodes.observe(this, Observer {
+            items.adapter = DownloadedEpisodesAdapter(it)
         })
+
+        model.requestDownloadedEpisodes()
 
 
 //        subscription.add(RxBus.default.observerFor(DeletePodcastEpisodeEvent::class.java).subscribe { event ->

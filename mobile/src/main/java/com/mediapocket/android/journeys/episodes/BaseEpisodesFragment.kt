@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.mediapocket.android.R
@@ -17,6 +18,7 @@ import com.mediapocket.android.view.decoration.DividerItemDecoration
 import com.mediapocket.android.viewmodels.EpisodesViewModel
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.base_episode_fragment.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.UI
@@ -31,7 +33,6 @@ abstract class BaseEpisodesFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     protected lateinit var model: EpisodesViewModel
-    protected val subscription: CompositeDisposable = CompositeDisposable()
 
     protected lateinit var items: androidx.recyclerview.widget.RecyclerView
     protected lateinit var loading: ProgressBar
@@ -47,37 +48,20 @@ abstract class BaseEpisodesFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = UI {
-            frameLayout {
-                backgroundResource = context.getResourceIdAttribute(R.attr.primaryBackgroundColor)
-                lparams(width = matchParent, height = matchParent)
+        val view = inflater.inflate(R.layout.base_episode_fragment, container, false)
 
-                items = recyclerView {
+        items = view.episodeList
+        this.loading = view.loading
 
-                }.lparams(width = matchParent, height = matchParent)
-
-                loading = progressBar {
-                    visibility = View.GONE
-                }.lparams(width = wrapContent, height = wrapContent) {
-                    gravity = Gravity.CENTER
-                }
-            }
-        }.view
-
-        subscription.add(model.loading().subscribe { isLoading ->
+        model.isLoading.observe(this, Observer {isLoading ->
             items.visibility = if (isLoading) View.GONE else View.VISIBLE
             loading.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
-        items.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         items.addItemDecoration(DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL_LIST).setPadding(ViewUtils.getDimensionSize(16)))
 
         return view
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        subscription.dispose()
-    }
 
 }
