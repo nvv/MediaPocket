@@ -1,6 +1,5 @@
-package com.mediapocket.android.adapters
+package com.mediapocket.android.journeys.details.adapter
 
-import android.content.Context
 import android.graphics.drawable.Animatable
 import android.text.Html
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.app.ShareCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.mediapocket.android.R
@@ -16,7 +14,6 @@ import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.journeys.details.viewitem.*
 import com.mediapocket.android.playback.model.RssEpisodeItem
-import com.mediapocket.android.utils.GlobalUtils
 
 
 /**

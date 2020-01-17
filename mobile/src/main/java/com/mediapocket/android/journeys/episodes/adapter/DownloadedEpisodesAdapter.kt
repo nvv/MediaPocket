@@ -1,9 +1,10 @@
-package com.mediapocket.android.journeys.details.adapter
+package com.mediapocket.android.journeys.episodes.adapter
 
 import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.chauthai.swipereveallayout.ViewBinderHelper
@@ -25,7 +26,10 @@ import java.util.*
 /**
  * @author Vlad Namashko
  */
-class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf()) : androidx.recyclerview.widget.RecyclerView.Adapter<DownloadedEpisodesAdapter.EpisodeViewHolder>() {
+class DownloadedEpisodesAdapter(
+        private val episodes: List<PodcastEpisodeItem>,
+        private val deleteAction: ((item: PodcastEpisodeItem) -> Unit)? = null
+): RecyclerView.Adapter<DownloadedEpisodesAdapter.EpisodeViewHolder>() {
 
     private val localEpisodes = ArrayList<PodcastEpisodeItem>(episodes)
 
@@ -91,7 +95,7 @@ class DownloadedEpisodesAdapter(episodes: List<PodcastEpisodeItem> = arrayListOf
             }
 
             itemView.delete_episode_frame.setOnClickListener{
-                RxBus.default.postEvent(DeletePodcastEpisodeEvent(item, position))
+                deleteAction?.invoke(item)
             }
 
             swipeLayoutHelper.bind(itemView.swipe_view, item.id)

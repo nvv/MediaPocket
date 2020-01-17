@@ -3,14 +3,15 @@ package com.mediapocket.android.repository
 import com.mediapocket.android.dao.EpisodesDao
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
+import java.io.File
 
 class PodcastEpisodeRepository(private val dao: EpisodesDao) {
 
     fun get(id: String): PodcastEpisodeItem? = dao.get(id)
 
-    fun insert(podcasts: PodcastEpisodeItem) = dao.insert(podcasts)
+    fun insert(episode: PodcastEpisodeItem) = dao.insert(episode)
 
-    fun update(podcasts: PodcastEpisodeItem) = dao.update(podcasts)
+    fun update(episode: PodcastEpisodeItem) = dao.update(episode)
 
     fun getDownloads() = dao.getDownloads()
 
@@ -32,6 +33,11 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
         }
 
         return storedItem.favourite
+    }
+
+    fun deleteEpisode(episode: PodcastEpisodeItem) {
+        dao.delete(episode.id)
+        File(episode.localPath).delete()
     }
 
     private fun buildDatabaseItem(podcastId: String?, item: Item) =

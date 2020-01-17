@@ -2,9 +2,9 @@ package com.mediapocket.android.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.mediapocket.android.viewmodels.EpisodesViewModel
+import com.mediapocket.android.journeys.episodes.vm.EpisodesViewModel
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
-import com.mediapocket.android.viewmodels.PodcastViewModel
+import com.mediapocket.android.journeys.discover.vm.PodcastViewModel
 import com.mediapocket.android.journeys.discover.vm.SearchPodcastViewModel
 import dagger.Binds
 import dagger.Module

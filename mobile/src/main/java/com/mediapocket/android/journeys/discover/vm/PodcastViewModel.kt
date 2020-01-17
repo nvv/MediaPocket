@@ -1,4 +1,4 @@
-package com.mediapocket.android.viewmodels
+package com.mediapocket.android.journeys.discover.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +7,7 @@ import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.model.*
 import com.mediapocket.android.repository.ItunesPodcastRepository
+import com.mediapocket.android.viewmodels.LoadableViewModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

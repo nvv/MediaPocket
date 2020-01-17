@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.mediapocket.android.R
-import com.mediapocket.android.adapters.PodcastEpisodeAdapter
+import com.mediapocket.android.journeys.details.adapter.PodcastEpisodeAdapter
 import com.mediapocket.android.fragments.BaseFragment
 import com.mediapocket.android.journeys.details.view.PodcastDetailsView
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
@@ -21,7 +21,6 @@ import com.mediapocket.android.journeys.details.viewitem.isDownloading
 import com.mediapocket.android.journeys.details.viewitem.isError
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
 import com.mediapocket.android.model.PodcastAdapterEntry
-import javax.inject.Inject
 
 
 /**

@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.mediapocket.android.R
-import com.mediapocket.android.adapters.PodcastEpisodeAdapter
+import com.mediapocket.android.journeys.details.adapter.PodcastEpisodeAdapter
 import com.mediapocket.android.model.PodcastAdapterEntry
 import android.view.Menu
 import com.mediapocket.android.extensions.doubleLet

@@ -1,7 +1,7 @@
 package com.mediapocket.android.di
 
-import com.mediapocket.android.journeys.details.adapter.DownloadedEpisodesAdapter
-import com.mediapocket.android.adapters.PodcastEpisodeAdapter
+import com.mediapocket.android.journeys.episodes.adapter.DownloadedEpisodesAdapter
+import com.mediapocket.android.journeys.details.adapter.PodcastEpisodeAdapter
 import dagger.Component
 import javax.inject.Singleton
 

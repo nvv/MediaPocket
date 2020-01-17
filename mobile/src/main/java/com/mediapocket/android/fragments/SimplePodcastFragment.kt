@@ -2,8 +2,7 @@ package com.mediapocket.android.fragments
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.lifecycle.LiveData
-import com.mediapocket.android.viewmodels.PodcastViewModel
+import com.mediapocket.android.journeys.discover.vm.PodcastViewModel
 
 /**
  * @author Vlad Namashko

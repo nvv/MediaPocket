@@ -1,31 +1,21 @@
 package com.mediapocket.android.journeys.discover
 
 import androidx.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.appcompat.widget.*
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.mediapocket.android.ItemListView
 import com.mediapocket.android.R
 import com.mediapocket.android.core.DependencyLocator
 import com.mediapocket.android.core.RxBus
-import com.mediapocket.android.events.LoadGenreItemsEvent
 import com.mediapocket.android.events.OpenSearchEvent
 import com.mediapocket.android.fragments.BaseFragment
 import com.mediapocket.android.journeys.discover.adapter.PodcastDiscoverAdapter
 import com.mediapocket.android.model.DiscoverData
-import com.mediapocket.android.model.PodcastAdapterEntry
-import com.mediapocket.android.view.GenreListView
-import com.mediapocket.android.view.NetworkListView
-import com.mediapocket.android.view.PodcastListView
-import com.mediapocket.android.viewmodels.PodcastViewModel
-import io.reactivex.disposables.CompositeDisposable
+import com.mediapocket.android.journeys.discover.vm.PodcastViewModel
 import kotlinx.android.synthetic.main.discover_podcast.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 /**

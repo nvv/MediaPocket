@@ -2,7 +2,6 @@ package com.mediapocket.android.journeys.episodes
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,16 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.mediapocket.android.R
-import com.mediapocket.android.extensions.getResourceIdAttribute
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
-import com.mediapocket.android.viewmodels.EpisodesViewModel
+import com.mediapocket.android.journeys.episodes.vm.EpisodesViewModel
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.base_episode_fragment.view.*
-import org.jetbrains.anko.*
-import org.jetbrains.anko.recyclerview.v7.recyclerView
-import org.jetbrains.anko.support.v4.UI
 import javax.inject.Inject
 
 /**

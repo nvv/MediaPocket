@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.mediapocket.android.R
-import com.mediapocket.android.journeys.details.adapter.DownloadedEpisodesAdapter
+import com.mediapocket.android.journeys.episodes.adapter.DownloadedEpisodesAdapter
 
 /**
  * @author Vlad Namashko

@@ -1,10 +1,11 @@
-package com.mediapocket.android.viewmodels
+package com.mediapocket.android.journeys.episodes.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.mediapocket.android.core.AppDatabase
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
+import com.mediapocket.android.repository.PodcastEpisodeRepository
+import com.mediapocket.android.viewmodels.LoadableViewModel
 import io.reactivex.Completable
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +15,7 @@ import javax.inject.Inject
  * @author Vlad Namashko
  */
 class EpisodesViewModel @Inject constructor(
-        private val database: AppDatabase
+        private val repository: PodcastEpisodeRepository
 ) : LoadableViewModel() {
 
     private val _downloadedEpisodes = MutableLiveData<List<PodcastEpisodeItem>>()
@@ -24,31 +25,22 @@ class EpisodesViewModel @Inject constructor(
     val favouriteEpisodes: LiveData<List<PodcastEpisodeItem>> = _favouriteEpisodes
 
     fun requestDownloadedEpisodes() {
-//        return doLoadingAction {
-//            Single.fromCallable {
-//                database.podcastEpisodeItemDao().getDownloads()
-//            }.subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//        }
-
         GlobalScope.launch {
-            _downloadedEpisodes.postValue(database.podcastEpisodeItemDao().getDownloads())
+            _downloadedEpisodes.postValue(repository.getDownloads())
         }
     }
 
     fun requestFavouritesEpisodes() {
-//        return doLoadingAction {
-//            Single.fromCallable {
-//                database.podcastEpisodeItemDao().getFavourites()
-//            }.subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//        }
-
         GlobalScope.launch {
-            _downloadedEpisodes.postValue(database.podcastEpisodeItemDao().getFavourites())
+            _favouriteEpisodes.postValue(repository.getFavourites())
         }
     }
 
-    fun deleteEpisode(item: PodcastDownloadItem): Completable = TODO("delete")
+    fun deleteEpisode(item: PodcastEpisodeItem) {
+        GlobalScope.launch {
+            repository.deleteEpisode(item)
+            _downloadedEpisodes.postValue(repository.getDownloads())
+        }
+    }
 
 }
