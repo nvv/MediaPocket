@@ -109,12 +109,7 @@ class PodcastEpisodeAdapter(
                 status.setImageResource(R.drawable.ic_download)
             } else {
                 error.visibility = View.GONE
-                when {
-                    item.isDownloaded -> status.setImageResource(R.drawable.ic_downloaded)
-                    item.isPaused -> status.setImageResource(R.drawable.ic_play)
-                    item.downloadState != null -> status.setImageResource(R.drawable.ic_pause)
-                    else -> status.setImageResource(R.drawable.ic_download)
-                }
+                status.setImageResource(item.getStatusIcon())
             }
 
             if (item.isDownloading) {
