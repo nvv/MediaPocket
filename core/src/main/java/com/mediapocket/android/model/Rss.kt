@@ -1,7 +1,5 @@
 package com.mediapocket.android.model
 
-import android.graphics.Bitmap
-import android.media.MediaMetadata
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
@@ -9,9 +7,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.text.TextUtils
 import com.mediapocket.android.utils.XmlNode
 import java.text.SimpleDateFormat
-import java.time.Year
 import java.util.*
-import java.util.logging.SimpleFormatter
 
 
 /**
@@ -72,10 +68,10 @@ class Rss(rss: String?, overrideLink: String? = null) : Cacheable() {
 data class Item(val podcastTitle: String, val title: String, val description: String,
                 val pubDate: String, val link: String?, val length: Long, val imageUrl: String) : PlaybackMediaDescriptor {
 
-    private var pubDateFormatter: String? = null
+    private var pubDateFormatted: String? = null
 
     fun dateFormatted(): String {
-        pubDateFormatter?.let {
+        pubDateFormatted?.let {
             return it
         }
 
@@ -83,13 +79,14 @@ data class Item(val podcastTitle: String, val title: String, val description: St
         val calendar = Calendar.getInstance()
         calendar.time = pubDateObj
 
-        if (calendar.get(Calendar.YEAR) == currentYear) {
-            pubDateFormatter = monthFormatter.format(pubDateObj) + "\n" + calendar.get(Calendar.DAY_OF_MONTH)
+        val formatted = if (calendar.get(Calendar.YEAR) == currentYear) {
+            monthFormatter.format(pubDateObj) + "\n" + calendar.get(Calendar.DAY_OF_MONTH)
         } else {
-            pubDateFormatter = dateFormatter.format(pubDateObj) + "\n" + calendar.get(Calendar.YEAR)
+            dateFormatter.format(pubDateObj) + "\n" + calendar.get(Calendar.YEAR)
         }
+        pubDateFormatted = formatted
 
-        return pubDateFormatter!!
+        return formatted
     }
 
     private fun getMediaExtras(): Bundle {

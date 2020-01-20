@@ -60,7 +60,7 @@ class PodcastEpisodeAdapter(
         fun bind(item: PodcastEpisodeViewItem) {
             title.text = item.title
             description.text = Html.fromHtml(item.description)
-            pubDate.text = item.pubDate
+            pubDate.text = item.puDateFormatted
 
             if (accentColor != -1) {
                 status.setColorFilter(accentColor)

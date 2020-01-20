@@ -18,15 +18,16 @@ import java.nio.charset.Charset
 @Entity(tableName = "podcast_episode_item")
 data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
                               @ColumnInfo(name = "podcast_id") var podcastId: String?,
-                              @ColumnInfo(name = "podcast_title") var podcastTitle: String?,
-                              @ColumnInfo(name = "title") var title: String?,
-                              @ColumnInfo(name = "description") var description: String?,
+                              @ColumnInfo(name = "podcast_title") var podcastTitle: String,
+                              @ColumnInfo(name = "rss_link") var rssLink: String,
+                              @ColumnInfo(name = "title") var title: String,
+                              @ColumnInfo(name = "description") var description: String,
                               @ColumnInfo(name = "link") var link: String?,
                               @ColumnInfo(name = "download_date") var downloadDate: Long,
-                              @ColumnInfo(name = "pub_date") var pubDate: String?,
+                              @ColumnInfo(name = "pub_date") var pubDate: Long,
                               @ColumnInfo(name = "length") var length: Long?,
                               @ColumnInfo(name = "favourite") var favourite: Boolean,
-                              @ColumnInfo(name = "image_url") var imageUrl: String?,
+                              @ColumnInfo(name = "image_url") var imageUrl: String,
                               @ColumnInfo(name = "download_id") var downloadId: Int,
                               @ColumnInfo(name = "local_path") var localPath: String?) : PlaybackMediaDescriptor {
 
@@ -40,7 +41,7 @@ data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, link)
                 .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, podcastTitle)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate)
+                .putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate.toString())
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, getMediaPath())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, if (length == null) 0 else length!!)
                 .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, imageUrl)
@@ -61,7 +62,7 @@ data class PodcastEpisodeItem(@ColumnInfo(name = "state") var state: Int,
 
         bundle.putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, podcastTitle)
         bundle.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-        bundle.putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate)
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_DATE, pubDate.toString())
         bundle.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, if (length == null) 0 else length!!)
         bundle.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, getMediaPath())
         bundle.putString(MediaMetadataCompat.METADATA_KEY_ART, imageUrl)

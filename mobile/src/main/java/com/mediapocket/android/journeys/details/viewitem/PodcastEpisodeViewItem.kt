@@ -7,19 +7,20 @@ import com.mediapocket.android.model.Item
 
 class PodcastEpisodeViewItem(
         val position: Int,
-        val item: Item,
+        val podcastTitle: String,
+        val title: String,
+        val description: String,
+        val pubDate: Long,
+        val puDateFormatted: String,
+        val link: String?,
+        val length: Long,
+        val imageUrl: String,
         val rssLink: String,
-        val podcastId: String?) {
+        val podcastId: String?,
+        val localPath: String?,
+        val durationFormatted: String?) {
 
-    val id by lazy { PodcastEpisodeItem.convertLinkToId(item.link) }
-
-    val title by lazy { item.title }
-
-    val description by lazy { item.description }
-
-    val pubDate by lazy { item.dateFormatted() }
-
-    val link by lazy { item.link }
+    val id by lazy { PodcastEpisodeItem.convertLinkToId(link) }
 
     var isPlaying: Boolean = false
 
@@ -34,6 +35,7 @@ class PodcastEpisodeViewItem(
         else -> R.drawable.ic_download
     }
 
+    fun getMediaPath() = if (isDownloaded) localPath else link
 }
 
 data class DownloadState(

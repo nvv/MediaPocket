@@ -20,11 +20,11 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
     /**
      * Toggle favourite status
      */
-    fun toggleFavourite(podcastId: String?, item: Item): Boolean {
+    fun toggleFavourite(item: PodcastEpisodeItem): Boolean {
         val id = PodcastEpisodeItem.convertLinkToId(item.link)
         var storedItem = dao.get(id)
         if (storedItem == null) {
-            storedItem = buildDatabaseItem(podcastId, item)
+            storedItem = item
             storedItem.favourite = true
             dao.insert(storedItem)
         } else {
@@ -35,13 +35,11 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
         return storedItem.favourite
     }
 
-    fun deleteEpisode(episode: PodcastEpisodeItem) {
-        dao.delete(episode.id)
-        File(episode.localPath).delete()
+    fun deleteEpisode(episodeId: String) {
+        dao.get(episodeId)?.let {
+            File(it.localPath).delete()
+        }
+        dao.delete(episodeId)
     }
 
-    private fun buildDatabaseItem(podcastId: String?, item: Item) =
-            PodcastEpisodeItem(PodcastEpisodeItem.STATE_NONE, podcastId,
-                    item.podcastTitle, item.title, item.description, item.link, System.currentTimeMillis(),
-                    item.pubDate, item.length, false, item.imageUrl, 0, null)
 }

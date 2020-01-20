@@ -72,6 +72,7 @@ class PodcastDownloadManager(
                     downloadingChannels.remove(id)?.let { channel ->
                         downloadingItem?.let {
                             downloadingItem.progress = 100
+                            downloadingItem.state = PodcastEpisodeItem.STATE_DOWNLOADED
                             downloadingItem.isDownloaded = true
                             channel.send(downloadingItem)
                         }
@@ -161,10 +162,10 @@ class PodcastDownloadManager(
     }
 
     /**
-     * Get currently active downloads for <code>podcastId</code>
+     * Get currently active downloads for <code>podcastId</code>. Get all items if podcast id is null.
      */
-    fun getActiveDownloads(podcastId: String?): List<PodcastDownloadItem>? =
-            downloadingItems.filter { it.value.podcastId == podcastId }.values.toList()
+    fun getActiveDownloads(podcastId: String? = null): List<PodcastDownloadItem>? =
+            if (podcastId == null) downloadingItems.values.toList() else downloadingItems.filter { it.value.podcastId == podcastId }.values.toList()
 
     /**
      * Request download progress channel.
@@ -173,15 +174,16 @@ class PodcastDownloadManager(
      */
     fun listenForDownloadProgress(id: String): BroadcastChannel<PodcastDownloadItem>? = downloadingChannels[id]
 
-    fun download(podcastId: String?, item: Item): BroadcastChannel<PodcastDownloadItem>? {
+    fun download(item: PodcastEpisodeItem): BroadcastChannel<PodcastDownloadItem>? {
         val progress = BroadcastChannel<PodcastDownloadItem>(Channel.CONFLATED)
         downloadingChannels[PodcastEpisodeItem.convertLinkToId(item.link)] = progress
 
         GlobalScope.launch {
             item.link?.let {
-                val file = getItemLocalPath(podcastId ?: "_", item.link)
+                val link = item.link ?: ""
+                val file = getItemLocalPath(item.podcastId ?: "_", link)
 
-                val request = Request(item.link, file)
+                val request = Request(link, file)
                 request.priority = Priority.HIGH
                 request.networkType = NetworkType.ALL
 
@@ -189,7 +191,7 @@ class PodcastDownloadManager(
                 var storedItem = repository.get(id)
 
                 if (storedItem == null) {
-                    storedItem = buildDatabaseItem(podcastId, item)
+                    storedItem = item
                     storedItem.state = PodcastEpisodeItem.STATE_DOWNLOADING
                     storedItem.localPath = file
                     storedItem.downloadId = request.id
@@ -215,14 +217,14 @@ class PodcastDownloadManager(
         return progress
     }
 
-    fun pauseDownload(item: Item) {
-        downloadingItems[PodcastEpisodeItem.convertLinkToId(item.link)]?.let { download ->
+    fun pauseDownload(episodeId: String) {
+        downloadingItems[episodeId]?.let { download ->
             fetch.pause(download.downloadId)
         }
     }
 
-    fun resumeDownload(item: Item) {
-        downloadingItems[PodcastEpisodeItem.convertLinkToId(item.link)]?.let { download ->
+    fun resumeDownload(episodeId: String) {
+        downloadingItems[episodeId]?.let { download ->
             fetch.resume(download.downloadId)
         }
     }
@@ -230,11 +232,6 @@ class PodcastDownloadManager(
     private suspend fun notifyActiveDownloadsChanged() {
         activeDownloads.send(downloadingItems.values.filter { it.isDownloading }.toList())
     }
-
-    private fun buildDatabaseItem(podcastId: String?, item: Item) =
-            PodcastEpisodeItem(PodcastEpisodeItem.STATE_NONE, podcastId,
-                    item.podcastTitle, item.title, item.description, item.link, System.currentTimeMillis(),
-                    item.pubDate, item.length, false, item.imageUrl, 0, null)
 
     private fun getItemLocalPath(podcastId: String, link: String) = context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + UUID.randomUUID().toString()
 

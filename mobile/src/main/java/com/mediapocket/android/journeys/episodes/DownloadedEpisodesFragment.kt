@@ -39,6 +39,12 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment() {
             }
         })
 
+        model.episodesChanged.observe(this, Observer { changed ->
+            changed.forEach {
+                items.adapter?.notifyItemChanged(it)
+            }
+        })
+
         model.requestDownloadedEpisodes()
 
 
