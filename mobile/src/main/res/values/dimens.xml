@@ -30,8 +30,13 @@
     <dimen name="pager_height">4dip</dimen>
     <dimen name="pager_width">24dip</dimen>
 
-    <dimen name="episode_item_icon_size">20dip</dimen>
-    <dimen name="episode_item_icon_size_progress">24dip</dimen>
+    <dimen name="episode_item_icon_size">20dp</dimen>
+    <dimen name="episode_item_icon_size_progress">24dp</dimen>
+    <dimen name="episode_item_progress_size">32dp</dimen>
+
+    <dimen name="local_episode_item_icon_size">64dp</dimen>
+
+    <dimen name="small_icon_size">12dp</dimen>
 
     <dimen name="podcast_details_image_height">256dip</dimen>
 

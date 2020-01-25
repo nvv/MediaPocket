@@ -1,6 +1,6 @@
 package com.mediapocket.android.di
 
-import com.mediapocket.android.journeys.episodes.adapter.DownloadedEpisodesAdapter
+import com.mediapocket.android.journeys.episodes.adapter.LocalEpisodesAdapter
 import com.mediapocket.android.journeys.details.adapter.PodcastEpisodeAdapter
 import dagger.Component
 import javax.inject.Singleton
@@ -14,6 +14,6 @@ interface MainComponent {
 
     fun inject(adapter : PodcastEpisodeAdapter)
 
-    fun inject(adapter: DownloadedEpisodesAdapter)
+    fun inject(adapter: LocalEpisodesAdapter)
 
 }

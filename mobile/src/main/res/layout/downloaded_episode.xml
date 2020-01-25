@@ -1,154 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe_view"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:dragEdge="right"
-    app:mode="same_level">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/local_episode_item_icon_size"
+        android:layout_height="@dimen/local_episode_item_icon_size"
+        android:layout_marginStart="@dimen/margin_med"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginStart="@dimen/margin_med"
+        tools:text="Title"
+        app:layout_constraintStart_toEndOf="@id/image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/podcastDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="@color/grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <ImageView
+        android:id="@+id/calendar"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:layout_marginTop="@dimen/margin_xx_small"
+        android:src="@drawable/ic_calendar"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/podcastDetails" />
+
+    <TextView
+        android:id="@+id/pubDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_xx_small"
+        app:layout_constraintTop_toTopOf="@id/calendar"
+        app:layout_constraintBottom_toBottomOf="@id/calendar"
+        app:layout_constraintStart_toEndOf="@id/calendar"
+        android:maxLines="1"
+        android:textColor="@color/grey"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/earphones"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:layout_marginTop="@dimen/margin_x_small"
+        app:layout_constraintTop_toBottomOf="@id/calendar"
+        app:layout_constraintStart_toStartOf="@id/calendar"
+        android:src="@drawable/ic_earphones" />
+
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_xx_small"
+        app:layout_constraintStart_toEndOf="@id/earphones"
+        app:layout_constraintTop_toTopOf="@id/earphones"
+        app:layout_constraintBottom_toBottomOf="@id/earphones"
+        android:maxLines="1"
+        android:textColor="@color/grey"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/folder"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:layout_marginStart="@dimen/margin_xx_small"
+        app:layout_constraintStart_toEndOf="@+id/duration"
+        app:layout_constraintTop_toTopOf="@+id/duration"
+        app:layout_constraintBottom_toBottomOf="@+id/duration"
+        android:src="@drawable/ic_storage" />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_xx_small"
+        app:layout_constraintStart_toEndOf="@+id/folder"
+        app:layout_constraintTop_toTopOf="@+id/folder"
+        app:layout_constraintBottom_toBottomOf="@+id/folder"
+        android:maxLines="1"
+        android:textColor="@color/grey"
+        android:textSize="14sp" />
 
     <FrameLayout
-        android:id="@+id/delete_episode_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/red"
-        android:paddingLeft="24dp"
-        android:paddingTop="12dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="12dp">
+        android:id="@+id/downloaProgress"
+        android:layout_width="@dimen/episode_item_progress_size"
+        android:layout_height="@dimen/episode_item_progress_size"
+        android:layout_marginEnd="@dimen/padding_med"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/delete_episode"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_delete"
-            android:tint="@color/white" />
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/root_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
+        <com.budiyev.android.circularprogressbar.CircularProgressBar
+            android:id="@+id/download_progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="4dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp" />
+        <TextView
+            android:id="@+id/download_progress_percents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="11sp" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/image"
-                android:layout_toLeftOf="@+id/download_progress"
-                android:maxLines="1"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/podcast_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:layout_toRightOf="@+id/image"
-                android:layout_toLeftOf="@+id/download_progress"
-                android:maxLines="1"
-                android:textColor="@color/grey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/calendar"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_below="@+id/podcast_details"
-                android:layout_marginTop="4dp"
-                android:layout_marginRight="8dp"
-                android:layout_toRightOf="@+id/image"
-                android:src="@drawable/ic_calendar" />
-
-            <TextView
-                android:id="@+id/pub_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/podcast_details"
-                android:layout_toRightOf="@+id/calendar"
-                android:maxLines="1"
-                android:textColor="@color/grey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/earphones"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginRight="6dp"
-                android:layout_below="@+id/calendar"
-                android:layout_toRightOf="@+id/image"
-                android:src="@drawable/ic_earphones" />
-
-            <TextView
-                android:id="@+id/duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/pub_date"
-                android:layout_toRightOf="@+id/earphones"
-                android:maxLines="1"
-                android:textColor="@color/grey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/folder"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="6dp"
-                android:layout_below="@+id/pub_date"
-                android:layout_toRightOf="@+id/duration"
-                android:src="@drawable/ic_storage" />
-
-            <TextView
-                android:id="@+id/size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/pub_date"
-                android:layout_toRightOf="@+id/folder"
-                android:maxLines="1"
-                android:textColor="@color/grey"
-                android:textSize="14sp" />
-
-            <FrameLayout
-                android:id="@+id/download_progress"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_width="32dp"
-                android:layout_height="32dp">
-
-                <com.budiyev.android.circularprogressbar.CircularProgressBar
-                    android:id="@+id/download_progress_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TextView
-                    android:id="@+id/download_progress_percents"
-                    android:gravity="center"
-                    android:textSize="11sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </FrameLayout>
-
-        </RelativeLayout>
     </FrameLayout>
 
-</com.chauthai.swipereveallayout.SwipeRevealLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

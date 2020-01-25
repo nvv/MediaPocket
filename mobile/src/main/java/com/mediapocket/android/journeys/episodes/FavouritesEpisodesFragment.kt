@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.mediapocket.android.journeys.episodes.adapter.DownloadedEpisodesAdapter
+import com.mediapocket.android.journeys.episodes.adapter.LocalEpisodesAdapter
 
 /**
  * @author Vlad Namashko
@@ -17,7 +17,7 @@ class FavouritesEpisodesFragment : BaseEpisodesFragment() {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
         model.favouriteEpisodes.observe(this, Observer {
-            items.adapter = DownloadedEpisodesAdapter(it)
+            items.adapter = LocalEpisodesAdapter(it)
         })
 
         model.requestFavouritesEpisodes()

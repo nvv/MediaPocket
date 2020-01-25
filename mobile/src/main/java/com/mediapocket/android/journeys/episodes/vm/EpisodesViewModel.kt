@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.DownloadError
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.journeys.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.journeys.episodes.viewitem.EpisodeDatabaseItemToViewItem
 import com.mediapocket.android.repository.PodcastEpisodeRepository
-import com.mediapocket.android.viewmodels.LoadableViewModel
 import com.mediapocket.android.viewmodels.PlaybackStateAwareViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
@@ -42,7 +40,7 @@ class EpisodesViewModel @Inject constructor(
         GlobalScope.launch {
             episodeItems = repository.getDownloads()?.mapIndexed { index, item -> mapper.map(index, item) }
             _downloadedEpisodes.postValue(episodeItems)
-            listenForactiveDownloads()
+            listenForActiveDownloads(downloadManager)
         }
     }
 
@@ -50,7 +48,7 @@ class EpisodesViewModel @Inject constructor(
         GlobalScope.launch {
             episodeItems = repository.getFavourites()?.mapIndexed { index, item -> mapper.map(index, item) }
             _favouriteEpisodes.postValue(episodeItems)
-            listenForactiveDownloads()
+            listenForActiveDownloads(downloadManager)
         }
     }
 
@@ -58,20 +56,6 @@ class EpisodesViewModel @Inject constructor(
         GlobalScope.launch {
             repository.deleteEpisode(item.id)
             _downloadedEpisodes.postValue(repository.getDownloads()?.mapIndexed { index, item -> mapper.map(index, item) })
-        }
-    }
-
-    private fun listenForactiveDownloads() {
-        downloadManager.getActiveDownloads()?.forEach { item ->
-            episodeItems?.find { it -> it.id == item.id }?.let { episode ->
-                downloadManager.listenForDownloadProgress(episode.id)?.let { process ->
-                    GlobalScope.launch {
-                        process?.consumeEach { item ->
-                            handleDownloadProgress(episode, item)
-                        }
-                    }
-                }
-            }
         }
     }
 

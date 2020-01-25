@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.mediapocket.android.R
-import com.mediapocket.android.journeys.episodes.adapter.DownloadedEpisodesAdapter
+import com.mediapocket.android.journeys.episodes.adapter.LocalEpisodesAdapter
 
 /**
  * @author Vlad Namashko
@@ -19,7 +19,7 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment() {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
         model.downloadedEpisodes.observe(this, Observer {
-            items.adapter = DownloadedEpisodesAdapter(it) { item ->
+            items.adapter = LocalEpisodesAdapter(it) { item ->
                 val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                 builder.setTitle(R.string.confirm)
                         .setMessage(R.string.confirm_message)
@@ -29,7 +29,7 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment() {
                                 model.deleteEpisode(item)
 
     //                                subscription.add(model.deleteEpisode(PodcastDownloadItem(event.item)).subscribe {
-    //                                    (items.adapter as DownloadedEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
+    //                                    (items.adapter as LocalEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
     //                                })
                             }
                         }
@@ -56,7 +56,7 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment() {
 //                            run {
 //                                dialog.dismiss()
 //                                subscription.add(model.deleteEpisode(PodcastDownloadItem(event.item)).subscribe {
-//                                    (items.adapter as DownloadedEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
+//                                    (items.adapter as LocalEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
 //                                })
 //                            }
 //                        }

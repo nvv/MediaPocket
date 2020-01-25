@@ -1,5 +1,6 @@
 package com.mediapocket.android.viewmodels
 
+import android.app.DownloadManager
 import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -7,12 +8,16 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mediapocket.android.MediaSessionConnection
+import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.DownloadError
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.journeys.details.viewitem.DownloadState
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 
 abstract class PlaybackStateAwareViewModel : LoadableViewModel() {
 
@@ -88,6 +93,20 @@ abstract class PlaybackStateAwareViewModel : LoadableViewModel() {
             episode.downloadState?.error = mapError(it)
         }
         notifyEpisodesIndexesChanged(setOf(episode.position))
+    }
+
+    protected fun listenForActiveDownloads(downloadManager: PodcastDownloadManager, podcastId: String? = null) {
+        downloadManager.getActiveDownloads(podcastId)?.forEach { item ->
+            episodeItems?.find { it -> it.id == item.id }?.let { episode ->
+                downloadManager.listenForDownloadProgress(episode.id)?.let { process ->
+                    GlobalScope.launch {
+                        process?.consumeEach { item ->
+                            handleDownloadProgress(episode, item)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onCleared() {

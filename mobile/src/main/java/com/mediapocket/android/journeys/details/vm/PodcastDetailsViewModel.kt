@@ -96,17 +96,7 @@ class PodcastDetailsViewModel @Inject constructor(
                 }
             }
 
-            downloadManager.getActiveDownloads(podcastId)?.forEach { item ->
-                episodeItems?.find { it -> it.id == item.id }?.let { episode ->
-                    downloadManager.listenForDownloadProgress(episode.id)?.let { process ->
-                        GlobalScope.launch {
-                            process?.consumeEach { item ->
-                                handleDownloadProgress(episode, item)
-                            }
-                        }
-                    }
-                }
-            }
+            listenForActiveDownloads(downloadManager, podcastId)
 
             _episodes.postValue(episodeItems)
             _description.postValue(rss.description())

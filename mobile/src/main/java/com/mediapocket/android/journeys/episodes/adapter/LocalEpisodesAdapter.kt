@@ -1,6 +1,5 @@
 package com.mediapocket.android.journeys.episodes.adapter
 
-import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,7 @@ import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.events.PlayPodcastEvent
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
-import com.mediapocket.android.journeys.details.viewitem.isDownloaded
 import com.mediapocket.android.journeys.details.viewitem.isDownloading
-import com.mediapocket.android.journeys.details.viewitem.isError
 import com.mediapocket.android.playback.model.DownloadedEpisodeItem
 import com.mediapocket.android.utils.FileUtils
 import kotlinx.android.synthetic.main.downloaded_episode.view.*
@@ -23,16 +20,10 @@ import java.io.File
 /**
  * @author Vlad Namashko
  */
-class DownloadedEpisodesAdapter(
+class LocalEpisodesAdapter(
         private val episodes: List<PodcastEpisodeViewItem>,
         private val deleteAction: ((item: PodcastEpisodeViewItem) -> Unit)? = null
-): RecyclerView.Adapter<DownloadedEpisodesAdapter.EpisodeViewHolder>() {
-
-    private val swipeLayoutHelper: ViewBinderHelper = ViewBinderHelper()
-
-    init {
-        swipeLayoutHelper.setOpenOnlyOne(true)
-    }
+): RecyclerView.Adapter<LocalEpisodesAdapter.EpisodeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         EpisodeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.downloaded_episode, parent, false))
@@ -40,14 +31,14 @@ class DownloadedEpisodesAdapter(
     override fun getItemCount() = episodes.size
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) =
-            holder.bind(swipeLayoutHelper, episodes[position])
+            holder.bind(episodes[position])
 
-    inner class EpisodeViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    inner class EpisodeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(swipeLayoutHelper: ViewBinderHelper, item: PodcastEpisodeViewItem) {
+        fun bind(item: PodcastEpisodeViewItem) {
             itemView.title.text = item.title
-            itemView.podcast_details.text = item.podcastTitle
-            itemView.pub_date.text = item.puDateFormatted
+            itemView.podcastDetails.text = item.podcastTitle
+            itemView.pubDate.text = item.puDateFormatted
 
             itemView.duration.text = item.durationFormatted
 
@@ -55,15 +46,9 @@ class DownloadedEpisodesAdapter(
                 itemView.size.text = FileUtils.formatBytes(File(it).length())
             }
 
-            itemView.delete_episode_frame.setOnClickListener{
-                deleteAction?.invoke(item)
-            }
-
-            swipeLayoutHelper.bind(itemView.swipe_view, item.id)
-
             Glide.with(itemView.context)
                     .load(item.imageUrl)
-                    .apply(RequestOptions().placeholder(R.drawable.ic_musical_note).fitCenter())
+                    .apply(RequestOptions().placeholder(R.drawable.ic_musical_note).centerCrop())
                     .into(itemView.image)
 
             if (item.isDownloading) {
