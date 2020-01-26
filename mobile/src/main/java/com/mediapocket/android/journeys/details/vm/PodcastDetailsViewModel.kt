@@ -9,6 +9,7 @@ import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.SubscribedPodcast
+import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.journeys.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.journeys.details.mapper.PodcastItemToEpisodeViewItemMapper
 import com.mediapocket.android.journeys.details.mapper.PodcastViewItemToDatabaseItemMapper
@@ -93,6 +94,8 @@ class PodcastDetailsViewModel @Inject constructor(
                 remoteToViewItemMapper.map(index, item, rss.link(), podcastId).apply {
                     isFavourite = favourites?.contains(id) ?: false
                     downloadState = if (downloads?.contains(id) == true) DownloadState(isDownloaded = downloads[id]?.state == STATE_DOWNLOADED) else null
+                    isPlaying = mediaConnection.playbackState?.isPlaying == true &&
+                            mediaConnection.playbackMetadata?.description?.mediaId == link
                 }
             }
 

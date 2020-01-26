@@ -1,6 +1,8 @@
 package com.mediapocket.android.journeys.episodes.viewitem
 
 import android.media.MediaMetadataRetriever
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_NONE
@@ -13,7 +15,7 @@ import java.util.*
 
 class EpisodeDatabaseItemToViewItem {
 
-    fun map(index: Int, item: PodcastEpisodeItem): PodcastEpisodeViewItem =
+    fun map(index: Int, item: PodcastEpisodeItem, isPlaybackRun: Boolean, playbackMetadata: MediaMetadataCompat?): PodcastEpisodeViewItem =
             PodcastEpisodeViewItem(
                     position = index,
                     podcastTitle = item.podcastTitle,
@@ -29,6 +31,7 @@ class EpisodeDatabaseItemToViewItem {
                     localPath = item.localPath,
                     durationFormatted = TimeUtils.millisToShortDHMS(formatDuration(item) ?: 0)
             ).apply {
+                isPlaying = isPlaybackRun && playbackMetadata?.description?.mediaId == link
                 if (item.state != STATE_NONE) {
                     downloadState = DownloadState(
                             isDownloaded = item.state == STATE_DOWNLOADED

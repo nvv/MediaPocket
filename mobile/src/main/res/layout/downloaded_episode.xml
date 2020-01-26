@@ -101,6 +101,16 @@
         android:textColor="@color/grey"
         android:textSize="14sp" />
 
+    <ImageView
+        android:id="@+id/episodePlaybackStatus"
+        android:layout_width="@dimen/episode_item_icon_size"
+        android:layout_height="@dimen/episode_item_icon_size"
+        android:src="@drawable/ic_play_state"
+        android:layout_marginEnd="@dimen/margin_med"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+<!--
     <FrameLayout
         android:id="@+id/downloaProgress"
         android:layout_width="@dimen/episode_item_progress_size"
@@ -123,5 +133,5 @@
             android:textSize="11sp" />
 
     </FrameLayout>
-
+-->
 </androidx.constraintlayout.widget.ConstraintLayout>

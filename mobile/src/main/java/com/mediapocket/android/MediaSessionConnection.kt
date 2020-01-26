@@ -23,6 +23,12 @@ class MediaSessionConnection(context: Context) {
 
     private val mediaControllerCallbacks = mutableListOf<MediaControllerCompat.Callback>()
 
+    var playbackState: PlaybackStateCompat? = null
+        private set
+
+    var playbackMetadata: MediaMetadataCompat? = null
+        private set
+
     private val mediaBrowserConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
 
@@ -56,11 +62,13 @@ class MediaSessionConnection(context: Context) {
 
     private val mediaControllerCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-            mediaControllerCallbacks.forEach { it -> it.onPlaybackStateChanged(state) }
+            playbackState = state
+            mediaControllerCallbacks.forEach { it.onPlaybackStateChanged(state) }
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            mediaControllerCallbacks.forEach { it -> it.onMetadataChanged(metadata) }
+            playbackMetadata = metadata
+            mediaControllerCallbacks.forEach { it.onMetadataChanged(metadata) }
         }
     }
 

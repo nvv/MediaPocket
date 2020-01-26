@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.DownloadError
+import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.journeys.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.journeys.episodes.viewitem.EpisodeDatabaseItemToViewItem
@@ -38,7 +39,13 @@ class EpisodesViewModel @Inject constructor(
 
     fun requestDownloadedEpisodes() {
         GlobalScope.launch {
-            episodeItems = repository.getDownloads()?.mapIndexed { index, item -> mapper.map(index, item) }
+            episodeItems = repository.getDownloads()?.mapIndexed { index, item ->
+                mapper.map(
+                        index,
+                        item,
+                        mediaConnection.playbackState?.isPlaying == true,
+                        mediaConnection.playbackMetadata)
+            }
             _downloadedEpisodes.postValue(episodeItems)
             listenForActiveDownloads(downloadManager)
         }
@@ -46,7 +53,13 @@ class EpisodesViewModel @Inject constructor(
 
     fun requestFavouritesEpisodes() {
         GlobalScope.launch {
-            episodeItems = repository.getFavourites()?.mapIndexed { index, item -> mapper.map(index, item) }
+            episodeItems = repository.getFavourites()?.mapIndexed { index, item ->
+                mapper.map(
+                        index,
+                        item,
+                        mediaConnection.playbackState?.isPlaying == true,
+                        mediaConnection.playbackMetadata)
+            }
             _favouriteEpisodes.postValue(episodeItems)
             listenForActiveDownloads(downloadManager)
         }
@@ -55,7 +68,13 @@ class EpisodesViewModel @Inject constructor(
     fun deleteEpisode(item: PodcastEpisodeViewItem) {
         GlobalScope.launch {
             repository.deleteEpisode(item.id)
-            _downloadedEpisodes.postValue(repository.getDownloads()?.mapIndexed { index, item -> mapper.map(index, item) })
+            _downloadedEpisodes.postValue(repository.getDownloads()?.mapIndexed { index, item ->
+                mapper.map(
+                        index,
+                        item,
+                        mediaConnection.playbackState?.isPlaying == true,
+                        mediaConnection.playbackMetadata)
+            })
         }
     }
 

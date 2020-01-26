@@ -24,7 +24,7 @@ abstract class PlaybackStateAwareViewModel : LoadableViewModel() {
     // TODO: tmp
     protected var episodeItems : List<PodcastEpisodeViewItem>? = null
 
-    private lateinit var mediaConnection: MediaSessionConnection
+    protected lateinit var mediaConnection: MediaSessionConnection
     private lateinit var mediaCallback: MediaControllerCompat.Callback
 
     protected val _episodesChanged = MutableLiveData<Set<Int>>()
