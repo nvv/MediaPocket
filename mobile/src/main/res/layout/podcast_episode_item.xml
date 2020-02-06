@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.mediapocket.android.journeys.common.view.PodcastEpisodeToolbar
+    <com.mediapocket.android.view.PodcastEpisodeToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -3,7 +3,6 @@ package com.mediapocket.android.fragments
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +11,11 @@ import android.widget.ProgressBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.mediapocket.android.R
-import com.mediapocket.android.adapters.PodcastGridAdapter
+import com.mediapocket.android.view.adapters.PodcastGridAdapter
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.SpaceItemDecoration
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.BehaviorSubject
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter
-import org.reactivestreams.Subscription
 
 /**
  * @author Vlad Namashko

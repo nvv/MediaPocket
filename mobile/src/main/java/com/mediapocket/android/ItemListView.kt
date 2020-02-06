@@ -2,17 +2,11 @@ package com.mediapocket.android
 
 import android.content.Context
 import android.os.Parcelable
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.util.AttributeSet
-import android.view.View
-import android.widget.Adapter
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.mediapocket.android.adapters.PodcastGridAdapter
+import com.mediapocket.android.view.adapters.PodcastGridAdapter
 import com.mediapocket.android.view.decoration.SpaceItemDecoration
-import kotlinx.android.synthetic.main.podcast_list_view.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 

@@ -1,14 +1,10 @@
 package com.mediapocket.android.view
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
-import android.util.AttributeSet
-import android.widget.TextView
 import com.mediapocket.android.ItemListView
 import com.mediapocket.android.R
-import com.mediapocket.android.adapters.GenreListAdapter
+import com.mediapocket.android.view.adapters.GenreListAdapter
 import com.mediapocket.android.model.Genre
-import kotlinx.android.synthetic.main.podcast_details_view_phone.view.*
 import org.jetbrains.anko.textResource
 
 /**

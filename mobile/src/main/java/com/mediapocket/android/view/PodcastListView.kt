@@ -1,10 +1,8 @@
 package com.mediapocket.android.view
 
 import android.content.Context
-import android.os.Parcelable
-import android.util.AttributeSet
 import com.mediapocket.android.ItemListView
-import com.mediapocket.android.adapters.PodcastListAdapter
+import com.mediapocket.android.view.adapters.PodcastListAdapter
 import com.mediapocket.android.model.PodcastAdapterEntry
 
 /**
