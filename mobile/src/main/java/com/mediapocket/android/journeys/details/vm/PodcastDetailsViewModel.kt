@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mediapocket.android.core.download.manager.PodcastDownloadManager
-import com.mediapocket.android.core.download.model.DownloadError
-import com.mediapocket.android.core.download.model.PodcastDownloadItem
-import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem.Companion.STATE_DOWNLOADED
 import com.mediapocket.android.dao.model.SubscribedPodcast
 import com.mediapocket.android.extensions.isPlaying
@@ -21,10 +18,9 @@ import com.mediapocket.android.repository.ItunesPodcastRepository
 import com.mediapocket.android.repository.PodcastEpisodeRepository
 import com.mediapocket.android.repository.PodcastRepository
 import com.mediapocket.android.repository.RssRepository
-import com.mediapocket.android.viewmodels.PlaybackStateAwareViewModel
+import com.mediapocket.android.journeys.common.adapter.PlaybackStateAwareViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,21 +29,19 @@ import javax.inject.Inject
  */
 class PodcastDetailsViewModel @Inject constructor(
         private val context: Context,
-        private val errorMapper: DownloadErrorToStringMapper,
         private val remoteToViewItemMapper: PodcastItemToEpisodeViewItemMapper,
+        private val errorMapper: DownloadErrorToStringMapper,
         private val viewItemToDatabaseItemMapper: PodcastViewItemToDatabaseItemMapper,
         private val downloadManager: PodcastDownloadManager,
         private val itunesPodcastRepository: ItunesPodcastRepository,
         private val rssRepository: RssRepository,
         private val podcastEpisodeRepository: PodcastEpisodeRepository,
         private val podcastRepository: PodcastRepository
-) : PlaybackStateAwareViewModel() {
+) : PlaybackStateAwareViewModel(downloadManager, podcastEpisodeRepository, errorMapper, viewItemToDatabaseItemMapper) {
 
     init {
         initMediaCallback(context)
     }
-
-    private val mappedItems = mutableMapOf<PodcastEpisodeViewItem, PodcastEpisodeItem>()
 
     private val _loadPodcast = MutableLiveData<PodcastDetails>()
     val loadPodcast: LiveData<PodcastDetails> = _loadPodcast
@@ -107,41 +101,6 @@ class PodcastDetailsViewModel @Inject constructor(
         }
     }
 
-    fun favouriteEpisode(episode: PodcastEpisodeViewItem) {
-        GlobalScope.launch {
-            episode.isFavourite = podcastEpisodeRepository.toggleFavourite(mapToEpisodeDbItem(episode))
-            _episodesChanged.postValue(setOf(episode.position))
-        }
-    }
-
-    fun downloadItem(episode: PodcastEpisodeViewItem) {
-        val process = downloadManager.download(mapToEpisodeDbItem(episode))
-
-        GlobalScope.launch {
-            process?.consumeEach { item ->
-                handleDownloadProgress(episode, item)
-            }
-        }
-    }
-
-    private fun mapToEpisodeDbItem(episode: PodcastEpisodeViewItem): PodcastEpisodeItem {
-        return mappedItems[episode]?.let {
-            it
-        } ?: run {
-            val item = viewItemToDatabaseItemMapper.map(episode)
-            mappedItems[episode] = item
-            item
-        }
-    }
-
-    fun pauseDownload(episode: PodcastEpisodeViewItem) {
-        downloadManager.pauseDownload(episode.id)
-    }
-
-    fun resumeDownload(episode: PodcastEpisodeViewItem) {
-        downloadManager.resumeDownload(episode.id)
-    }
-
     fun isSubscribed(id: String) {
         GlobalScope.async {
             _isSubscribed.postValue(podcastRepository.isSubscribed(id))
@@ -161,7 +120,5 @@ class PodcastDetailsViewModel @Inject constructor(
             }
         }
     }
-
-    override fun mapError(error: DownloadError): String? = errorMapper.map(error)
 
 }

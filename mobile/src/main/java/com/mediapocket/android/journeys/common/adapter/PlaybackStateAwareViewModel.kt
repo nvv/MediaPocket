@@ -1,6 +1,5 @@
-package com.mediapocket.android.viewmodels
+package com.mediapocket.android.journeys.common.adapter
 
-import android.app.DownloadManager
 import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -13,23 +12,33 @@ import com.mediapocket.android.core.download.model.DownloadError
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.extensions.isPlaying
+import com.mediapocket.android.journeys.details.mapper.DownloadErrorToStringMapper
+import com.mediapocket.android.journeys.details.mapper.PodcastViewItemToDatabaseItemMapper
 import com.mediapocket.android.journeys.details.viewitem.DownloadState
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
+import com.mediapocket.android.repository.PodcastEpisodeRepository
+import com.mediapocket.android.viewmodels.LoadableViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 
-abstract class PlaybackStateAwareViewModel : LoadableViewModel() {
+abstract class PlaybackStateAwareViewModel(
+        private val downloadManager: PodcastDownloadManager,
+        private val podcastEpisodeRepository: PodcastEpisodeRepository,
+        private val errorMapper: DownloadErrorToStringMapper,
+        private val viewItemToDatabaseItemMapper: PodcastViewItemToDatabaseItemMapper
+) : LoadableViewModel() {
+
+    private val mappedItems = mutableMapOf<PodcastEpisodeViewItem, PodcastEpisodeItem>()
 
     // TODO: tmp
-    protected var episodeItems : List<PodcastEpisodeViewItem>? = null
+    var episodeItems: List<PodcastEpisodeViewItem>? = null
 
     protected lateinit var mediaConnection: MediaSessionConnection
     private lateinit var mediaCallback: MediaControllerCompat.Callback
 
-    protected val _episodesChanged = MutableLiveData<Set<Int>>()
+    private val _episodesChanged = MutableLiveData<Set<Int>>()
     val episodesChanged: LiveData<Set<Int>> = _episodesChanged
-
 
     fun initMediaCallback(context: Context) {
         mediaCallback = object : MediaControllerCompat.Callback() {
@@ -114,7 +123,43 @@ abstract class PlaybackStateAwareViewModel : LoadableViewModel() {
         mediaConnection.unregisterMediaControllerCallback(mediaCallback)
     }
 
+    fun favouriteEpisode(episode: PodcastEpisodeViewItem) {
+        GlobalScope.launch {
+            episode.isFavourite = podcastEpisodeRepository.toggleFavourite(mapToEpisodeDbItem(episode))
+            _episodesChanged.postValue(setOf(episode.position))
+        }
+    }
+
+    fun downloadItem(episode: PodcastEpisodeViewItem) {
+        val process = downloadManager.download(mapToEpisodeDbItem(episode))
+
+        GlobalScope.launch {
+            process?.consumeEach { item ->
+                handleDownloadProgress(episode, item)
+            }
+        }
+    }
+
+    private fun mapToEpisodeDbItem(episode: PodcastEpisodeViewItem): PodcastEpisodeItem {
+        return mappedItems[episode]?.let {
+            it
+        } ?: run {
+            val item = viewItemToDatabaseItemMapper.map(episode)
+            mappedItems[episode] = item
+            item
+        }
+    }
+
+    fun pauseDownload(episode: PodcastEpisodeViewItem) {
+        downloadManager.pauseDownload(episode.id)
+    }
+
+    fun resumeDownload(episode: PodcastEpisodeViewItem) {
+        downloadManager.resumeDownload(episode.id)
+    }
+
+    private fun mapError(error: DownloadError): String? = errorMapper.map(error)
+
     protected fun notifyEpisodesIndexesChanged(episodes: Set<Int>) = _episodesChanged.postValue(episodes)
 
-    protected abstract fun mapError(error: DownloadError): String?
 }

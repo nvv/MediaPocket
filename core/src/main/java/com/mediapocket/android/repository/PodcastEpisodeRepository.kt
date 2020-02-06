@@ -1,8 +1,11 @@
 package com.mediapocket.android.repository
 
+import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.EpisodesDao
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
 import com.mediapocket.android.model.Item
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
 import java.io.File
 
 class PodcastEpisodeRepository(private val dao: EpisodesDao) {
@@ -17,10 +20,13 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
 
     fun getFavourites(): List<PodcastEpisodeItem>? = dao.getFavourites()
 
+    val favourites = BroadcastChannel<List<PodcastEpisodeItem>?>(Channel.CONFLATED)
+
+
     /**
      * Toggle favourite status
      */
-    fun toggleFavourite(item: PodcastEpisodeItem): Boolean {
+    suspend fun toggleFavourite(item: PodcastEpisodeItem): Boolean {
         val id = PodcastEpisodeItem.convertLinkToId(item.link)
         var storedItem = dao.get(id)
         if (storedItem == null) {
@@ -32,6 +38,7 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
             dao.update(storedItem)
         }
 
+        favourites.send(dao.getFavourites())
         return storedItem.favourite
     }
 

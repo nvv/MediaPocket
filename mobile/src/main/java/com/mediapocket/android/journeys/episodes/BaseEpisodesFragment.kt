@@ -1,44 +1,30 @@
 package com.mediapocket.android.journeys.episodes
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.mediapocket.android.R
+import com.mediapocket.android.journeys.common.BasePodcastEpisodeFragment
+import com.mediapocket.android.journeys.episodes.vm.EpisodesViewModel
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
-import com.mediapocket.android.journeys.episodes.vm.EpisodesViewModel
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.base_episode_fragment.view.*
-import javax.inject.Inject
 
 /**
  * @author Vlad Namashko
  */
-abstract class BaseEpisodesFragment : Fragment() {
+abstract class BaseEpisodesFragment<T : EpisodesViewModel>: BasePodcastEpisodeFragment<T>() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    protected lateinit var model: EpisodesViewModel
-
-    protected lateinit var items: androidx.recyclerview.widget.RecyclerView
+    protected lateinit var items: RecyclerView
     protected lateinit var loading: ProgressBar
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        AndroidSupportInjection.inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        model = ViewModelProviders.of(this, viewModelFactory).get(EpisodesViewModel::class.java)
+        initViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,7 +33,7 @@ abstract class BaseEpisodesFragment : Fragment() {
         items = view.episodeList
         this.loading = view.loading
 
-        model.isLoading.observe(this, Observer {isLoading ->
+        model.isLoading.observe(viewLifecycleOwner, Observer {isLoading ->
             items.visibility = if (isLoading) View.GONE else View.VISIBLE
             loading.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
@@ -57,5 +43,10 @@ abstract class BaseEpisodesFragment : Fragment() {
         return view
     }
 
+    protected abstract fun initViewModel()
+
+    override fun hasNavigation(): Boolean = true
+
+    override fun hasBackNavigation(): Boolean = false
 
 }

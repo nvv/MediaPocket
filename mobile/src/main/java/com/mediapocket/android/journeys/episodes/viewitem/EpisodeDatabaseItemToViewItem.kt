@@ -37,9 +37,8 @@ class EpisodeDatabaseItemToViewItem {
                             isDownloaded = item.state == STATE_DOWNLOADED
                     )
                 }
+                isFavourite = item.favourite
             }
-
-    private fun read(value: String?) = value ?: ""
 
     private fun read(value: Long?) = value ?: 0
 

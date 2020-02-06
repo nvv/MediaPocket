@@ -6,6 +6,8 @@ import com.mediapocket.android.journeys.episodes.vm.EpisodesViewModel
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
 import com.mediapocket.android.journeys.discover.vm.PodcastViewModel
 import com.mediapocket.android.journeys.discover.vm.SearchPodcastViewModel
+import com.mediapocket.android.journeys.episodes.vm.DownloadedEpisodesViewModel
+import com.mediapocket.android.journeys.episodes.vm.FavouritesEpisodesViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,8 +20,13 @@ internal abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(EpisodesViewModel::class)
-    protected abstract fun episodesViewModel(episodesViewModel: EpisodesViewModel): ViewModel
+    @ViewModelKey(DownloadedEpisodesViewModel::class)
+    protected abstract fun downloadedEpisodesViewModel(episodesViewModel: DownloadedEpisodesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavouritesEpisodesViewModel::class)
+    protected abstract fun favouritesEpisodesViewModel(episodesViewModel: FavouritesEpisodesViewModel): ViewModel
 
     @Binds
     @IntoMap

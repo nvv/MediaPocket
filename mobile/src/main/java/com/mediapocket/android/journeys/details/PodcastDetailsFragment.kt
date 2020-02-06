@@ -7,28 +7,21 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.mediapocket.android.R
-import com.mediapocket.android.journeys.details.adapter.PodcastEpisodeAdapter
-import com.mediapocket.android.fragments.BaseFragment
+import com.mediapocket.android.journeys.common.BasePodcastEpisodeFragment
 import com.mediapocket.android.journeys.details.view.PodcastDetailsView
-import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
-import com.mediapocket.android.journeys.details.viewitem.isDownloading
-import com.mediapocket.android.journeys.details.viewitem.isError
 import com.mediapocket.android.journeys.details.vm.PodcastDetailsViewModel
 import com.mediapocket.android.model.PodcastAdapterEntry
-
 
 /**
  * @author Vlad Namashko
  */
-class PodcastDetailsFragment : BaseFragment() {
+class PodcastDetailsFragment : BasePodcastEpisodeFragment<PodcastDetailsViewModel>() {
 
-    private lateinit var model: PodcastDetailsViewModel
     var podcast: PodcastAdapterEntry? = null
 
     private lateinit var podcastView: PodcastDetailsView
@@ -67,7 +60,7 @@ class PodcastDetailsFragment : BaseFragment() {
 
                 subscribe?.let {
 
-                    model.isSubscribed.observe(this, Observer { isSubscribed ->
+                    model.isSubscribed.observe(viewLifecycleOwner, Observer { isSubscribed ->
                         syncSubscribeButton(isSubscribed)
                     })
 
@@ -77,7 +70,7 @@ class PodcastDetailsFragment : BaseFragment() {
                         model.subscribe(podcast, podcastDetails, explicitlyInvoked = true)
                     }
 
-                    model.showUndo.observe(this, Observer {isSubscribed ->
+                    model.showUndo.observe(viewLifecycleOwner, Observer {isSubscribed ->
                         val snackbar = Snackbar.make(view.findViewById(R.id.podcast_details),
                                 getString(if (isSubscribed) R.string.action_subscribed else
                                     R.string.action_unsubscribed, podcast.title()), Snackbar.LENGTH_SHORT)
@@ -90,48 +83,22 @@ class PodcastDetailsFragment : BaseFragment() {
                     })
                 }
 
-                model.episodes.observe(this, Observer { items ->
-                    podcastView.setItems(items, object: PodcastEpisodeAdapter.EpisodeItemListener {
-                        override fun downloadClicked(item: PodcastEpisodeViewItem) {
-                            if (item.downloadState == null || item.isError) {
-                                model.downloadItem(item)
-                            } else {
-                                if (item.isDownloading) {
-                                    model.pauseDownload(item)
-                                } else {
-                                    model.resumeDownload(item)
-                                }
-                            }
-
-                        }
-
-                        override fun share(item: PodcastEpisodeViewItem) {
-                            ShareCompat.IntentBuilder.from(requireActivity())
-                                    .setText(item.link)
-                                    .setSubject(item.title)
-                                    .setType("text/plain")
-                                    .setChooserTitle(R.string.sharing)
-                                    .startChooser()
-                        }
-
-                        override fun favouriteClicked(item: PodcastEpisodeViewItem) {
-                            model.favouriteEpisode(item)
-                        }
-                    })
+                model.episodes.observe(viewLifecycleOwner, Observer { items ->
+                    podcastView.setItems(items, podcastEpisodeItemListener)
                 })
 
-                model.description.observe(this, Observer { description ->
+                model.description.observe(viewLifecycleOwner, Observer { description ->
                     podcastView.setDescription(description)
                 })
 
-                model.webSite.observe(this, Observer { webSite ->
+                model.webSite.observe(viewLifecycleOwner, Observer { webSite ->
                     openWebSiteMenu?.setOnMenuItemClickListener {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(webSite)))
                         false
                     }
                 })
 
-                model.episodesChanged.observe(this, Observer { changed ->
+                model.episodesChanged.observe(viewLifecycleOwner, Observer { changed ->
                     podcastView.notifyDataSetChanged(changed)
                 })
 

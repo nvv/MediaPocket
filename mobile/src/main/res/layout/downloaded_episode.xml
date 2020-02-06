@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
+    android:paddingTop="@dimen/padding_x_small"
+    android:paddingBottom="@dimen/padding_x_small"
+    android:paddingStart="@dimen/padding_med"
+    android:paddingEnd="@dimen/padding_med"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,8 +14,6 @@
         android:id="@+id/image"
         android:layout_width="@dimen/local_episode_item_icon_size"
         android:layout_height="@dimen/local_episode_item_icon_size"
-        android:layout_marginStart="@dimen/margin_med"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +27,7 @@
         android:layout_marginStart="@dimen/margin_med"
         tools:text="Title"
         app:layout_constraintStart_toEndOf="@id/image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/image" />
 
     <TextView
         android:id="@+id/podcastDetails"
@@ -106,10 +108,10 @@
         android:layout_width="@dimen/episode_item_icon_size"
         android:layout_height="@dimen/episode_item_icon_size"
         android:src="@drawable/ic_play_state"
-        android:layout_marginEnd="@dimen/margin_med"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 <!--
     <FrameLayout
         android:id="@+id/downloaProgress"
@@ -134,4 +136,13 @@
 
     </FrameLayout>
 -->
+
+    <com.mediapocket.android.journeys.common.view.PodcastEpisodeToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/earphones" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

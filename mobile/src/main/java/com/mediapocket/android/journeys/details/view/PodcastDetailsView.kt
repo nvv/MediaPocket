@@ -20,6 +20,7 @@ import com.mediapocket.android.journeys.details.adapter.PodcastEpisodeAdapter
 import com.mediapocket.android.model.PodcastAdapterEntry
 import android.view.Menu
 import com.mediapocket.android.extensions.doubleLet
+import com.mediapocket.android.journeys.common.adapter.EpisodeItemListener
 import com.mediapocket.android.model.PodcastDetails
 import com.mediapocket.android.utils.ViewUtils
 import com.mediapocket.android.view.decoration.DividerItemDecoration
@@ -60,7 +61,7 @@ abstract class PodcastDetailsView (context: Context?, attrs: AttributeSet?, defS
         description.text = Html.fromHtml(htmlDescription)
     }
 
-    fun setItems(rssItems: List<PodcastEpisodeViewItem>, listener: PodcastEpisodeAdapter.EpisodeItemListener) {
+    fun setItems(rssItems: List<PodcastEpisodeViewItem>, listener: EpisodeItemListener) {
         shimmerContainer.stopShimmerAnimation()
         shimmerContainer.visibility = View.GONE
 

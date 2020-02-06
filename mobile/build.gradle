@@ -48,7 +48,7 @@ dependencies {
 
     implementation "androidx.vectordrawable:vectordrawable:$supportLibraryVersion"
     implementation "androidx.palette:palette:1.0.0"
-    implementation "com.google.android.material:material:1.2.0-alpha03"
+    implementation "com.google.android.material:material:1.2.0-alpha04"
     implementation "androidx.cardview:cardview:1.0.0"
 
     implementation "org.jetbrains.anko:anko:$ankoVersion"
@@ -64,7 +64,7 @@ dependencies {
 //    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0-rc03"
 //    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.2.0-rc03"
     //MVVM + Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // animation
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"

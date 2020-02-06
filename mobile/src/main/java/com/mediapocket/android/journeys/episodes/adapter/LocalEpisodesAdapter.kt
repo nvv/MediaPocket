@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.mediapocket.android.R
 import com.mediapocket.android.core.RxBus
 import com.mediapocket.android.events.PlayPodcastEvent
+import com.mediapocket.android.journeys.common.adapter.EpisodeItemListener
 import com.mediapocket.android.journeys.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.playback.model.DownloadedEpisodeItem
 import com.mediapocket.android.utils.FileUtils
@@ -20,8 +21,8 @@ import java.io.File
  * @author Vlad Namashko
  */
 class LocalEpisodesAdapter(
-        private val episodes: List<PodcastEpisodeViewItem>,
-        private val deleteAction: ((item: PodcastEpisodeViewItem) -> Unit)? = null
+        var episodes: List<PodcastEpisodeViewItem>,
+        val listener: EpisodeItemListener? = null
 ): RecyclerView.Adapter<LocalEpisodesAdapter.EpisodeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -31,6 +32,8 @@ class LocalEpisodesAdapter(
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) =
             holder.bind(episodes[position])
+
+    override fun getItemId(position: Int): Long = episodes[position].id.hashCode().toLong()
 
     inner class EpisodeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -50,22 +53,6 @@ class LocalEpisodesAdapter(
                     .apply(RequestOptions().placeholder(R.drawable.ic_musical_note).centerCrop())
                     .into(itemView.image)
 
-            /*
-            if (item.isDownloading) {
-                val progress = item.downloadState?.progress
-                itemView.download_progress_bar.progress = progress?.toFloat() ?: 0f
-                itemView.download_progress_percents.text = (progress.toString() + "%")
-
-                itemView.download_progress_bar.visibility = View.VISIBLE
-                itemView.download_progress_percents.visibility = View.VISIBLE
-            } else {
-                itemView.download_progress_bar.visibility = View.GONE
-                itemView.download_progress_percents.visibility = View.GONE
-            }
-            */
-
-
-
             itemView.episodePlaybackStatus.visibility = if (item.isPlaying) View.VISIBLE else View.GONE
 
             item.isPlaying.let {
@@ -74,9 +61,9 @@ class LocalEpisodesAdapter(
                 }
             }
 
+//            itemView.root_view.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(DownloadedEpisodeItem(item.getMediaPath()))) }
 
-            itemView.root_view.setOnClickListener { RxBus.default.postEvent(PlayPodcastEvent(DownloadedEpisodeItem(item.getMediaPath()))) }
-
+            itemView.toolbar.bind(item, listener)
         }
     }
 

@@ -34,7 +34,7 @@
     <dimen name="episode_item_icon_size_progress">24dp</dimen>
     <dimen name="episode_item_progress_size">32dp</dimen>
 
-    <dimen name="local_episode_item_icon_size">64dp</dimen>
+    <dimen name="local_episode_item_icon_size">84dp</dimen>
 
     <dimen name="small_icon_size">12dp</dimen>
 
