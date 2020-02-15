@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.mediapocket.android.R
+import com.mediapocket.android.details.viewitem.PodcastEpisodeViewItem
 import com.mediapocket.android.episodes.adapter.LocalEpisodesAdapter
 import com.mediapocket.android.episodes.vm.DownloadedEpisodesViewModel
 
@@ -15,37 +16,31 @@ import com.mediapocket.android.episodes.vm.DownloadedEpisodesViewModel
  */
 class DownloadedEpisodesFragment : BaseEpisodesFragment<DownloadedEpisodesViewModel>() {
 
+    var episodes: List<PodcastEpisodeViewItem>? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
         model.downloadedEpisodes.observe(viewLifecycleOwner, Observer {
-            items.adapter = LocalEpisodesAdapter(it, podcastEpisodeItemListener).apply {
-                setHasStableIds(true)
+            episodes = it
+            if (items.adapter == null) {
+                items.adapter = LocalEpisodesAdapter(it, podcastEpisodeItemListener).apply {
+                    setHasStableIds(true)
+                }
+                (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
+            } else {
+                val adapter = items.adapter as? LocalEpisodesAdapter
+                adapter?.episodes = it
+                adapter?.notifyDataSetChanged()
             }
-            (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
-            /*{ item ->
-                val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                builder.setTitle(R.string.confirm)
-                        .setMessage(R.string.confirm_message)
-                        .setPositiveButton(R.string.btn_ok) { dialog, which ->
-                            run {
-                                dialog.dismiss()
-                                model.deleteEpisode(item)
 
-    //                                subscription.add(model.deleteEpisode(PodcastDownloadItem(event.item)).subscribe {
-    //                                    (items.adapter as LocalEpisodesAdapter).onItemRemoved(event.item, event.positionInList)
-    //                                })
-                            }
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { dialog, which -> dialog.dismiss() }
-
-                builder.create().show()
-            }*/
         })
 
         model.episodesChanged.observe(viewLifecycleOwner, Observer { changed ->
             changed.forEach {
+                System.out.println(">>>> ? " + episodes?.get(it)?.title + " " + episodes?.get(it)?.downloadState?.progress)
+
                 items.adapter?.notifyItemChanged(it)
             }
         })

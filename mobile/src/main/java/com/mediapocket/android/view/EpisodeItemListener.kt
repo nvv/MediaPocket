@@ -6,7 +6,7 @@ interface EpisodeItemListener {
 
     fun favouriteClicked(item: PodcastEpisodeViewItem)
 
-    fun downloadClicked(item: PodcastEpisodeViewItem)
+    fun statusClicked(item: PodcastEpisodeViewItem)
 
     fun share(item: PodcastEpisodeViewItem)
 

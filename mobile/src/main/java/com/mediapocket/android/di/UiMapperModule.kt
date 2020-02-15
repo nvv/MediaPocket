@@ -4,7 +4,7 @@ import android.content.Context
 import com.mediapocket.android.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.details.mapper.PodcastItemToEpisodeViewItemMapper
 import com.mediapocket.android.details.mapper.PodcastViewItemToDatabaseItemMapper
-import com.mediapocket.android.episodes.viewitem.EpisodeDatabaseItemToViewItem
+import com.mediapocket.android.episodes.viewitem.EpisodeDatabaseItemToViewItemMapper
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -34,8 +34,8 @@ class UiMapperModule {
 
     @Provides
     @Singleton
-    fun providesEpisodeDatabaseItemToViewItem(): EpisodeDatabaseItemToViewItem =
-            EpisodeDatabaseItemToViewItem()
+    fun providesEpisodeDatabaseItemToViewItem(): EpisodeDatabaseItemToViewItemMapper =
+            EpisodeDatabaseItemToViewItemMapper()
 
 
 }

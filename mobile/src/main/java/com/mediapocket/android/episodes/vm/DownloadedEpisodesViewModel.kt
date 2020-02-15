@@ -8,9 +8,15 @@ import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.details.mapper.PodcastViewItemToDatabaseItemMapper
 import com.mediapocket.android.details.viewitem.PodcastEpisodeViewItem
-import com.mediapocket.android.episodes.viewitem.EpisodeDatabaseItemToViewItem
+import com.mediapocket.android.episodes.viewitem.EpisodeDatabaseItemToViewItemMapper
 import com.mediapocket.android.repository.PodcastEpisodeRepository
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,42 +24,27 @@ class DownloadedEpisodesViewModel @Inject constructor(
         context: Context,
         errorMapper: DownloadErrorToStringMapper,
         viewItemToDatabaseItemMapper: PodcastViewItemToDatabaseItemMapper,
-        podcastEpisodeRepository: PodcastEpisodeRepository,
         private val repository: PodcastEpisodeRepository,
-        private val mapper: EpisodeDatabaseItemToViewItem,
+        private val mapper: EpisodeDatabaseItemToViewItemMapper,
         private val downloadManager: PodcastDownloadManager
-) : EpisodesViewModel(context, errorMapper, viewItemToDatabaseItemMapper, podcastEpisodeRepository, downloadManager) {
-
+) : EpisodesViewModel(context, errorMapper, viewItemToDatabaseItemMapper, repository, downloadManager) {
 
     private val _downloadedEpisodes = MutableLiveData<List<PodcastEpisodeViewItem>>()
     val downloadedEpisodes: LiveData<List<PodcastEpisodeViewItem>> = _downloadedEpisodes
 
     fun requestDownloadedEpisodes() {
-        GlobalScope.launch {
-            episodeItems = repository.getDownloads()?.mapIndexed { index, item ->
-                mapper.map(
-                        index,
-                        item,
-                        mediaConnection.playbackState?.isPlaying == true,
-                        mediaConnection.playbackMetadata)
-            }
-            _downloadedEpisodes.postValue(episodeItems)
-            listenForActiveDownloads(downloadManager)
-        }
+        initModel()
     }
 
-    fun deleteEpisode(item: PodcastEpisodeViewItem) {
-        GlobalScope.launch {
-            repository.deleteEpisode(item.id)
-            _downloadedEpisodes.postValue(repository.getDownloads()?.mapIndexed { index, item ->
-                mapper.map(
-                        index,
-                        item,
-                        mediaConnection.playbackState?.isPlaying == true,
-                        mediaConnection.playbackMetadata)
-            })
+    override fun reloadEpisodes() {
+        episodeItems = repository.getDownloads()?.mapIndexed { index, item ->
+            mapper.map(
+                    index,
+                    item,
+                    mediaConnection.playbackState?.isPlaying == true,
+                    mediaConnection.playbackMetadata)
         }
+        _downloadedEpisodes.postValue(episodeItems)
     }
-
 
 }

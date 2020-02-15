@@ -20,6 +20,7 @@ import com.mediapocket.android.repository.PodcastRepository
 import com.mediapocket.android.repository.RssRepository
 import com.mediapocket.android.viewmodels.PlaybackStateAwareViewModel
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -61,6 +62,8 @@ class PodcastDetailsViewModel @Inject constructor(
     private val _showUndo = MutableLiveData<Boolean>()
     val showUndo: LiveData<Boolean> = _showUndo
 
+    var coroutineJob: Job? = null
+
     fun load(podcast: PodcastAdapterEntry) {
         GlobalScope.launch {
             if (podcast.feedUrl().isNullOrEmpty()) {
@@ -78,12 +81,11 @@ class PodcastDetailsViewModel @Inject constructor(
     }
 
     fun loadFeed(podcast: PodcastDetails, podcastId: String) {
-        GlobalScope.launch {
+        coroutineJob = GlobalScope.launch {
             val rss = rssRepository.loadRss(podcast.feedUrl)
 
             val favourites = podcastEpisodeRepository.getFavourites()?.map { item -> item.id }
             val downloads = podcastEpisodeRepository.getDownloads()?.map { it.id to it }?.toMap()
-//            val downloadIds = downloads?.map { item -> item.id }
             episodeItems = rss.items().mapIndexed { index, item ->
                 remoteToViewItemMapper.map(index, item, rss.link(), podcastId).apply {
                     isFavourite = favourites?.contains(id) ?: false
@@ -121,4 +123,13 @@ class PodcastDetailsViewModel @Inject constructor(
         }
     }
 
+    override fun onEpisodeDeleted(item: PodcastEpisodeViewItem) {
+        item.downloadState = null
+        notifyEpisodesIndexesChanged(setOf(item.position))
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        coroutineJob?.cancel()
+    }
 }

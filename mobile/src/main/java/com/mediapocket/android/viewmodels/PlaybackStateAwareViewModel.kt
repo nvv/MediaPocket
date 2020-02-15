@@ -88,18 +88,23 @@ abstract class PlaybackStateAwareViewModel(
         }
     }
 
-    protected fun handleDownloadProgress(episode: PodcastEpisodeViewItem, item: PodcastDownloadItem) {
+    private fun handleDownloadProgress(ep: PodcastEpisodeViewItem, item: PodcastDownloadItem) {
+        val episode = episodeItems?.find { it -> it.id == ep.id } ?: ep
+
         if (episode.downloadState == null) {
             episode.downloadState = DownloadState()
         }
 
-        episode.downloadState?.state = item.state
-        episode.downloadState?.progress = item.progress
-        // TODO
-        episode.downloadState?.isDownloaded = item.progress == 100
-        item.error?.let {
-            episode.downloadState?.error = mapError(it)
+        episode.downloadState?.apply {
+            state = item.state
+            progress = item.progress
+            isDownloaded = item.isDownloaded
+
+            item.error?.let {
+                error = mapError(it)
+            }
         }
+
         notifyEpisodesIndexesChanged(setOf(episode.position))
     }
 
@@ -108,7 +113,7 @@ abstract class PlaybackStateAwareViewModel(
             episodeItems?.find { it -> it.id == item.id }?.let { episode ->
                 downloadManager.listenForDownloadProgress(episode.id)?.let { process ->
                     GlobalScope.launch {
-                        process?.consumeEach { item ->
+                        process.consumeEach { item ->
                             handleDownloadProgress(episode, item)
                         }
                     }
@@ -156,6 +161,15 @@ abstract class PlaybackStateAwareViewModel(
     fun resumeDownload(episode: PodcastEpisodeViewItem) {
         downloadManager.resumeDownload(episode.id)
     }
+
+    fun deleteEpisode(item: PodcastEpisodeViewItem) {
+        GlobalScope.launch {
+            podcastEpisodeRepository.deleteEpisode(item.id)
+            onEpisodeDeleted(item)
+        }
+    }
+
+    abstract fun onEpisodeDeleted(item: PodcastEpisodeViewItem)
 
     private fun mapError(error: DownloadError): String? = errorMapper.map(error)
 

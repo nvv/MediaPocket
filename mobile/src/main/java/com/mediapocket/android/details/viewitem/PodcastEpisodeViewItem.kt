@@ -10,6 +10,7 @@ class PodcastEpisodeViewItem(
         val title: String,
         val description: String,
         val pubDate: Long,
+        val downloadDate: Long,
         val puDateFormatted: String,
         val link: String?,
         val length: Long,

@@ -17,6 +17,7 @@ class PodcastItemToEpisodeViewItemMapper {
                     title = item.title,
                     description = item.description,
                     pubDate = getTime(item.pubDate),
+                    downloadDate = -1,
                     puDateFormatted = item.dateFormatted(),
                     link = item.link,
                     length = item.length,

@@ -11,20 +11,20 @@ class PodcastViewItemToDatabaseItemMapper : Mapper<PodcastEpisodeViewItem, Podca
 
     override fun map(item: PodcastEpisodeViewItem): PodcastEpisodeItem =
             PodcastEpisodeItem(
-                    state = PodcastEpisodeItem.STATE_NONE,
+                    state = item.downloadState?.state ?: PodcastEpisodeItem.STATE_NONE,
                     podcastId = item.podcastId,
                     podcastTitle = item.podcastTitle,
                     rssLink = item.rssLink,
                     title = item.title,
                     description = item.description,
                     link = item.link,
-                    downloadDate = System.currentTimeMillis(),
+                    downloadDate = item.downloadDate,
                     pubDate = item.pubDate,
                     length = item.length,
                     favourite = item.isFavourite,
                     imageUrl = item.imageUrl,
                     downloadId = 0,
-                    localPath = null
+                    localPath = item.localPath
             )
 
 }

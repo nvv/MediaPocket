@@ -1,9 +1,7 @@
 package com.mediapocket.android.repository
 
-import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.EpisodesDao
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.model.Item
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import java.io.File
@@ -20,7 +18,7 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
 
     fun getFavourites(): List<PodcastEpisodeItem>? = dao.getFavourites()
 
-    val favourites = BroadcastChannel<List<PodcastEpisodeItem>?>(Channel.CONFLATED)
+    val episodes = BroadcastChannel<Boolean>(Channel.CONFLATED)
 
 
     /**
@@ -38,15 +36,26 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
             dao.update(storedItem)
         }
 
-        favourites.send(dao.getFavourites())
+        episodes.send(true)
         return storedItem.favourite
     }
 
-    fun deleteEpisode(episodeId: String) {
-        dao.get(episodeId)?.let {
+    suspend fun deleteEpisode(episodeId: String) {
+        val episode = dao.get(episodeId)
+        episode?.let {
             File(it.localPath).delete()
+
+            if (!it.favourite) {
+                dao.delete(episodeId)
+            } else {
+                it.downloadDate = -1
+                it.localPath = null
+                it.state = PodcastEpisodeItem.STATE_NONE
+                dao.update(it)
+            }
         }
-        dao.delete(episodeId)
+
+        episodes.send(true)
     }
 
 }

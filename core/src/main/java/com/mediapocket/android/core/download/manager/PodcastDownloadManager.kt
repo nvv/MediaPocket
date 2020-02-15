@@ -64,6 +64,7 @@ class PodcastDownloadManager(
                     val item = repository.get(id)
                     item?.let {
                         item.state = PodcastEpisodeItem.STATE_DOWNLOADED
+                        item.downloadDate = System.currentTimeMillis()
                         repository.update(item)
                     }
 
@@ -181,7 +182,7 @@ class PodcastDownloadManager(
         GlobalScope.launch {
             item.link?.let {
                 val link = item.link ?: ""
-                val file = getItemLocalPath(item.podcastId ?: "_", link)
+                val file = getItemLocalPath(item.podcastId ?: "_")
 
                 val request = Request(link, file)
                 request.priority = Priority.HIGH
@@ -199,6 +200,8 @@ class PodcastDownloadManager(
                     repository.insert(storedItem)
                 } else {
                     storedItem.state = PodcastEpisodeItem.STATE_DOWNLOADING
+                    storedItem.localPath = file
+                    storedItem.downloadId = request.id
                     repository.update(storedItem)
                 }
 
@@ -233,6 +236,6 @@ class PodcastDownloadManager(
         activeDownloads.send(downloadingItems.values.filter { it.isDownloading }.toList())
     }
 
-    private fun getItemLocalPath(podcastId: String, link: String) = context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + UUID.randomUUID().toString()
+    private fun getItemLocalPath(podcastId: String) = context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + UUID.randomUUID().toString()
 
 }

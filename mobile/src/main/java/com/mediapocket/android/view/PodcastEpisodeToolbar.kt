@@ -54,7 +54,7 @@ class PodcastEpisodeToolbar(context: Context?, attrs: AttributeSet?, defStyleAtt
         }
 
         error.setOnClickListener {
-            listener?.downloadClicked(item)
+            listener?.statusClicked(item)
         }
 
         favourite.setOnClickListener {
@@ -62,7 +62,7 @@ class PodcastEpisodeToolbar(context: Context?, attrs: AttributeSet?, defStyleAtt
         }
 
         status.setOnClickListener {
-            listener?.downloadClicked(item)
+            listener?.statusClicked(item)
         }
 
         val stateSet = intArrayOf(android.R.attr.state_checked * if (item.isFavourite) 1 else -1)
@@ -77,6 +77,7 @@ class PodcastEpisodeToolbar(context: Context?, attrs: AttributeSet?, defStyleAtt
             status.setImageResource(item.getStatusIcon())
         }
 
+        System.out.println(">>>> " + item.title + " " + item.downloadState?.progress)
         if (item.isDownloading) {
             progress.visibility = View.VISIBLE
             progress.progress = item.downloadState?.progress?.toFloat() ?: 0F

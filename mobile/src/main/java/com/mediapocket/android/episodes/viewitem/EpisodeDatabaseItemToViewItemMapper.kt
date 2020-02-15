@@ -12,7 +12,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EpisodeDatabaseItemToViewItem {
+class EpisodeDatabaseItemToViewItemMapper {
 
     fun map(index: Int, item: PodcastEpisodeItem, isPlaybackRun: Boolean, playbackMetadata: MediaMetadataCompat?): PodcastEpisodeViewItem =
             PodcastEpisodeViewItem(
@@ -21,6 +21,7 @@ class EpisodeDatabaseItemToViewItem {
                     title = item.title,
                     description = item.description,
                     pubDate = item.pubDate,
+                    downloadDate = item.downloadDate,
                     puDateFormatted = formatDate(item.pubDate),
                     link = item.link,
                     length = read(item.length),
