@@ -85,11 +85,19 @@ class PodcastDetailsViewModel @Inject constructor(
             val rss = rssRepository.loadRss(podcast.feedUrl)
 
             val favourites = podcastEpisodeRepository.getFavourites()?.map { item -> item.id }
-            val downloads = podcastEpisodeRepository.getDownloads()?.map { it.id to it }?.toMap()
+            val downloads = podcastEpisodeRepository.getDownloads()?.map { it.id to it }?.toMap() ?: emptyMap()
             episodeItems = rss.items().mapIndexed { index, item ->
                 remoteToViewItemMapper.map(index, item, rss.link(), podcastId).apply {
                     isFavourite = favourites?.contains(id) ?: false
-                    downloadState = if (downloads?.contains(id) == true) DownloadState(isDownloaded = downloads[id]?.state == STATE_DOWNLOADED) else null
+                    val download = downloads[id]
+                    downloadState = if (download != null) {
+                        DownloadState(
+                                isDownloaded = download.state == STATE_DOWNLOADED,
+                                state = download.state
+                        )
+                    } else {
+                        null
+                    }
                     isPlaying = mediaConnection.playbackState?.isPlaying == true &&
                             mediaConnection.playbackMetadata?.description?.mediaId == link
                 }

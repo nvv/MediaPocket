@@ -113,7 +113,14 @@ class PodcastDownloadManager(
             }
 
             override fun onPaused(download: Download) {
-                onItemChanged(download) { item -> item.state = PodcastEpisodeItem.STATE_PAUSED }
+                onItemChanged(download) { item ->
+                    item.state = PodcastEpisodeItem.STATE_PAUSED
+
+                    repository.get(item.id)?.let {
+                        it.state = PodcastEpisodeItem.STATE_PAUSED
+                        repository.update(it)
+                    }
+                }
             }
 
             override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
@@ -129,7 +136,13 @@ class PodcastDownloadManager(
             }
 
             override fun onResumed(download: Download) {
-                onItemChanged(download) { item -> item.state = PodcastEpisodeItem.STATE_DOWNLOADING }
+                onItemChanged(download) { item ->
+                    item.state = PodcastEpisodeItem.STATE_DOWNLOADING
+                    repository.get(item.id)?.let {
+                        it.state = PodcastEpisodeItem.STATE_DOWNLOADING
+                        repository.update(it)
+                    }
+                }
             }
 
             override fun onStarted(download: Download, downloadBlocks: List<DownloadBlock>, totalBlocks: Int) {
@@ -140,12 +153,12 @@ class PodcastDownloadManager(
 
             }
 
-            private fun onItemChanged(download: Download, func : (item: PodcastDownloadItem) -> Unit) {
+            private fun onItemChanged(download: Download, func : suspend (item: PodcastDownloadItem) -> Unit) {
                 val id = PodcastEpisodeItem.convertLinkToId(download.url)
                 val item = downloadingItems[id]
                     item?.let {
-                        func(item)
                         GlobalScope.launch {
+                            func(item)
                             notifyActiveDownloadsChanged()
                         }
                 }

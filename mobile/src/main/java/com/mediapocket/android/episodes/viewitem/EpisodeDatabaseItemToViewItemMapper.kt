@@ -34,7 +34,8 @@ class EpisodeDatabaseItemToViewItemMapper {
                 isPlaying = isPlaybackRun && playbackMetadata?.description?.mediaId == link
                 if (item.state != STATE_NONE) {
                     downloadState = DownloadState(
-                            isDownloaded = item.state == STATE_DOWNLOADED
+                            isDownloaded = item.state == STATE_DOWNLOADED,
+                            state = item.state
                     )
                 }
                 isFavourite = item.favourite

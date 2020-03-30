@@ -39,8 +39,6 @@ class DownloadedEpisodesFragment : BaseEpisodesFragment<DownloadedEpisodesViewMo
 
         model.episodesChanged.observe(viewLifecycleOwner, Observer { changed ->
             changed.forEach {
-                System.out.println(">>>> ? " + episodes?.get(it)?.title + " " + episodes?.get(it)?.downloadState?.progress)
-
                 items.adapter?.notifyItemChanged(it)
             }
         })
