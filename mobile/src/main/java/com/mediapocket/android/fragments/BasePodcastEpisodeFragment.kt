@@ -16,6 +16,7 @@ abstract class BasePodcastEpisodeFragment<T : PlaybackStateAwareViewModel>: Base
 
     protected val podcastEpisodeItemListener: EpisodeItemListener = object : EpisodeItemListener {
         override fun statusClicked(item: PodcastEpisodeViewItem) {
+            // TODO: move to VM
             if (item.isDownloaded) {
                 confirmDelete(item)
             } else if (item.downloadState == null || item.isError) {

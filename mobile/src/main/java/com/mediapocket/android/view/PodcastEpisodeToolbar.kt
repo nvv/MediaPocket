@@ -77,7 +77,6 @@ class PodcastEpisodeToolbar(context: Context?, attrs: AttributeSet?, defStyleAtt
             status.setImageResource(item.getStatusIcon())
         }
 
-        System.out.println(">>>> " + item.title + " " + item.downloadState?.progress)
         if (item.isDownloading) {
             progress.visibility = View.VISIBLE
             progress.progress = item.downloadState?.progress?.toFloat() ?: 0F

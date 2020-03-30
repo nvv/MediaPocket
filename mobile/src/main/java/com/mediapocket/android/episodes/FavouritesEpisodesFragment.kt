@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.mediapocket.android.R
 import com.mediapocket.android.episodes.adapter.LocalEpisodesAdapter
 import com.mediapocket.android.episodes.vm.FavouritesEpisodesViewModel
@@ -23,7 +24,7 @@ class FavouritesEpisodesFragment : BaseEpisodesFragment<FavouritesEpisodesViewMo
                 items.adapter = LocalEpisodesAdapter(it, podcastEpisodeItemListener).apply {
                     setHasStableIds(true)
                 }
-                (items.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
+                (items.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
             } else {
                 val adapter = items.adapter as? LocalEpisodesAdapter
                 adapter?.episodes = it

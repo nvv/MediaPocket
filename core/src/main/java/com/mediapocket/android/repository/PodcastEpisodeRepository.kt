@@ -10,9 +10,15 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
 
     fun get(id: String): PodcastEpisodeItem? = dao.get(id)
 
-    fun insert(episode: PodcastEpisodeItem) = dao.insert(episode)
+    suspend fun insert(episode: PodcastEpisodeItem) {
+        dao.insert(episode)
+        episodes.send(true)
+    }
 
-    fun update(episode: PodcastEpisodeItem) = dao.update(episode)
+    suspend fun update(episode: PodcastEpisodeItem) {
+        dao.update(episode)
+        episodes.send(true)
+    }
 
     fun getDownloads() = dao.getDownloads()
 
@@ -30,13 +36,12 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
         if (storedItem == null) {
             storedItem = item
             storedItem.favourite = true
-            dao.insert(storedItem)
+            insert(storedItem)
         } else {
             storedItem.favourite = !storedItem.favourite
-            dao.update(storedItem)
+            update(storedItem)
         }
 
-        episodes.send(true)
         return storedItem.favourite
     }
 
@@ -47,15 +52,14 @@ class PodcastEpisodeRepository(private val dao: EpisodesDao) {
 
             if (!it.favourite) {
                 dao.delete(episodeId)
+                episodes.send(true)
             } else {
                 it.downloadDate = -1
                 it.localPath = null
                 it.state = PodcastEpisodeItem.STATE_NONE
-                dao.update(it)
+                update(it)
             }
         }
-
-        episodes.send(true)
     }
 
 }

@@ -39,11 +39,11 @@ class LocalEpisodesAdapter(
             itemView.podcastDetails.text = item.podcastTitle
             itemView.pubDate.text = item.puDateFormatted
 
-            itemView.duration.text = item.durationFormatted
-
-            item.localPath?.let {
-                itemView.size.text = FileUtils.formatBytes(File(it).length())
-            }
+//            itemView.duration.text = item.durationFormatted
+//
+//            item.localPath?.let {
+//                itemView.size.text = FileUtils.formatBytes(File(it).length())
+//            }
 
             Glide.with(itemView.context)
                     .load(item.imageUrl)

@@ -14,6 +14,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -22,14 +24,8 @@ import java.util.*
 class PodcastDownloadManager(
         private val context: Context,
         private val repository: PodcastEpisodeRepository,
-        private val errorMapper: FetchToDownloadManagerErrorMapper) {
-
-    /**
-     * All active download broadcast channels to report download progress.
-     * Add broadcast channel in this map and remove it after download has been completed.
-     */
-    private val downloadingChannels =
-            mutableMapOf<String, BroadcastChannel<PodcastDownloadItem>>()
+        private val errorMapper: FetchToDownloadManagerErrorMapper
+) {
 
     /**
      * All active downloading items, including manually paused or paused due to network error.
@@ -41,6 +37,12 @@ class PodcastDownloadManager(
      * "Subscribe" on this channel to receive for downloads updates.
      */
     val activeDownloads = BroadcastChannel<List<PodcastDownloadItem>>(Channel.CONFLATED)
+
+    /**
+     * Channel to track all 'downloading' items including paused.
+     * "Subscribe" on this channel to receive for downloads updates.
+     */
+    val downloads = BroadcastChannel<List<PodcastDownloadItem>>(Channel.CONFLATED)
 
     private var fetch: Fetch = Fetch.getInstance(
             FetchConfiguration.Builder(context)
@@ -70,15 +72,11 @@ class PodcastDownloadManager(
 
                     fetch.remove(download.id)
                     val downloadingItem = downloadingItems.remove(id)
-                    downloadingChannels.remove(id)?.let { channel ->
                         downloadingItem?.let {
                             downloadingItem.progress = 100
                             downloadingItem.state = PodcastEpisodeItem.STATE_DOWNLOADED
                             downloadingItem.isDownloaded = true
-                            channel.send(downloadingItem)
                         }
-                        channel.close()
-                    }
 
                     notifyActiveDownloadsChanged()
                 }
@@ -103,16 +101,12 @@ class PodcastDownloadManager(
 
                     fetch.remove(download.id)
                     val downloadingItem = downloadingItems.remove(id)
-                    downloadingChannels.remove(id)?.let { channel ->
                         downloadingItem?.let {
                             downloadingItem.progress = 0
                             downloadingItem.isDownloaded = false
                             downloadingItem.state = PodcastEpisodeItem.STATE_ERROR
                             downloadingItem.error = errorMapper.map(error)
-                            channel.send(downloadingItem)
                         }
-                        channel.close()
-                    }
 
                     notifyActiveDownloadsChanged()
                 }
@@ -149,35 +143,17 @@ class PodcastDownloadManager(
             private fun onItemChanged(download: Download, func : (item: PodcastDownloadItem) -> Unit) {
                 val id = PodcastEpisodeItem.convertLinkToId(download.url)
                 val item = downloadingItems[id]
-                downloadingChannels[id].let { channel ->
                     item?.let {
                         func(item)
                         GlobalScope.launch {
-                            channel?.send(item)
                             notifyActiveDownloadsChanged()
                         }
-                    }
                 }
             }
         })
     }
 
-    /**
-     * Get currently active downloads for <code>podcastId</code>. Get all items if podcast id is null.
-     */
-    fun getActiveDownloads(podcastId: String? = null): List<PodcastDownloadItem>? =
-            if (podcastId == null) downloadingItems.values.toList() else downloadingItems.filter { it.value.podcastId == podcastId }.values.toList()
-
-    /**
-     * Request download progress channel.
-     *
-     * @param id download item item
-     */
-    fun listenForDownloadProgress(id: String): BroadcastChannel<PodcastDownloadItem>? = downloadingChannels[id]
-
-    fun download(item: PodcastEpisodeItem): BroadcastChannel<PodcastDownloadItem>? {
-        val progress = BroadcastChannel<PodcastDownloadItem>(Channel.CONFLATED)
-        downloadingChannels[PodcastEpisodeItem.convertLinkToId(item.link)] = progress
+    fun download(item: PodcastEpisodeItem) {
 
         GlobalScope.launch {
             item.link?.let {
@@ -211,13 +187,9 @@ class PodcastDownloadManager(
 
                 fetch.enqueue(request)
 
-                progress.send(downloadItem)
-
                 notifyActiveDownloadsChanged()
             }
         }
-
-        return progress
     }
 
     fun pauseDownload(episodeId: String) {
@@ -234,6 +206,7 @@ class PodcastDownloadManager(
 
     private suspend fun notifyActiveDownloadsChanged() {
         activeDownloads.send(downloadingItems.values.filter { it.isDownloading }.toList())
+        downloads.send(downloadingItems.values.toList())
     }
 
     private fun getItemLocalPath(podcastId: String) = context.filesDir.absolutePath + "/podcast_items/" + podcastId + "/" + UUID.randomUUID().toString()

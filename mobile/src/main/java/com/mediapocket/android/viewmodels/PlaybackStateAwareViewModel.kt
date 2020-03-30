@@ -11,11 +11,11 @@ import com.mediapocket.android.core.download.manager.PodcastDownloadManager
 import com.mediapocket.android.core.download.model.DownloadError
 import com.mediapocket.android.core.download.model.PodcastDownloadItem
 import com.mediapocket.android.dao.model.PodcastEpisodeItem
-import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.details.mapper.DownloadErrorToStringMapper
 import com.mediapocket.android.details.mapper.PodcastViewItemToDatabaseItemMapper
 import com.mediapocket.android.details.viewitem.DownloadState
 import com.mediapocket.android.details.viewitem.PodcastEpisodeViewItem
+import com.mediapocket.android.extensions.isPlaying
 import com.mediapocket.android.repository.PodcastEpisodeRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
@@ -109,13 +109,13 @@ abstract class PlaybackStateAwareViewModel(
     }
 
     protected fun listenForActiveDownloads(downloadManager: PodcastDownloadManager, podcastId: String? = null) {
-        downloadManager.getActiveDownloads(podcastId)?.forEach { item ->
-            episodeItems?.find { it -> it.id == item.id }?.let { episode ->
-                downloadManager.listenForDownloadProgress(episode.id)?.let { process ->
-                    GlobalScope.launch {
-                        process.consumeEach { item ->
-                            handleDownloadProgress(episode, item)
-                        }
+        //TODO: listen for all downloads
+
+        GlobalScope.launch {
+            downloadManager.downloads.consumeEach { items ->
+                items.forEach { item ->
+                    episodeItems?.find { item.id == it.id }?.let { episode ->
+                        handleDownloadProgress(episode, item)
                     }
                 }
             }
@@ -135,13 +135,7 @@ abstract class PlaybackStateAwareViewModel(
     }
 
     fun downloadItem(episode: PodcastEpisodeViewItem) {
-        val process = downloadManager.download(mapToEpisodeDbItem(episode))
-
-        GlobalScope.launch {
-            process?.consumeEach { item ->
-                handleDownloadProgress(episode, item)
-            }
-        }
+        downloadManager.download(mapToEpisodeDbItem(episode))
     }
 
     private fun mapToEpisodeDbItem(episode: PodcastEpisodeViewItem): PodcastEpisodeItem {
